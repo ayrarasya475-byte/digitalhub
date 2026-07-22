@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Jadi Reseller — DigitalHub</title>
+<link rel="icon" type="image/x-icon" href="/media/favicon.ico">
+<link rel="icon" type="image/jpeg" href="/media/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#181818;--bg1:#1a1a1a;--bg2:#212121;--bg3:#2a2a2a;
+    --line:#2E2E2E;--line2:#3a3a3a;
+    --em:#6366f1;--em-rgb:99, 102, 241;--em2:#818cf8;
+    --red:#f87171;--t1:#e5e5e5;--t2:#a0a0a0;--t3:#616161;
+    --font:'DM Sans',system-ui,sans-serif;--rad:12px;--rs:7px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100vh;background:var(--bg);color:var(--t1);font-family:var(--font);font-size:13.5px;letter-spacing:-.3px}
+  body{display:flex;flex-direction:column;align-items:center;padding:1.5rem 1rem 3rem}
+  @keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .hero{width:100%;max-width:440px;text-align:center;margin-bottom:1.3rem;animation:fadein .35s ease}
+  .hero .logo{width:54px;height:54px;border-radius:14px;object-fit:cover;margin:0 auto .8rem;display:block;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+  .hero h1{font-size:1.4rem;font-weight:700;margin-bottom:.35rem}
+  .hero p{font-size:.8rem;color:var(--t2);line-height:1.5}
+  .feat{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:.9rem}
+  .feat span{font-size:.62rem;color:var(--em);background:rgba(var(--em-rgb),.08);border:1px solid rgba(var(--em-rgb),.2);border-radius:999px;padding:.3rem .65rem}
+  .card{width:100%;max-width:440px;background:var(--bg1);border:1px solid var(--line2);border-radius:var(--rad);box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden;animation:fadein .4s ease}
+  .tabs{display:flex;border-bottom:1px solid var(--line)}
+  .tab{flex:1;padding:.9rem;font-size:.78rem;font-weight:700;color:var(--t3);background:none;border:none;cursor:pointer;font-family:inherit;transition:color .15s}
+  .tab.active{color:var(--em);box-shadow:inset 0 -2px 0 var(--em)}
+  .pane{padding:1.3rem;display:none}.pane.active{display:block}
+  .lbl{display:block;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin:.85rem 0 .4rem}
+  .lbl:first-child{margin-top:0}
+  .inp{width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:var(--rs);padding:.7rem .85rem;font-family:var(--font);font-size:.88rem;color:var(--t1);outline:none;transition:border .15s;-webkit-appearance:none}
+  .inp:focus{border-color:rgba(var(--em-rgb),.4)}.inp::placeholder{color:var(--t3)}
+  .slugprev{font-size:.66rem;color:var(--t3);margin-top:.35rem}
+  .slugprev b{color:var(--em2)}
+  .btn{width:100%;margin-top:1.1rem;background:var(--em);border:none;border-radius:var(--rs);padding:.8rem;font-family:var(--font);font-size:.82rem;font-weight:700;color:#040d09;cursor:pointer;transition:background .18s}
+  .btn:hover:not(:disabled){background:var(--em2)} .btn:disabled{opacity:.55;cursor:not-allowed}
+  .msg{font-size:.72rem;margin-top:.8rem;padding:.6rem .8rem;border-radius:var(--rs);display:none}
+  .msg.err{color:var(--red);background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.18)}
+  .msg.ok{color:var(--em);background:rgba(var(--em-rgb),.07);border:1px solid rgba(var(--em-rgb),.2)}
+  .foot{font-size:.66rem;color:var(--t3);text-align:center;margin-top:1.2rem}
+  .foot a{color:var(--t2);text-decoration:none}.foot a:hover{color:var(--em)}
+</style>
+</head>
+<body>
+<div class="hero">
+  <img class="logo" id="logo" src="/media/logo.jpg" alt="">
+  <h1 id="heroTitle">Buka Toko Reseller</h1>
+  <p>Jual produk digitalmu sendiri lewat toko online berdomain unik. Kelola produk, varian, stok, dan terima pembayaran QRIS otomatis.</p>
+  <div class="feat"><span>Produk &amp; varian sendiri</span><span>QRIS otomatis</span><span>Chat pembeli</span><span>Banner sendiri</span></div>
+</div>
+
+<div class="card">
+  <div class="tabs">
+    <button class="tab active" data-tab="reg">Daftar Toko</button>
+    <button class="tab" data-tab="login">Masuk</button>
+  </div>
+
+  <!-- Register -->
+  <div class="pane active" id="pane-reg">
+    <label class="lbl" for="rName">Nama Toko</label>
+    <input id="rName" class="inp" type="text" maxlength="60" placeholder="contoh: Toko Budi Digital" autocomplete="off">
+    <div class="slugprev" id="slugPrev"></div>
+    <label class="lbl" for="rWa">Nomor WhatsApp (opsional)</label>
+    <input id="rWa" class="inp" type="tel" inputmode="numeric" maxlength="20" placeholder="08xxxxxxxxxx">
+    <label class="lbl" for="rPass">Password</label>
+    <input id="rPass" class="inp" type="password" maxlength="72" placeholder="Min. 6 karakter">
+    <button class="btn" id="regBtn">Buat Toko</button>
+    <div class="msg" id="regMsg"></div>
+  </div>
+
+  <!-- Login -->
+  <div class="pane" id="pane-login">
+    <label class="lbl" for="lSlug">Slug / Nama Toko</label>
+    <input id="lSlug" class="inp" type="text" maxlength="60" placeholder="toko-budi-digital" autocomplete="username">
+    <label class="lbl" for="lPass">Password</label>
+    <input id="lPass" class="inp" type="password" maxlength="72" placeholder="Password" autocomplete="current-password">
+    <button class="btn" id="loginBtn">Masuk ke Dashboard</button>
+    <div class="msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<div class="foot"><a href="/">← Kembali ke beranda</a></div>
+
+<script>
+(function(){
+  'use strict';
+  var $=function(i){return document.getElementById(i);};
+
+  fetch('/api/store-info').then(function(r){return r.json();}).then(function(j){
+    if(j&&j.ok){ if(j.logo)$('logo').src=j.logo; if(j.color)document.documentElement.style.setProperty('--em',j.color); }
+  }).catch(function(){});
+
+  // Sudah login? langsung ke dashboard
+  if(localStorage.getItem('rsToken')){ /* biarkan; user bisa login ulang/ganti */ }
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
+      document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('active');});
+      t.classList.add('active'); $('pane-'+t.dataset.tab).classList.add('active');
+    });
+  });
+
+  function slugify(s){ return String(s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60); }
+  function showMsg(el,txt,type){ el.textContent=txt; el.className='msg '+type; el.style.display='block'; }
+
+  // Slug preview + availability
+  var slugTimer=null;
+  $('rName').addEventListener('input', function(){
+    var slug=slugify($('rName').value);
+    $('slugPrev').innerHTML = slug ? ('URL toko: <b>'+location.origin+'/'+slug+'</b>') : '';
+    clearTimeout(slugTimer);
+    if(!slug) return;
+    slugTimer=setTimeout(function(){
+      fetch('/api/store-reseller/check-slug?slug='+encodeURIComponent(slug)).then(function(r){return r.json();}).then(function(j){
+        if(j && j.available===false){ $('slugPrev').innerHTML='URL <b>/'+slug+'</b> sudah dipakai — coba nama lain.'; $('slugPrev').style.color='var(--red)'; }
+        else { $('slugPrev').innerHTML='URL toko: <b>'+location.origin+'/'+slug+'</b> ✓'; $('slugPrev').style.color=''; }
+      }).catch(function(){});
+    },400);
+  });
+
+  function saveAuth(j){ localStorage.setItem('rsToken', j.token); localStorage.setItem('rsSlug', j.slug); localStorage.setItem('rsStoreName', j.storeName||''); }
+
+  // Register
+  $('regBtn').addEventListener('click', function(){
+    var storeName=$('rName').value.trim(), password=$('rPass').value, wa=$('rWa').value.trim();
+    if(storeName.length<3) return showMsg($('regMsg'),'Nama toko minimal 3 karakter.','err');
+    if(password.length<6) return showMsg($('regMsg'),'Password minimal 6 karakter.','err');
+    var b=$('regBtn'); b.disabled=true; b.textContent='Membuat…';
+    fetch('/api/store-reseller/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({storeName,password,wa})})
+      .then(function(r){return r.json();}).then(function(j){
+        if(j.ok){ saveAuth(j); showMsg($('regMsg'),'Toko dibuat! Mengalihkan…','ok'); setTimeout(function(){location.href='/reseller-dashboard';},700); }
+        else { showMsg($('regMsg'),j.message||'Gagal mendaftar.','err'); b.disabled=false; b.textContent='Buat Toko'; }
+      }).catch(function(){ showMsg($('regMsg'),'Koneksi bermasalah.','err'); b.disabled=false; b.textContent='Buat Toko'; });
+  });
+
+  // Login
+  $('loginBtn').addEventListener('click', function(){
+    var slug=slugify($('lSlug').value), password=$('lPass').value;
+    if(!slug||!password) return showMsg($('loginMsg'),'Isi slug & password.','err');
+    var b=$('loginBtn'); b.disabled=true; b.textContent='Masuk…';
+    fetch('/api/store-reseller/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({slug,password})})
+      .then(function(r){return r.json();}).then(function(j){
+        if(j.ok){ saveAuth(j); location.href='/reseller-dashboard'; }
+        else { showMsg($('loginMsg'),j.message||'Gagal masuk.','err'); b.disabled=false; b.textContent='Masuk ke Dashboard'; }
+      }).catch(function(){ showMsg($('loginMsg'),'Koneksi bermasalah.','err'); b.disabled=false; b.textContent='Masuk ke Dashboard'; });
+  });
+  $('lPass').addEventListener('keydown',function(e){if(e.key==='Enter')$('loginBtn').click();});
+})();
+</script>
+<a href="/admin-panell" title="Admin Panel" style="position:fixed;bottom:14px;left:14px;z-index:40;width:38px;height:38px;border-radius:50%;background:rgba(33,33,33,.85);backdrop-filter:blur(6px);border:1px solid var(--line2,#3a3a3a);color:var(--em,#6366f1);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.35);text-decoration:none;font-size:15px;opacity:.75;transition:opacity .15s,transform .15s" aria-label="Admin Panel">🛡️</a>
+</body>
+</html>

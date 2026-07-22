@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Dashboard Reseller — DigitalHub</title>
+<link rel="icon" type="image/x-icon" href="/media/favicon.ico">
+<link rel="icon" type="image/jpeg" href="/media/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#161616;--bg1:#1c1c1c;--bg2:#232323;--bg3:#2c2c2c;
+    --line:#2E2E2E;--line2:#3a3a3a;
+    --em:#6366f1;--em-rgb:99, 102, 241;--em2:#818cf8;
+    --red:#f87171;--yellow:#fbbf24;--t1:#e9e9e9;--t2:#a0a0a0;--t3:#666;
+    --font:'DM Sans',system-ui,sans-serif;--rad:11px;--rs:7px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--t1);font-family:var(--font);font-size:13.5px;letter-spacing:-.3px}
+  body{max-width:760px;margin:0 auto;padding:1rem 1rem 4rem}
+  a{color:inherit}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:.8rem;margin-bottom:1rem}
+  .topbar .nm{font-size:.95rem;font-weight:700;line-height:1.2}
+  .topbar .url{font-size:.62rem;color:var(--em2);text-decoration:none}
+  .lo{font-size:.66rem;color:var(--t3);background:var(--bg2);border:1px solid var(--line2);border-radius:var(--rs);padding:.45rem .7rem;cursor:pointer;font-family:inherit}
+  .lo:hover{color:var(--red);border-color:rgba(248,113,113,.3)}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1rem}
+  .stat{background:var(--bg1);border:1px solid var(--line);border-radius:var(--rad);padding:.8rem .9rem}
+  .stat .k{font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+  .stat .v{font-size:1.05rem;font-weight:700;margin-top:.25rem}
+  .stat .v.em{color:var(--em)}
+  .tabs{display:flex;gap:.4rem;margin-bottom:1rem;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tab{flex-shrink:0;padding:.55rem .9rem;font-size:.72rem;font-weight:700;color:var(--t2);background:var(--bg1);border:1px solid var(--line2);border-radius:999px;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .tab.active{color:#040d09;background:var(--em);border-color:var(--em)}
+  .pane{display:none;animation:fadein .25s ease}.pane.active{display:block}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .secbtn{width:100%;background:var(--em);border:none;border-radius:var(--rs);padding:.7rem;font-family:var(--font);font-size:.78rem;font-weight:700;color:#040d09;cursor:pointer;margin-bottom:1rem}
+  .secbtn:hover{background:var(--em2)}
+  /* product cards */
+  .pcard{background:var(--bg1);border:1px solid var(--line);border-radius:var(--rad);padding:.85rem;margin-bottom:.7rem;display:flex;gap:.8rem}
+  .pcard img{width:48px;height:48px;border-radius:8px;object-fit:cover;background:var(--bg3);flex-shrink:0}
+  .pcard .pi{flex:1;min-width:0}
+  .pcard .pn{font-size:.82rem;font-weight:700}
+  .pcard .pm{font-size:.64rem;color:var(--t3);margin-top:.15rem}
+  .pcard .pv{font-size:.66rem;color:var(--t2);margin-top:.3rem}
+  .tag{display:inline-block;font-size:.55rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.12rem .4rem;border-radius:4px;background:var(--bg3);color:var(--t2);margin-right:.3rem}
+  .tag.off{color:var(--red)}
+  .pacts{display:flex;flex-direction:column;gap:.35rem}
+  .mini{font-size:.62rem;font-weight:600;padding:.3rem .55rem;border-radius:5px;border:1px solid var(--line2);background:var(--bg2);color:var(--t2);cursor:pointer;font-family:inherit;white-space:nowrap}
+  .mini:hover{border-color:rgba(var(--em-rgb),.4);color:var(--em)}
+  .mini.red:hover{border-color:rgba(248,113,113,.4);color:var(--red)}
+  .empty{text-align:center;color:var(--t3);font-size:.72rem;padding:2rem 1rem}
+  /* order rows */
+  .ord{background:var(--bg1);border:1px solid var(--line);border-radius:var(--rs);padding:.7rem .85rem;margin-bottom:.5rem;font-size:.72rem}
+  .ord .or1{display:flex;justify-content:space-between;gap:.5rem}
+  .ord .os{font-size:.58rem;font-weight:700;text-transform:uppercase;padding:.12rem .4rem;border-radius:4px}
+  .os.COMPLETED{color:var(--em);background:rgba(var(--em-rgb),.1)} .os.PENDING{color:var(--yellow);background:rgba(251,191,36,.1)}
+  .os.FAILED,.os.EXPIRED,.os.PAID_ERROR{color:var(--red);background:rgba(248,113,113,.1)}
+  .ord .o2{color:var(--t3);font-size:.62rem;margin-top:.25rem}
+  /* settings */
+  .lbl{display:block;font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin:.85rem 0 .35rem}
+  .inp,.ta,.sel{width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:var(--rs);padding:.65rem .8rem;font-family:var(--font);font-size:.85rem;color:var(--t1);outline:none;-webkit-appearance:none}
+  .inp:focus,.ta:focus,.sel:focus{border-color:rgba(var(--em-rgb),.4)}
+  .ta{resize:vertical;min-height:64px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+  .save{width:100%;margin-top:1rem;background:var(--em);border:none;border-radius:var(--rs);padding:.75rem;font-weight:700;color:#040d09;cursor:pointer;font-family:inherit;font-size:.8rem}
+  .save:hover{background:var(--em2)}
+  .uprow{display:flex;align-items:center;gap:.6rem;margin-top:.1rem}
+  .upbtn{background:var(--bg2);border:1px dashed var(--line2);border-radius:var(--rs);padding:.6rem .8rem;font-family:inherit;font-size:.74rem;font-weight:600;color:var(--t2);cursor:pointer;flex-shrink:0}
+  .upbtn:hover{border-color:rgba(var(--em-rgb),.4);color:var(--em)}
+  .upbtn.busy{opacity:.6;pointer-events:none}
+  .upprev{width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid var(--line2);background:var(--bg3)}
+  .cv{background:var(--bg1);border:1px solid var(--line);border-radius:var(--rs);padding:.7rem .85rem;margin-bottom:.5rem;cursor:pointer;display:flex;justify-content:space-between;gap:.5rem}
+  .cv:hover{border-color:rgba(var(--em-rgb),.4)}
+  .cv .cvn{font-size:.78rem;font-weight:600}.cv .cvl{font-size:.66rem;color:var(--t3);margin-top:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+  .cv .cvb{flex-shrink:0;font-size:.55rem;font-weight:700;background:var(--em);color:#04130c;border-radius:999px;padding:.1rem .45rem;align-self:center}
+  .cmsg{max-width:80%;padding:.5rem .7rem;border-radius:10px;font-size:.78rem;line-height:1.35;word-break:break-word}
+  .cmsg.seller{align-self:flex-end;background:var(--em);color:#04130c}
+  .cmsg.buyer{align-self:flex-start;background:var(--bg3);color:var(--t1)}
+  /* modal */
+  .mbg{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center}
+  .mbg.show{display:flex}
+  .modal{background:var(--bg1);border:1px solid var(--line2);border-radius:16px 16px 0 0;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;padding:1.1rem}
+  @media(min-width:600px){.mbg{align-items:center}.modal{border-radius:16px}}
+  .mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+  .mh .mt{font-size:.9rem;font-weight:700}
+  .mx{background:none;border:none;color:var(--t3);font-size:1.1rem;cursor:pointer;padding:.2rem .45rem}
+  .typegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem;margin-top:.35rem}
+  .typebtn{padding:.5rem;border-radius:var(--rs);border:1px solid var(--line2);background:var(--bg2);color:var(--t2);font-size:.66rem;font-weight:700;cursor:pointer;font-family:inherit;text-align:center}
+  .typebtn.active{border-color:var(--em);color:var(--em);background:rgba(var(--em-rgb),.08)}
+  .varrow{background:var(--bg2);border:1px solid var(--line);border-radius:var(--rs);padding:.6rem;margin-bottom:.5rem}
+  .varrow .vh{display:flex;gap:.4rem;align-items:center}
+  .varrow .vh input{flex:1}
+  .varrow .vx{background:none;border:none;color:var(--red);cursor:pointer;font-size:.95rem;padding:0 .3rem}
+  .addvar{font-size:.68rem;font-weight:700;color:var(--em);background:rgba(var(--em-rgb),.08);border:1px dashed rgba(var(--em-rgb),.35);border-radius:var(--rs);padding:.5rem;width:100%;cursor:pointer;font-family:inherit}
+  .hint{font-size:.6rem;color:var(--t3);margin-top:.3rem;line-height:1.4}
+  .notif{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--line2);border-radius:8px;padding:.6rem .9rem;font-size:.72rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .25s;z-index:1000}
+  .notif.show{opacity:1}.notif.ok{border-color:rgba(var(--em-rgb),.4);color:var(--em)}.notif.err{border-color:rgba(248,113,113,.4);color:var(--red)}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div><div class="nm" id="storeName">Memuat…</div><a class="url" id="storeUrl" target="_blank">—</a></div>
+  <button class="lo" id="logoutBtn">Keluar</button>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="k">Saldo</div><div class="v em" id="stBalance">Rp0</div></div>
+  <div class="stat"><div class="k">Total Cuan</div><div class="v" id="stEarned">Rp0</div></div>
+  <div class="stat"><div class="k">Order</div><div class="v" id="stOrders">0</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="prod">Produk</button>
+  <button class="tab" data-tab="ord">Pesanan</button>
+  <button class="tab" data-tab="chat">Chat</button>
+  <button class="tab" data-tab="banner">Banner</button>
+  <button class="tab" data-tab="set">Pengaturan</button>
+</div>
+
+<!-- Produk -->
+<div class="pane active" id="pane-prod">
+  <button class="secbtn" id="addProdBtn">+ Tambah Produk</button>
+  <div id="prodList"><div class="empty">Memuat produk…</div></div>
+</div>
+
+<!-- Pesanan -->
+<div class="pane" id="pane-ord">
+  <div id="ordList"><div class="empty">Memuat pesanan…</div></div>
+</div>
+
+<!-- Chat -->
+<div class="pane" id="pane-chat">
+  <div id="chatWrap">
+    <div id="chatList"><div class="empty">Memuat percakapan…</div></div>
+    <div id="chatThread" style="display:none">
+      <div class="back" id="chatBack" style="font-size:.72rem;color:var(--t2);cursor:pointer;padding:.4rem 0">← Daftar chat</div>
+      <div id="chatMsgs" style="background:var(--bg1);border:1px solid var(--line);border-radius:var(--rs);padding:.7rem;height:46vh;overflow-y:auto;display:flex;flex-direction:column;gap:.4rem"></div>
+      <div style="display:flex;gap:.4rem;margin-top:.6rem"><input id="chatInp" class="inp" placeholder="Balas pembeli…" maxlength="1000"><button class="save" id="chatSend" style="width:auto;margin:0;padding:.6rem 1rem">Kirim</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Banner -->
+<div class="pane" id="pane-banner">
+  <button class="secbtn" id="addBannerBtn">+ Tambah Banner</button>
+  <div id="bannerList"></div>
+  <button class="save" id="saveBanner">Simpan Banner</button>
+  <div class="hint" style="margin-top:.6rem;font-size:.62rem;color:var(--t3)">Banner tampil sebagai slideshow di atas toko (seperti beranda). Kosongkan untuk pakai default.</div>
+</div>
+
+<!-- Pengaturan -->
+<div class="pane" id="pane-set">
+  <label class="lbl">Nama Toko</label>
+  <input id="sName" class="inp" maxlength="60">
+  <label class="lbl">Warna Tema</label>
+  <input id="sColor" class="inp" type="text" placeholder="#6366f1" maxlength="9">
+  <label class="lbl">Deskripsi Toko</label>
+  <textarea id="sDesc" class="ta" maxlength="500"></textarea>
+  <div class="row2">
+    <div><label class="lbl">WhatsApp</label><input id="sWa" class="inp" type="tel" maxlength="20" placeholder="08xxx"></div>
+    <div><label class="lbl">Logo Toko</label>
+      <div class="uprow"><button type="button" class="upbtn" id="sLogoBtn">📤 Upload Logo</button><img id="sLogoPrev" class="upprev" style="display:none"></div>
+      <input id="sLogo" type="hidden">
+      <input id="sLogoFile" type="file" accept="image/*" style="display:none">
+    </div>
+  </div>
+  <label class="lbl">Pengumuman (banner teks atas)</label>
+  <input id="sAnn" class="inp" maxlength="200" placeholder="Promo hari ini...">
+  <button class="save" id="saveSet">Simpan Pengaturan</button>
+
+  <label class="lbl" style="margin-top:1.6rem">Ganti Password</label>
+  <div class="row2">
+    <input id="pwOld" class="inp" type="password" placeholder="Password lama">
+    <input id="pwNew" class="inp" type="password" placeholder="Password baru (min 6)">
+  </div>
+  <button class="save" id="savePw" style="background:var(--bg3);color:var(--t1);border:1px solid var(--line2)">Ubah Password</button>
+</div>
+
+<!-- Product Modal -->
+<div class="mbg" id="prodModal">
+  <div class="modal">
+    <div class="mh"><div class="mt" id="pmTitle">Tambah Produk</div><button class="mx" id="pmClose">✕</button></div>
+    <input type="hidden" id="pmId">
+    <label class="lbl">Nama Produk</label>
+    <input id="pmName" class="inp" maxlength="80" placeholder="contoh: Diamond Mobile Legends">
+    <div class="row2">
+      <div><label class="lbl">Kategori</label><input id="pmCat" class="inp" maxlength="40" placeholder="Game"></div>
+      <div><label class="lbl">Gambar Produk</label>
+        <div class="uprow"><button type="button" class="upbtn" id="pmImgBtn">📤 Upload Gambar</button><img id="pmImgPrev" class="upprev" style="display:none"></div>
+        <input id="pmImg" type="hidden">
+        <input id="pmImgFile" type="file" accept="image/*" style="display:none">
+      </div>
+    </div>
+    <label class="lbl">Deskripsi</label>
+    <textarea id="pmDesc" class="ta" maxlength="500"></textarea>
+
+    <label class="lbl">Tipe Pengiriman</label>
+    <div class="typegrid" id="pmTypes">
+      <button class="typebtn active" data-t="voucher">Voucher/Kode</button>
+      <button class="typebtn" data-t="text">Teks</button>
+      <button class="typebtn" data-t="link">Link</button>
+      <button class="typebtn" data-t="manual">Manual (WA)</button>
+      <button class="typebtn" data-t="panel">Panel</button>
+    </div>
+    <div class="hint" id="pmTypeHint"></div>
+
+    <!-- Panel creds -->
+    <div id="pmPanel" style="display:none">
+      <div class="row2">
+        <div><label class="lbl">URL Panel</label><input id="pmPanelUrl" class="inp" placeholder="https://panel.domain.com"></div>
+        <div><label class="lbl">App API Key</label><input id="pmPanelKey" class="inp" placeholder="ptla_..."></div>
+      </div>
+      <div class="row2">
+        <div><label class="lbl">Location ID</label><input id="pmPanelLoc" class="inp" type="number" value="1"></div>
+        <div><label class="lbl">Nest ID</label><input id="pmPanelNest" class="inp" type="number" value="1"></div>
+      </div>
+      <label class="lbl">Egg ID</label><input id="pmPanelEgg" class="inp" type="number" value="1">
+    </div>
+
+    <label class="lbl">Varian</label>
+    <div id="pmVars"></div>
+    <button class="addvar" id="pmAddVar">+ Tambah Varian</button>
+
+    <label class="lbl">Pesan setelah beli (opsional)</label>
+    <input id="pmMsg" class="inp" maxlength="200" placeholder="Terima kasih sudah order!">
+    <label class="lbl">WhatsApp penjual (untuk tipe manual)</label>
+    <input id="pmWa" class="inp" type="tel" maxlength="20" placeholder="08xxx">
+
+    <button class="save" id="pmSave">Simpan Produk</button>
+  </div>
+</div>
+
+<!-- Voucher Modal -->
+<div class="mbg" id="vchModal">
+  <div class="modal" style="max-width:440px">
+    <div class="mh"><div class="mt" id="vchTitle">Kelola Voucher</div><button class="mx" id="vchClose">✕</button></div>
+    <div class="hint" id="vchInfo"></div>
+    <label class="lbl">Tambah Kode (satu per baris)</label>
+    <textarea id="vchCodes" class="ta" style="min-height:120px" placeholder="KODE-1&#10;KODE-2&#10;KODE-3"></textarea>
+    <button class="save" id="vchAdd">Tambah Kode</button>
+    <button class="save" id="vchClear" style="background:var(--bg3);color:var(--red);border:1px solid rgba(248,113,113,.25)">Hapus Semua Kode</button>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script>
+(function(){
+  'use strict';
+  var $=function(i){return document.getElementById(i);};
+  var TOKEN=localStorage.getItem('rsToken');
+  if(!TOKEN){ location.replace('/reseller'); return; }
+  function H(extra){ return Object.assign({'x-rs-store-token':TOKEN}, extra||{}); }
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function idr(n){return 'Rp'+Number(n||0).toLocaleString('id-ID');}
+  function notify(m,t){var n=$('notif');n.textContent=m;n.className='notif show '+(t||'');setTimeout(function(){n.className='notif';},2200);}
+  function api(path,opts){ opts=opts||{}; opts.headers=H(opts.headers); return fetch(path,opts).then(function(r){ if(r.status===401){localStorage.removeItem('rsToken');location.replace('/reseller');throw new Error('401');} return r.json(); }); }
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
+    document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('active');});
+    t.classList.add('active'); $('pane-'+t.dataset.tab).classList.add('active');
+    if(t.dataset.tab==='ord') loadOrders();
+    if(t.dataset.tab==='banner') loadBanners();
+    if(t.dataset.tab==='chat') loadChats();
+  });});
+
+  $('logoutBtn').addEventListener('click',function(){ localStorage.removeItem('rsToken');localStorage.removeItem('rsSlug');location.replace('/reseller'); });
+
+  // ── Load profile ──────────────────────────────────────────────────────────
+  function loadMe(){
+    api('/api/store-reseller/me').then(function(j){
+      if(!j.ok) return;
+      var d=j.data;
+      $('storeName').textContent=d.storeName||d.slug;
+      $('storeUrl').textContent=(location.origin+'/'+d.slug); $('storeUrl').href='/'+d.slug;
+      $('stBalance').textContent=idr(d.balance); $('stEarned').textContent=idr(d.totalEarned); $('stOrders').textContent=d.totalOrders||0;
+      var s=d.settings||{};
+      $('sName').value=d.storeName||''; $('sColor').value=s.primaryColor||'#6366f1';
+      $('sDesc').value=s.description||''; $('sWa').value=s.wa||''; setImg('sLogo','sLogoPrev', s.logoUrl||''); $('sAnn').value=s.announcement||'';
+      if(s.primaryColor) document.documentElement.style.setProperty('--em',s.primaryColor);
+    }).catch(function(){});
+  }
+
+  // ── Products ────────────────────────────────────────────────────────────────
+  var PRODS=[];
+  function loadProds(){
+    api('/api/store-reseller/own-products').then(function(j){
+      PRODS=(j.data||[]);
+      if(!PRODS.length){ $('prodList').innerHTML='<div class="empty">Belum ada produk. Klik "Tambah Produk".</div>'; return; }
+      $('prodList').innerHTML=PRODS.map(function(p){
+        var vtxt=(p.variants||[]).map(function(v){ return esc(v.name)+' '+idr(v.price)+(p.deliveryType==='voucher'?(' ('+(v.stock||0)+')'):''); }).join(' · ');
+        return '<div class="pcard">'
+          +(p.imageUrl?'<img src="'+esc(p.imageUrl)+'">':'<img>')
+          +'<div class="pi"><div class="pn">'+esc(p.name)+'</div>'
+          +'<div class="pm"><span class="tag">'+esc(p.deliveryType)+'</span>'+(p.active?'':'<span class="tag off">nonaktif</span>')+esc(p.category||'')+'</div>'
+          +'<div class="pv">'+vtxt+'</div></div>'
+          +'<div class="pacts">'
+            +'<button class="mini" data-edit="'+p.id+'">Edit</button>'
+            +(p.deliveryType==='voucher'?'<button class="mini" data-vch="'+p.id+'">Voucher</button>':'')
+            +'<button class="mini red" data-del="'+p.id+'">Hapus</button>'
+          +'</div></div>';
+      }).join('');
+      $('prodList').querySelectorAll('[data-edit]').forEach(function(b){b.onclick=function(){openProd(b.dataset.edit);};});
+      $('prodList').querySelectorAll('[data-del]').forEach(function(b){b.onclick=function(){delProd(b.dataset.del);};});
+      $('prodList').querySelectorAll('[data-vch]').forEach(function(b){b.onclick=function(){openVch(b.dataset.vch);};});
+    }).catch(function(){});
+  }
+
+  function delProd(id){
+    if(!confirm('Hapus produk ini?'))return;
+    api('/api/store-reseller/own-products/'+id,{method:'DELETE'}).then(function(j){ if(j.ok){notify('Dihapus','ok');loadProds();}else notify(j.message||'Gagal','err'); });
+  }
+
+  // ── Product modal ───────────────────────────────────────────────────────────
+  var curType='voucher';
+  var TYPE_HINT={voucher:'Tiap varian punya stok kode sendiri. Tambah kode lewat tombol "Voucher" setelah produk dibuat.',text:'Tiap varian mengirim teks/akun yang kamu isi.',link:'Tiap varian mengirim sebuah URL/link.',manual:'Pembeli diarahkan chat WA kamu untuk diproses manual.',panel:'Server Pterodactyl dibuat otomatis di panel milikmu. Isi kredensial panel.'};
+
+  function setType(t){
+    curType=t;
+    document.querySelectorAll('#pmTypes .typebtn').forEach(function(b){b.classList.toggle('active',b.dataset.t===t);});
+    $('pmTypeHint').textContent=TYPE_HINT[t]||'';
+    $('pmPanel').style.display = t==='panel'?'block':'none';
+    // re-render varian utk field per-tipe
+    renderVars(collectVars());
+  }
+  document.querySelectorAll('#pmTypes .typebtn').forEach(function(b){b.addEventListener('click',function(){setType(b.dataset.t);});});
+
+  function varRowHtml(v){
+    v=v||{};
+    var extra='';
+    if(curType==='text'||curType==='link') extra='<input class="inp vc" style="margin-top:.4rem" placeholder="'+(curType==='link'?'URL yang dikirim':'Teks/akun yang dikirim')+'" value="'+esc(v.deliveryContent||'')+'">';
+    if(curType==='panel') extra='<div class="row2" style="margin-top:.4rem"><input class="inp vpd" type="number" placeholder="Hari" value="'+(v.panelDays||30)+'"><input class="inp vpr" type="number" placeholder="RAM MB" value="'+(v.panelRam||1024)+'"></div><div class="row2" style="margin-top:.4rem"><input class="inp vpk" type="number" placeholder="Disk MB" value="'+(v.panelDisk||2048)+'"><input class="inp vpc" type="number" placeholder="CPU %" value="'+(v.panelCpu||100)+'"></div>';
+    return '<div class="varrow"><div class="vh"><input class="inp vn" placeholder="Nama varian" value="'+esc(v.name||'')+'"><input class="inp vp" type="number" style="max-width:120px" placeholder="Harga" value="'+(v.price||'')+'"><button class="vx" title="hapus">✕</button></div>'+extra+'</div>';
+  }
+  function renderVars(list){
+    list=(list&&list.length)?list:[{}];
+    $('pmVars').innerHTML=list.map(varRowHtml).join('');
+    $('pmVars').querySelectorAll('.vx').forEach(function(x){x.onclick=function(){ var rows=$('pmVars').querySelectorAll('.varrow'); if(rows.length<=1)return; x.closest('.varrow').remove(); };});
+  }
+  function collectVars(){
+    return Array.prototype.map.call($('pmVars').querySelectorAll('.varrow'),function(row){
+      var v={ name:row.querySelector('.vn').value.trim(), price:parseInt(row.querySelector('.vp').value,10)||0 };
+      var vc=row.querySelector('.vc'); if(vc)v.deliveryContent=vc.value.trim();
+      var vpd=row.querySelector('.vpd'); if(vpd){v.panelDays=+vpd.value;v.panelRam=+row.querySelector('.vpr').value;v.panelDisk=+row.querySelector('.vpk').value;v.panelCpu=+row.querySelector('.vpc').value;}
+      // preserve existing id (edit) — disimpan di dataset
+      if(row.dataset.id)v.id=row.dataset.id;
+      return v;
+    }).filter(function(v){return v.name&&v.price;});
+  }
+  $('pmAddVar').addEventListener('click',function(){ var cur=collectVars(); cur.push({}); renderVars(cur); });
+
+  function openProd(id){
+    var p=id?PRODS.find(function(x){return x.id===id;}):null;
+    $('pmTitle').textContent=p?'Edit Produk':'Tambah Produk';
+    $('pmId').value=p?p.id:'';
+    $('pmName').value=p?p.name:''; $('pmCat').value=p?(p.category||''):''; setImg('pmImg','pmImgPrev', p?(p.imageUrl||''):'');
+    $('pmDesc').value=p?(p.description||''):''; $('pmMsg').value=p?(p.deliveryMessage||''):''; $('pmWa').value=p?(p.resellerWa||''):'';
+    $('pmPanelUrl').value=p?(p.resellerPanelUrl||''):''; $('pmPanelKey').value='';
+    $('pmPanelLoc').value=p?(p.resellerPanelLocationId||1):1; $('pmPanelNest').value=p?(p.resellerPanelNestId||1):1; $('pmPanelEgg').value=p?(p.resellerPanelEggId||1):1;
+    setType(p?p.deliveryType:'voucher');
+    renderVars(p?(p.variants||[]):[{}]);
+    // tandai id varian existing (utk edit, agar voucher tidak hilang)
+    if(p){ var rows=$('pmVars').querySelectorAll('.varrow'); (p.variants||[]).forEach(function(v,i){ if(rows[i])rows[i].dataset.id=v.id; }); }
+    $('prodModal').classList.add('show');
+  }
+  $('addProdBtn').addEventListener('click',function(){openProd(null);});
+  $('pmClose').addEventListener('click',function(){$('prodModal').classList.remove('show');});
+
+  $('pmSave').addEventListener('click',function(){
+    var vars=collectVars();
+    if(!$('pmName').value.trim())return notify('Nama produk wajib','err');
+    if(!vars.length)return notify('Minimal 1 varian dgn harga','err');
+    if((curType==='text'||curType==='link') && !vars.every(function(v){return v.deliveryContent;})) return notify('Isi konten tiap varian','err');
+    if(curType==='panel' && (!$('pmPanelUrl').value.trim()||!$('pmPanelKey').value.trim()) && !$('pmId').value) return notify('URL & API Key panel wajib','err');
+    var body={ name:$('pmName').value.trim(), category:$('pmCat').value.trim(), imageUrl:$('pmImg').value.trim(),
+      description:$('pmDesc').value.trim(), deliveryType:curType, deliveryMessage:$('pmMsg').value.trim(),
+      resellerWa:$('pmWa').value.trim(), variants:vars };
+    if(curType==='panel'){ body.resellerPanelUrl=$('pmPanelUrl').value.trim(); if($('pmPanelKey').value.trim())body.resellerPanelApiKey=$('pmPanelKey').value.trim();
+      body.resellerPanelLocationId=+$('pmPanelLoc').value; body.resellerPanelNestId=+$('pmPanelNest').value; body.resellerPanelEggId=+$('pmPanelEgg').value; }
+    var id=$('pmId').value;
+    var req = id ? api('/api/store-reseller/own-products/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+                 : api('/api/store-reseller/own-products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    $('pmSave').disabled=true;
+    req.then(function(j){ $('pmSave').disabled=false; if(j.ok){notify(id?'Produk diperbarui':'Produk dibuat','ok');$('prodModal').classList.remove('show');loadProds();}else notify(j.message||'Gagal','err'); })
+       .catch(function(){$('pmSave').disabled=false;notify('Gagal','err');});
+  });
+
+  // ── Voucher modal ───────────────────────────────────────────────────────────
+  var vchPid=null,vchVid=null;
+  function openVch(pid){
+    var p=PRODS.find(function(x){return x.id===pid;}); if(!p)return;
+    vchPid=pid;
+    // pilih varian — jika >1, tanya sederhana
+    var vars=p.variants||[];
+    if(vars.length>1){
+      var names=vars.map(function(v,i){return (i+1)+'. '+v.name+' (stok '+(v.stock||0)+')';}).join('\n');
+      var pick=prompt('Pilih varian untuk kelola voucher:\n'+names+'\n\nKetik nomor:','1');
+      var idx=(parseInt(pick,10)||1)-1; if(idx<0||idx>=vars.length)return;
+      vchVid=vars[idx].id; $('vchInfo').textContent='Varian: '+vars[idx].name+' · stok sekarang: '+(vars[idx].stock||0);
+    } else { vchVid=vars[0]&&vars[0].id; $('vchInfo').textContent='Varian: '+((vars[0]||{}).name||'-')+' · stok sekarang: '+((vars[0]||{}).stock||0); }
+    $('vchCodes').value=''; $('vchModal').classList.add('show');
+  }
+  $('vchClose').addEventListener('click',function(){$('vchModal').classList.remove('show');});
+  $('vchAdd').addEventListener('click',function(){
+    var codes=$('vchCodes').value.trim(); if(!codes)return notify('Isi kode dulu','err');
+    api('/api/store-reseller/own-products/'+vchPid+'/vouchers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({variantId:vchVid,codes:codes})})
+      .then(function(j){ if(j.ok){notify(j.message||'Ditambahkan','ok');$('vchModal').classList.remove('show');loadProds();}else notify(j.message||'Gagal','err'); });
+  });
+  $('vchClear').addEventListener('click',function(){
+    if(!confirm('Hapus semua kode di varian ini?'))return;
+    api('/api/store-reseller/own-products/'+vchPid+'/vouchers',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({variantId:vchVid})})
+      .then(function(j){ if(j.ok){notify('Dihapus','ok');$('vchModal').classList.remove('show');loadProds();}else notify(j.message||'Gagal','err'); });
+  });
+
+  // ── Orders ──────────────────────────────────────────────────────────────────
+  function loadOrders(){
+    api('/api/store-reseller/own-orders').then(function(j){
+      var d=(j.data||[]);
+      if(!d.length){ $('ordList').innerHTML='<div class="empty">Belum ada pesanan.</div>'; return; }
+      $('ordList').innerHTML=d.map(function(o){
+        return '<div class="ord"><div class="or1"><b>'+esc(o.productName)+(o.variantName?(' — '+esc(o.variantName)):'')+'</b><span class="os '+esc(o.status)+'">'+esc(o.status)+'</span></div>'
+          +'<div class="o2">'+idr(o.price)+' · net '+idr(o.resellerNet)+(o.buyerName?(' · '+esc(o.buyerName)):'')+' · '+new Date(o.createdAt).toLocaleString('id-ID')+'</div></div>';
+      }).join('');
+    }).catch(function(){});
+  }
+
+  // ── Settings ────────────────────────────────────────────────────────────────
+  $('saveSet').addEventListener('click',function(){
+    var body={ storeName:$('sName').value.trim(), primaryColor:$('sColor').value.trim(), description:$('sDesc').value.trim(), wa:$('sWa').value.trim(), logoUrl:$('sLogo').value.trim(), announcement:$('sAnn').value.trim() };
+    api('/api/store-reseller/settings',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+      .then(function(j){ if(j.ok){notify('Tersimpan','ok');loadMe();}else notify(j.message||'Gagal','err'); });
+  });
+  $('savePw').addEventListener('click',function(){
+    var o=$('pwOld').value,n=$('pwNew').value; if(!o||n.length<6)return notify('Password baru min 6 karakter','err');
+    api('/api/store-reseller/change-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({oldPassword:o,newPassword:n})})
+      .then(function(j){ if(j.ok){notify('Password diubah','ok');$('pwOld').value='';$('pwNew').value='';}else notify(j.message||'Gagal','err'); });
+  });
+
+  // ── Banner editor ───────────────────────────────────────────────────────────
+  var BANNERS=[];
+  function renderBanners(){
+    if(!BANNERS.length){ $('bannerList').innerHTML='<div class="empty">Belum ada banner.</div>'; return; }
+    $('bannerList').innerHTML=BANNERS.map(function(b,i){
+      return '<div class="varrow" data-i="'+i+'">'
+        +'<div class="uprow"><button type="button" class="upbtn bUp">📤 Gambar</button><img class="upprev bPrev" '+(b.image?'src="'+esc(b.image)+'"':'style="display:none"')+'></div>'
+        +'<input class="inp bTag" style="margin-top:.4rem" placeholder="Label kecil (mis. Promo)" value="'+esc(b.tag||'')+'">'
+        +'<input class="inp bTitle" style="margin-top:.4rem" placeholder="Judul besar" value="'+esc(b.title||'')+'">'
+        +'<input class="inp bDesc" style="margin-top:.4rem" placeholder="Deskripsi" value="'+esc(b.desc||'')+'">'
+        +'<div class="row2" style="margin-top:.4rem"><input class="inp bBtnText" placeholder="Teks tombol (opsional)" value="'+esc(b.btnText||'')+'"><input class="inp bBtnUrl" placeholder="URL tombol (opsional)" value="'+esc(b.btnUrl||'')+'"></div>'
+        +'<button class="mini red bDel" style="margin-top:.5rem">Hapus banner</button></div>';
+    }).join('');
+    // bind upload + delete
+    $('bannerList').querySelectorAll('.varrow').forEach(function(row){
+      var i=+row.dataset.i;
+      var up=row.querySelector('.bUp'), prev=row.querySelector('.bPrev');
+      up.addEventListener('click',function(){ var url=prompt('Tempel URL gambar (mis. dari Imgur/Postimages):', BANNERS[i].image||''); if(!url)return; BANNERS[i].image=url.trim(); prev.src=url.trim(); prev.style.display=''; notify('Gambar diset','ok'); });
+      row.querySelector('.bDel').addEventListener('click',function(){ collectBanners(); BANNERS.splice(i,1); renderBanners(); });
+    });
+  }
+  function collectBanners(){
+    $('bannerList').querySelectorAll('.varrow').forEach(function(row){
+      var i=+row.dataset.i; if(!BANNERS[i])return;
+      BANNERS[i].tag=row.querySelector('.bTag').value.trim();
+      BANNERS[i].title=row.querySelector('.bTitle').value.trim();
+      BANNERS[i].desc=row.querySelector('.bDesc').value.trim();
+      BANNERS[i].btnText=row.querySelector('.bBtnText').value.trim();
+      BANNERS[i].btnUrl=row.querySelector('.bBtnUrl').value.trim();
+    });
+  }
+  $('addBannerBtn').addEventListener('click',function(){ collectBanners(); if(BANNERS.length>=8)return notify('Maks 8 banner','err'); BANNERS.push({}); renderBanners(); });
+  $('saveBanner').addEventListener('click',function(){
+    collectBanners();
+    api('/api/store-reseller/banners',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({banners:BANNERS})})
+      .then(function(j){ if(j.ok){ BANNERS=j.data||[]; renderBanners(); notify('Banner disimpan','ok'); } else notify(j.message||'Gagal','err'); });
+  });
+  function loadBanners(){ api('/api/store-reseller/banners').then(function(j){ BANNERS=(j&&j.data)||[]; renderBanners(); }).catch(function(){}); }
+
+  // ── Chat seller ─────────────────────────────────────────────────────────────
+  var SLUG_RS=localStorage.getItem('rsSlug')||'';
+  var _chatEs=null, _curBuyer=null, _chatSeen={};
+  function loadChats(){
+    $('chatThread').style.display='none'; $('chatList').style.display='block';
+    api('/api/store-reseller/chats').then(function(j){
+      var d=(j&&j.data)||[];
+      if(!d.length){ $('chatList').innerHTML='<div class="empty">Belum ada chat dari pembeli.</div>'; return; }
+      $('chatList').innerHTML=d.map(function(c){
+        return '<div class="cv" data-b="'+esc(c.buyerId)+'"><div style="min-width:0"><div class="cvn">'+esc(c.buyerName||('Pembeli '+c.buyerId.slice(-4)))+'</div><div class="cvl">'+(c.lastFrom==='seller'?'Kamu: ':'')+esc(c.lastText||'')+'</div></div>'+(c.unread?'<span class="cvb">'+c.unread+'</span>':'')+'</div>';
+      }).join('');
+      $('chatList').querySelectorAll('.cv').forEach(function(el){ el.onclick=function(){ openThread(el.dataset.b, el.querySelector('.cvn').textContent); }; });
+    }).catch(function(){});
+  }
+  function cAdd(m){ if(!m||_chatSeen[m.id])return; _chatSeen[m.id]=1; var d=document.createElement('div'); d.className='cmsg '+(m.from==='seller'?'seller':'buyer'); d.textContent=m.text; $('chatMsgs').appendChild(d); $('chatMsgs').scrollTop=$('chatMsgs').scrollHeight; }
+  function openThread(buyerId, name){
+    _curBuyer=buyerId; _chatSeen={};
+    $('chatList').style.display='none'; $('chatThread').style.display='block'; $('chatMsgs').innerHTML='';
+    api('/api/rs-chat/'+SLUG_RS+'/messages?buyerId='+encodeURIComponent(buyerId)).then(function(j){ (j.messages||[]).forEach(cAdd); });
+    if(_chatEs){try{_chatEs.close();}catch(e){}}
+    try{ _chatEs=new EventSource('/api/rs-chat/'+SLUG_RS+'/stream?buyerId='+encodeURIComponent(buyerId)); _chatEs.onmessage=function(ev){ try{ var j=JSON.parse(ev.data); if(j.type==='msg')cAdd(j.message); }catch(e){} }; }catch(e){}
+  }
+  $('chatBack').addEventListener('click',function(){ if(_chatEs){try{_chatEs.close();}catch(e){}} loadChats(); });
+  function chatSend(){ var t=$('chatInp').value.trim(); if(!t||!_curBuyer)return; $('chatInp').value='';
+    api('/api/rs-chat/'+SLUG_RS+'/reply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({buyerId:_curBuyer,text:t})}).then(function(j){ if(j&&j.ok&&j.message)cAdd(j.message); else notify(j.message||'Gagal','err'); }); }
+  $('chatSend').addEventListener('click',chatSend);
+  $('chatInp').addEventListener('keydown',function(e){ if(e.key==='Enter')chatSend(); });
+
+  // ── Gambar via URL (tanpa upload ke server) ─────────────────────────────────
+  function setImg(hiddenId, prevId, url){ $(hiddenId).value=url||''; var pv=$(prevId); if(url){pv.src=url;pv.style.display='';}else{pv.style.display='none';} }
+  function setupUpload(btnId, fileId, hiddenId, prevId){
+    var btn=$(btnId);
+    btn.textContent='🔗 Tempel URL Gambar';
+    btn.addEventListener('click',function(){
+      var url=prompt('Tempel URL gambar (mis. dari Imgur/Postimages):', $(hiddenId).value||'');
+      if(url===null) return;
+      setImg(hiddenId,prevId,url.trim());
+      if(url.trim()) notify('Gambar diset','ok');
+    });
+  }
+  setupUpload('pmImgBtn','pmImgFile','pmImg','pmImgPrev');
+  setupUpload('sLogoBtn','sLogoFile','sLogo','sLogoPrev');
+
+
+  loadMe(); loadProds();
+})();
+</script>
+<a href="/admin-panell" title="Admin Panel" style="position:fixed;bottom:14px;left:14px;z-index:40;width:38px;height:38px;border-radius:50%;background:rgba(33,33,33,.85);backdrop-filter:blur(6px);border:1px solid var(--line2,#3a3a3a);color:var(--em,#6366f1);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.35);text-decoration:none;font-size:15px;opacity:.75;transition:opacity .15s,transform .15s" aria-label="Admin Panel">🛡️</a>
+</body>
+</html>

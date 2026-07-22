@@ -1,0 +1,3310 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OTP — DigitalHub</title>
+<link rel="icon" type="image/x-icon" href="/media/favicon.ico">
+<link rel="icon" type="image/jpeg" href="/media/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── Variables ───────────────────────────────────────────────────── */
+:root {
+  --bg0   : #08090c;
+  --bg1   : #0e1014;
+  --bg2   : #13161c;
+  --bg3   : #1a1e27;
+  --bg4   : #222635;
+  --line  : rgba(255,255,255,.07);
+  --line2 : rgba(255,255,255,.12);
+  --t1    : #f0f1f5;
+  --t2    : #8b90a0;
+  --t3    : #565c72;
+  --em    : #6366f1;
+  --em2   : #818cf8;
+  --em-rgb: 99, 102, 241;
+  --ac    : #6366f1;
+  --red   : #f87171;
+  --yel   : #fbbf24;
+  --blue  : #60a5fa;
+  --rad   : 10px;
+  --rad2  : 6px;
+  --mono  : 'DM Mono', monospace;
+  --sans  : 'Sora', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg0);
+  color: var(--t1);
+  min-height: 100dvh;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Layout ─────────────────────────────────────────────────────── */
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 1rem 5rem; }
+
+/* ─── Header ─────────────────────────────────────────────────────── */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+  background: rgba(8,9,12,.85);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.logo { font-size: .95rem; font-weight: 700; letter-spacing: -.01em; color: var(--t1); text-decoration: none; }
+.logo span { color: var(--em); }
+.header-right { display: flex; align-items: center; gap: .6rem; }
+.bal-pill {
+  display: flex; align-items: center; gap: .45rem;
+  background: var(--bg3); border: 1px solid var(--line2);
+  border-radius: 99px; padding: .28rem .7rem .28rem .55rem;
+  font-size: .72rem; font-weight: 500; cursor: pointer;
+  transition: border-color .2s;
+}
+.bal-pill:hover { border-color: var(--em); }
+.bal-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--em); flex-shrink: 0; }
+.bal-amount { font-family: var(--mono); font-size: .72rem; }
+.btn-icon {
+  width: 34px; height: 34px; border-radius: var(--rad2);
+  border: 1px solid var(--line2); background: var(--bg3);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: border-color .15s, background .15s;
+  color: var(--t2);
+}
+.btn-icon:hover { border-color: var(--line2); background: var(--bg4); color: var(--t1); }
+.btn-icon svg { width: 15px; height: 15px; }
+
+/* ─── Hero ───────────────────────────────────────────────────────── */
+.hero {
+  padding: 2.5rem 0 1.5rem;
+  display: flex; flex-direction: column; gap: .4rem;
+}
+.hero-label {
+  font-size: .65rem; font-weight: 600; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--em); display: flex;
+  align-items: center; gap: .4rem;
+}
+.hero-label::before { content: ''; display: block; width: 18px; height: 1px; background: var(--em); }
+.hero h1 { font-size: 1.7rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.2; }
+.hero p  { font-size: .8rem; color: var(--t2); max-width: 440px; line-height: 1.65; }
+
+/* ─── Server Tabs ────────────────────────────────────────────────── */
+.server-bar {
+  display: flex; gap: .4rem; margin-bottom: 1.5rem;
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: var(--rad); padding: .3rem;
+}
+.sv-tab {
+  flex: 1; padding: .55rem .8rem; border-radius: var(--rad2);
+  border: none; background: transparent; color: var(--t3);
+  font-family: var(--sans); font-size: .75rem; font-weight: 600;
+  cursor: pointer; transition: all .18s; text-align: center;
+  letter-spacing: .01em;
+}
+.sv-tab.active {
+  background: var(--bg4); color: var(--t1);
+  box-shadow: 0 1px 4px rgba(0,0,0,.35);
+}
+.sv-tab .sv-name { display: block; }
+.sv-tab .sv-badge {
+  display: inline-block; margin-top: .2rem;
+  font-size: .6rem; font-weight: 600; letter-spacing: .08em;
+  padding: .1rem .4rem; border-radius: 99px;
+  background: rgba(99,102,241,.15); color: var(--ac);
+  border: 1px solid rgba(99,102,241,.25);
+}
+.sv-tab.active .sv-badge { background: rgba(74,222,128,.12); color: var(--em); border-color: rgba(74,222,128,.25); }
+.sv-tab:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ─── Section Panel ──────────────────────────────────────────────── */
+.panel {
+  background: var(--bg1); border: 1px solid var(--line);
+  border-radius: var(--rad); margin-bottom: 1rem;
+  overflow: hidden;
+}
+.panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .85rem 1.1rem; border-bottom: 1px solid var(--line);
+}
+.panel-title {
+  font-size: .72rem; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--t2);
+}
+.panel-body { padding: 1.1rem; }
+
+/* ─── Filter Row ─────────────────────────────────────────────────── */
+.filter-row { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.sel-wrap { flex: 1; min-width: 140px; position: relative; }
+.sel-wrap svg { position: absolute; right: .7rem; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--t3); width: 13px; height: 13px; }
+select, input[type=text], input[type=number] {
+  width: 100%; background: var(--bg3); border: 1px solid var(--line2);
+  border-radius: var(--rad2); color: var(--t1); font-family: var(--sans);
+  font-size: .78rem; padding: .6rem .85rem; outline: none;
+  transition: border-color .15s; appearance: none;
+}
+select { padding-right: 2rem; cursor: pointer; }
+select:focus, input:focus { border-color: rgba(99,102,241,.5); }
+select option { background: var(--bg3); }
+.search-wrap { flex: 1; min-width: 180px; position: relative; }
+.search-wrap svg { position: absolute; left: .7rem; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--t3); width: 13px; height: 13px; }
+.search-wrap input { padding-left: 2.2rem; }
+
+/* ─── Product Grid ───────────────────────────────────────────────── */
+.prod-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: .6rem;
+}
+.prod-card {
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: var(--rad2); padding: .9rem 1rem;
+  cursor: pointer; transition: border-color .15s, transform .12s, background .15s;
+  display: flex; flex-direction: column; gap: .35rem;
+  position: relative; overflow: hidden;
+}
+.prod-card:hover { border-color: rgba(99,102,241,.4); background: var(--bg3); transform: translateY(-1px); }
+.prod-card.selected { border-color: var(--em); background: rgba(74,222,128,.05); }
+.prod-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(99,102,241,.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+.prod-name { font-size: .8rem; font-weight: 600; color: var(--t1); line-height: 1.3; }
+.prod-country { font-size: .68rem; color: var(--t3); }
+.prod-meta { display: flex; align-items: center; justify-content: space-between; margin-top: .3rem; }
+.prod-price { font-family: var(--mono); font-size: .82rem; font-weight: 500; color: var(--em); }
+.prod-stock { font-size: .62rem; color: var(--t3); background: var(--bg4); border-radius: 4px; padding: .1rem .4rem; }
+.prod-check { position: absolute; top: .5rem; right: .5rem; width: 16px; height: 16px; border-radius: 50%; background: var(--em); display: none; align-items: center; justify-content: center; }
+.prod-card.selected .prod-check { display: flex; }
+.prod-check svg { width: 9px; height: 9px; color: #08090c; stroke-width: 3; }
+
+/* ─── Country pills ─────────────────────────────────────────────── */
+.country-scroll { display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .3rem; margin-bottom: .8rem; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.country-scroll::-webkit-scrollbar { display: none; }
+.c-pill {
+  flex-shrink: 0; padding: .35rem .75rem; border-radius: 99px;
+  border: 1px solid var(--line2); background: var(--bg3);
+  color: var(--t2); font-size: .7rem; font-weight: 500; cursor: pointer;
+  transition: all .15s; white-space: nowrap;
+}
+.c-pill:hover { border-color: rgba(99,102,241,.4); color: var(--t1); }
+.c-pill.active { border-color: var(--em); background: rgba(74,222,128,.1); color: var(--em); }
+
+/* ─── Order Panel ────────────────────────────────────────────────── */
+.order-panel {
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: var(--rad); padding: 1.1rem;
+  position: sticky; top: 65px;
+}
+.order-row { display: flex; justify-content: space-between; align-items: center; font-size: .78rem; padding: .35rem 0; border-bottom: 1px solid var(--line); }
+.order-row:last-of-type { border-bottom: none; }
+.order-key { color: var(--t2); }
+.order-val { font-family: var(--mono); font-size: .75rem; }
+.order-val.price { color: var(--em); font-weight: 600; font-size: .85rem; }
+.btn-order {
+  width: 100%; margin-top: .9rem; padding: .75rem;
+  border: none; border-radius: var(--rad2); background: var(--em2);
+  color: #06120a; font-family: var(--sans); font-size: .8rem;
+  font-weight: 700; cursor: pointer; letter-spacing: .01em;
+  transition: background .15s, transform .1s; display: flex;
+  align-items: center; justify-content: center; gap: .5rem;
+}
+.btn-order:hover:not(:disabled) { background: var(--em); transform: translateY(-1px); }
+.btn-order:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.btn-order svg { width: 14px; height: 14px; }
+
+/* ─── Active Order Card ──────────────────────────────────────────── */
+.active-order {
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: var(--rad); padding: 1.1rem; margin-bottom: 1rem;
+  animation: fadeSlideUp .25s ease;
+}
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.ao-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .8rem; }
+.ao-service { font-size: .85rem; font-weight: 600; }
+.ao-status-badge {
+  font-size: .62rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; padding: .2rem .55rem; border-radius: 4px;
+}
+.ao-status-badge.waiting  { background: rgba(251,191,36,.12); color: var(--yel); border: 1px solid rgba(251,191,36,.25); }
+.ao-status-badge.completed{ background: rgba(74,222,128,.12); color: var(--em); border: 1px solid rgba(74,222,128,.25); }
+.ao-status-badge.expired  { background: rgba(248,113,113,.1);  color: var(--red); border: 1px solid rgba(248,113,113,.25); }
+.ao-status-badge.canceled { background: rgba(248,113,113,.1);  color: var(--red); border: 1px solid rgba(248,113,113,.25); }
+.ao-phone {
+  font-family: var(--mono); font-size: 1rem; font-weight: 500;
+  color: var(--t1); letter-spacing: .06em; margin-bottom: .6rem;
+  display: flex; align-items: center; gap: .5rem;
+}
+.cp-btn {
+  background: var(--bg4); border: 1px solid var(--line2);
+  border-radius: 4px; padding: .2rem .4rem; cursor: pointer;
+  color: var(--t3); transition: color .15s; display: inline-flex;
+}
+.cp-btn:hover { color: var(--em); border-color: rgba(74,222,128,.3); }
+.cp-btn svg { width: 11px; height: 11px; }
+.otp-box {
+  background: var(--bg0); border: 1px solid var(--line2);
+  border-radius: var(--rad2); padding: .8rem 1rem;
+  font-family: var(--mono); font-size: 1.6rem; font-weight: 500;
+  letter-spacing: .25em; text-align: center; color: var(--em);
+  margin: .7rem 0; min-height: 64px; display: flex;
+  align-items: center; justify-content: center;
+  word-break: break-all;
+}
+.otp-msg { font-size: .72rem; color: var(--t3); margin-bottom: .7rem; line-height: 1.55; }
+.timer-row { display: flex; align-items: center; gap: .4rem; font-size: .7rem; color: var(--t3); margin-bottom: .8rem; }
+.timer-val { font-family: var(--mono); }
+.timer-bar-wrap { flex: 1; height: 3px; background: var(--bg4); border-radius: 99px; overflow: hidden; }
+.timer-bar { height: 100%; border-radius: 99px; transition: width 1s linear, background .5s; }
+.ao-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+.btn-sm {
+  flex: 1; min-width: 100px; padding: .55rem .7rem;
+  border-radius: var(--rad2); font-family: var(--sans);
+  font-size: .72rem; font-weight: 600; cursor: pointer;
+  transition: all .15s; border: 1px solid var(--line2);
+  background: var(--bg3); color: var(--t1); display: flex;
+  align-items: center; justify-content: center; gap: .4rem;
+}
+.btn-sm:hover { border-color: var(--line2); background: var(--bg4); }
+.btn-sm.danger { color: var(--red); border-color: rgba(248,113,113,.25); }
+.btn-sm.danger:hover { background: rgba(248,113,113,.08); }
+.btn-sm.primary { background: rgba(74,222,128,.1); border-color: rgba(74,222,128,.3); color: var(--em); }
+.btn-sm.primary:hover { background: rgba(74,222,128,.15); }
+.btn-sm svg { width: 12px; height: 12px; }
+.btn-sm:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ─── Deposit Modal ──────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.7);
+  backdrop-filter: blur(4px); z-index: 200; display: none;
+  align-items: center; justify-content: center; padding: 1rem;
+  animation: fadeIn .15s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--bg1); border: 1px solid var(--line2);
+  border-radius: 14px; width: 100%; max-width: 420px;
+  box-shadow: 0 24px 80px rgba(0,0,0,.6);
+  animation: scaleIn .18s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes scaleIn { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
+.modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.1rem 1.25rem; border-bottom: 1px solid var(--line);
+}
+.modal-head h3 { font-size: .92rem; font-weight: 600; }
+.modal-close {
+  width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--line2);
+  background: var(--bg3); color: var(--t2); cursor: pointer; display: flex;
+  align-items: center; justify-content: center; transition: all .15s;
+}
+.modal-close:hover { color: var(--t1); background: var(--bg4); }
+.modal-close svg { width: 13px; height: 13px; }
+.modal-body { padding: 1.25rem; }
+.field-label { font-size: .7rem; font-weight: 600; color: var(--t2); letter-spacing: .04em; margin-bottom: .4rem; display: block; }
+.field-hint { font-size: .65rem; color: var(--t3); margin-top: .35rem; }
+.qr-area { text-align: center; padding: 1rem 0; }
+.qr-area img { width: 200px; height: 200px; border-radius: 8px; border: 2px solid rgba(74,222,128,.3); display: block; margin: 0 auto; }
+.dep-amount-row { font-size: .78rem; color: var(--t2); text-align: center; margin: .6rem 0 .3rem; }
+.dep-amount-row b { color: var(--t1); font-family: var(--mono); }
+.dep-timer { font-size: .7rem; color: var(--t3); text-align: center; margin-top: .5rem; }
+.dep-timer.urgent { color: var(--red); }
+.dep-actions { display: flex; gap: .5rem; margin-top: 1rem; }
+.dep-chip {
+  padding: .28rem .7rem;
+  background: var(--bg3);
+  border: 1px solid var(--line2);
+  border-radius: 4px;
+  color: var(--t2);
+  font-family: var(--sans);
+  font-size: .7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.dep-chip:hover { background: var(--bg4); color: var(--t1); border-color: var(--em); }
+
+/* ─── History ────────────────────────────────────────────────────── */
+.hist-list { display: flex; flex-direction: column; gap: .5rem; }
+.hist-item {
+  display: flex; align-items: center; gap: .75rem;
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: var(--rad2); padding: .75rem 1rem; font-size: .75rem;
+}
+.hist-icon {
+  width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.hist-icon.completed { background: rgba(74,222,128,.1); color: var(--em); }
+.hist-icon.waiting   { background: rgba(251,191,36,.1);  color: var(--yel); }
+.hist-icon.expired   { background: rgba(248,113,113,.1); color: var(--red); }
+.hist-icon.canceled  { background: rgba(248,113,113,.1); color: var(--red); }
+.hist-icon svg { width: 14px; height: 14px; }
+.hist-main { flex: 1; min-width: 0; }
+.hist-svc  { font-weight: 600; color: var(--t1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hist-sub  { color: var(--t3); font-size: .68rem; margin-top: .1rem; }
+.hist-right { text-align: right; flex-shrink: 0; }
+.hist-price { font-family: var(--mono); font-size: .73rem; color: var(--t2); }
+.hist-otp   { font-family: var(--mono); font-size: .8rem; font-weight: 600; color: var(--em); margin-top: .1rem; }
+.hist-phone { font-family: var(--mono); font-size: .72rem; color: var(--t2); margin-top: .1rem; letter-spacing: .02em; }
+.hist-badge { display: inline-block; font-size: .58rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; padding: .1rem .4rem; border-radius: 4px; margin-bottom: .2rem; }
+.hist-badge.completed { background: rgba(74,222,128,.1);  color: var(--em);  border: 1px solid rgba(74,222,128,.25); }
+.hist-badge.waiting   { background: rgba(251,191,36,.1);  color: var(--yel); border: 1px solid rgba(251,191,36,.25); }
+.hist-badge.expired   { background: rgba(248,113,113,.1); color: var(--red); border: 1px solid rgba(248,113,113,.25); }
+.hist-badge.canceled  { background: rgba(248,113,113,.1); color: var(--red); border: 1px solid rgba(248,113,113,.25); }
+
+/* ─── Notice / Alert ─────────────────────────────────────────────── */
+
+/* ─── History Detail Bottom Sheet ───────────────────────── */
+.hist-item { cursor: pointer; transition: border-color .15s, background .15s; }
+.hist-item:hover { border-color: var(--em); background: var(--bg3); }
+#histDetailOverlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.65);
+  backdrop-filter: blur(6px); z-index: 300;
+  align-items: flex-end; justify-content: center;
+}
+#histDetailOverlay.open { display: flex; animation: fadeIn .18s ease both; }
+#histDetailSheet {
+  background: var(--bg1); border: 1px solid var(--line2);
+  border-radius: 18px 18px 0 0; width: 100%; max-width: 520px;
+  padding: 0 0 calc(env(safe-area-inset-bottom) + 1rem);
+  animation: slideUp .22s cubic-bezier(.4,0,.2,1) both;
+  max-height: 80vh; overflow-y: auto;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+.hds-handle {
+  width: 36px; height: 4px; border-radius: 2px;
+  background: var(--line3); margin: .75rem auto .25rem;
+}
+.hds-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .6rem 1.1rem .75rem; border-bottom: 1px solid var(--line);
+}
+.hds-title { font-size: .9rem; font-weight: 700; letter-spacing: -.02em; }
+.hds-close {
+  width: 28px; height: 28px; border-radius: 50%; background: var(--bg3);
+  border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--t2); transition: background .15s;
+}
+.hds-close:hover { background: var(--bg4); color: var(--t1); }
+.hds-close svg { width: 13px; height: 13px; }
+.hds-body { padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .65rem; }
+.hds-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg2); border: 1px solid var(--line); border-radius: var(--rad2);
+  padding: .6rem .85rem;
+}
+.hds-label { font-size: .68rem; color: var(--t3); text-transform: uppercase; letter-spacing: .06em; }
+.hds-val   { font-size: .82rem; color: var(--t1); font-weight: 500; font-family: var(--mono); word-break: break-all; max-width: 65%; text-align: right; }
+.hds-val.big { font-size: 1.15rem; font-weight: 800; color: var(--em); font-family: var(--mono); letter-spacing: .05em; }
+.hds-copy {
+  width: 28px; height: 28px; border-radius: 6px; background: var(--bg3);
+  border: 1px solid var(--line2); cursor: pointer; display: flex;
+  align-items: center; justify-content: center; color: var(--t2);
+  transition: all .15s; flex-shrink: 0; margin-left: .5rem;
+}
+.hds-copy:hover { background: var(--em); border-color: var(--em); color: #000; }
+.hds-copy svg { width: 12px; height: 12px; }
+.hds-otp-row {
+  background: rgba(74,222,128,.06); border: 1px solid rgba(74,222,128,.25);
+  border-radius: var(--rad2); padding: .75rem .85rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.hds-otp-num { font-size: 1.6rem; font-weight: 800; font-family: var(--mono); color: var(--em); letter-spacing: .1em; }
+.hds-msg-box {
+  background: var(--bg2); border: 1px solid var(--line); border-radius: var(--rad2);
+  padding: .65rem .85rem; font-size: .72rem; color: var(--t2); line-height: 1.6;
+  font-family: var(--mono); white-space: pre-wrap; word-break: break-word;
+}
+.hds-actions { display: flex; gap: .6rem; padding: 0 1.1rem; }
+.hds-btn {
+  flex: 1; padding: .6rem; border-radius: var(--rad2); border: 1px solid var(--line2);
+  background: var(--bg3); color: var(--t2); font-size: .74rem; font-weight: 600;
+  cursor: pointer; font-family: var(--sans); display: flex; align-items: center;
+  justify-content: center; gap: .35rem; transition: all .15s;
+}
+.hds-btn:hover { border-color: var(--em); color: var(--t1); }
+.hds-btn svg { width: 13px; height: 13px; }
+
+.notice {
+  background: rgba(99,102,241,.08); border: 1px solid rgba(99,102,241,.2);
+  border-radius: var(--rad2); padding: .75rem 1rem;
+  font-size: .74rem; color: var(--t2); margin-bottom: 1rem; line-height: 1.6;
+}
+.notice.error { background: rgba(248,113,113,.08); border-color: rgba(248,113,113,.25); color: var(--red); }
+.notice.success { background: rgba(74,222,128,.08); border-color: rgba(74,222,128,.25); color: var(--em); }
+.notice.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.25); color: var(--yel); }
+
+/* ─── Empty / Skeleton ───────────────────────────────────────────── */
+.empty { text-align: center; padding: 3rem 1rem; color: var(--t3); font-size: .8rem; }
+.empty svg { width: 36px; height: 36px; display: block; margin: 0 auto .8rem; opacity: .3; }
+.skel { background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%); background-size: 200%; animation: shimmer 1.4s infinite; border-radius: 6px; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* ─── Spinner ────────────────────────────────────────────────────── */
+.spin { display: inline-block; width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .6s linear infinite; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Toast ──────────────────────────────────────────────────────── */
+#toastZone { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9999; display: flex; flex-direction: column; gap: .4rem; pointer-events: none; }
+.toast-item {
+  background: var(--bg3); border: 1px solid var(--line2);
+  border-radius: var(--rad2); padding: .6rem .9rem;
+  font-size: .75rem; color: var(--t1);
+  animation: toastIn .2s ease;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+  display: flex; align-items: center; gap: .5rem;
+  pointer-events: auto;
+}
+.toast-item.ok  { border-color: rgba(74,222,128,.35); }
+.toast-item.err { border-color: rgba(248,113,113,.35); color: var(--red); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ─── Layout 2-col ───────────────────────────────────────────────── */
+.col-layout { display: grid; grid-template-columns: 1fr 260px; gap: 1rem; align-items: start; }
+@media(max-width: 640px) {
+  .col-layout { grid-template-columns: 1fr; }
+  .col-layout > div:last-child { order: -1; } /* order panel muncul di atas grid di mobile */
+  .order-panel { position: static; }
+  .prod-grid { grid-template-columns: 1fr 1fr; }
+  .hero h1 { font-size: 1.35rem; }
+}
+
+/* ─── Login gate ─────────────────────────────────────────────────── */
+.login-gate {
+  background: var(--bg1); border: 1px solid var(--line);
+  border-radius: var(--rad); padding: 2.5rem 1.5rem; text-align: center;
+}
+.login-gate h2 { font-size: 1rem; font-weight: 600; margin-bottom: .5rem; }
+.login-gate p  { font-size: .78rem; color: var(--t2); margin-bottom: 1.2rem; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: var(--em2); color: #06120a; border: none;
+  border-radius: var(--rad2); padding: .65rem 1.2rem;
+  font-family: var(--sans); font-size: .8rem; font-weight: 700;
+  cursor: pointer; transition: background .15s, transform .1s; text-decoration: none;
+}
+.btn-primary:hover { background: var(--em); transform: translateY(-1px); }
+
+/* ─── Nav tabs ───────────────────────────────────────────────────── */
+.page-tabs { display: flex; gap: 0; margin-bottom: 1.2rem; border-bottom: 1px solid var(--line); }
+.p-tab {
+  padding: .7rem 1.1rem; font-size: .78rem; font-weight: 600;
+  color: var(--t3); cursor: pointer; border: none; background: none;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  font-family: var(--sans); transition: color .15s;
+}
+.p-tab.active { color: var(--t1); border-bottom-color: var(--em); }
+.p-tab:hover:not(.active) { color: var(--t2); }
+
+/* ─── Sort bar ───────────────────────────────────────────────────── */
+.sort-bar { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: .8rem; }
+.sort-btn {
+  padding: .3rem .65rem; border-radius: 99px; font-size: .67rem;
+  font-weight: 600; border: 1px solid var(--line2); background: var(--bg3);
+  color: var(--t3); cursor: pointer; font-family: var(--sans); transition: all .15s;
+}
+.sort-btn.active { border-color: rgba(99,102,241,.4); background: rgba(99,102,241,.1); color: var(--ac); }
+
+/* ─── Scrollable product list ─────────────────────────────────────── */
+.prod-scroll { max-height: 420px; overflow-y: auto; padding-right: .2rem; }
+.prod-scroll::-webkit-scrollbar { width: 4px; }
+.prod-scroll::-webkit-scrollbar-track { background: var(--bg2); border-radius: 2px; }
+.prod-scroll::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
+
+/* ─── Account / Deposit History ──────────────────────────────────── */
+.akun-section { margin-bottom: 1rem; }
+.akun-card {
+  background: var(--bg1); border: 1px solid var(--line);
+  border-radius: var(--rad); overflow: hidden;
+}
+.akun-card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .75rem 1rem; border-bottom: 1px solid var(--line);
+}
+.akun-card-title { font-size: .7rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--t2); }
+.akun-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .1rem; }
+@media(max-width:480px){ .akun-info-grid { grid-template-columns: 1fr; } }
+.akun-info-row { display: flex; flex-direction: column; padding: .85rem 1rem; border-bottom: 1px solid var(--line); }
+.akun-info-row:nth-child(odd) { border-right: 1px solid var(--line); }
+@media(max-width:480px){ .akun-info-row:nth-child(odd) { border-right: none; } }
+.akun-info-key { font-size: .65rem; color: var(--t3); text-transform: uppercase; letter-spacing: .07em; margin-bottom: .2rem; }
+.akun-info-val { font-size: .82rem; font-weight: 500; font-family: var(--mono); }
+.akun-info-val.green { color: var(--em); }
+.dep-hist-list { padding: .3rem .5rem .5rem; }
+.dep-hist-item {
+  display: flex; align-items: center; gap: .75rem;
+  padding: .7rem .5rem; border-bottom: 1px solid var(--line);
+}
+.dep-hist-item:last-child { border-bottom: none; }
+.dep-hist-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dep-hist-dot.success { background: var(--em); }
+.dep-hist-dot.pending { background: var(--yel); }
+.dep-hist-dot.cancel  { background: var(--red); }
+.dep-hist-main { flex: 1; min-width: 0; }
+.dep-hist-amount { font-size: .8rem; font-weight: 600; font-family: var(--mono); }
+.dep-hist-date   { font-size: .65rem; color: var(--t3); margin-top: .1rem; }
+.dep-hist-status { font-size: .62rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; padding: .15rem .45rem; border-radius: 4px; }
+.dep-hist-status.success { background: rgba(74,222,128,.1);  color: var(--em);  border: 1px solid rgba(74,222,128,.25); }
+.dep-hist-status.pending { background: rgba(251,191,36,.1);  color: var(--yel); border: 1px solid rgba(251,191,36,.25); }
+.dep-hist-status.cancel  { background: rgba(248,113,113,.1); color: var(--red); border: 1px solid rgba(248,113,113,.25); }
+.chpwd-form { padding: 1rem; display: flex; flex-direction: column; gap: .6rem; }
+.chpwd-label { font-size: .7rem; color: var(--t2); margin-bottom: .25rem; display: block; }
+
+/* ─── Background overlay ─────────────────────────────────────────── */
+#_gbg { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+
+/* ─── Pinned/top service ─────────────────────────────────────────── */
+.pinned-badge { display: inline-flex; align-items: center; gap: .3rem; font-size: .6rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--yel); border: 1px solid rgba(251,191,36,.3); background: rgba(251,191,36,.08); border-radius: 4px; padding: .1rem .35rem; }
+
+/* ── Music Player ─────────────────────────────────── */
+#musicPlayer{
+  position:fixed;bottom:1.15rem;right:1.15rem;z-index:300;
+  display:none;flex-direction:column;align-items:flex-end;gap:.38rem;
+}
+#musicPanel{
+  background:var(--bg2);border:1px solid var(--line2);border-radius:4px;
+  box-shadow:0 6px 28px rgba(0,0,0,.6);
+  width:196px;padding:.65rem .8rem;
+  display:none;flex-direction:column;gap:.5rem;
+}
+#musicPanel.open{display:flex;animation:mpUp .16s ease;}
+@keyframes mpUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.mp-title{
+  font-size:.62rem;color:var(--t2);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;letter-spacing:.02em;
+}
+.mp-controls{display:flex;align-items:center;justify-content:center;gap:.4rem;}
+.mp-nav{
+  width:28px;height:28px;border-radius:4px;border:1px solid var(--line2);
+  background:var(--bg3);color:var(--t3);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+  flex-shrink:0;
+}
+.mp-nav:hover{border-color:var(--line3);color:var(--t1);}
+.mp-nav svg{width:12px;height:12px;display:block;}
+.mp-vol-row{display:flex;align-items:center;gap:.45rem;}
+.mp-vol-ico{color:var(--t3);flex-shrink:0;}
+.mp-vol-ico svg{width:12px;height:12px;display:block;}
+.mp-vol-sl{
+  flex:1;-webkit-appearance:none;appearance:none;
+  height:2px;border-radius:2px;background:var(--line2);
+  cursor:pointer;outline:none;
+}
+.mp-vol-sl::-webkit-slider-thumb{
+  -webkit-appearance:none;width:11px;height:11px;border-radius:50%;
+  background:var(--em);cursor:pointer;box-shadow:0 0 4px rgba(0,0,0,.4);
+}
+.mp-vol-sl::-moz-range-thumb{
+  width:11px;height:11px;border-radius:50%;border:none;
+  background:var(--em);cursor:pointer;
+}
+/* Equalizer bars (animated when playing) */
+.mp-eq{display:none;align-items:flex-end;gap:2px;height:15px;width:15px;justify-content:center;}
+.mp-eq span{
+  width:2px;background:var(--em);border-radius:1px;
+  animation:mpEq .75s ease-in-out infinite;
+}
+.mp-eq span:nth-child(1){animation-duration:.65s;}
+.mp-eq span:nth-child(2){animation-duration:.9s;animation-delay:.13s;}
+.mp-eq span:nth-child(3){animation-duration:.6s;animation-delay:.27s;}
+.mp-eq span:nth-child(4){animation-duration:.8s;animation-delay:.06s;}
+@keyframes mpEq{0%,100%{height:2px}50%{height:14px}}
+/* Main toggle button */
+#musicBtn{
+  width:38px;height:38px;min-height:unset!important;
+  border-radius:4px;background:var(--bg2);border:1px solid var(--line2);
+  color:var(--t3);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .18s;box-shadow:0 4px 16px rgba(0,0,0,.5);
+  overflow:hidden;position:relative;
+}
+#musicBtn:hover{border-color:var(--line3);color:var(--t1);background:var(--bg3);}
+#musicBtn.playing{border-color:rgba(var(--em-rgb),.38);color:var(--em);background:rgba(var(--em-rgb),.08);}
+#musicBtn .mp-ico svg{width:15px;height:15px;display:block;}
+#musicBtn.playing .mp-ico{display:none;}
+#musicBtn.playing .mp-eq{display:flex;}
+
+/* ── Music player ────────────────────────────────────────── */
+@media (max-width: 680px) {
+  #musicPlayer {
+    bottom: 1.15rem !important;
+    right: .85rem !important;
+  }
+  #musicBtn {
+    width: 42px !important;
+    height: 42px !important;
+    min-height: unset !important;
+    border-radius: 8px !important;
+  }
+  #musicPanel {
+    width: 200px !important;
+    border-radius: 8px !important;
+  }
+  .mp-nav {
+    width: 34px !important;
+    height: 34px !important;
+    min-height: unset !important;
+  }
+}
+
+/* ── Safe area (notch / home bar) ────────────────────────── */
+@media (max-width: 680px) {
+  #musicPlayer {
+    bottom: calc(1.15rem + env(safe-area-inset-bottom)) !important;
+  }
+}
+/* ─── Server 2 Sub-nav ───────────────────────────────────────────── */
+.sv2-nav {
+  display: flex; gap: .4rem; flex-wrap: nowrap;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  margin-bottom: 1.2rem; padding: .7rem 0 .3rem;
+  border-bottom: 1px solid var(--line);
+}
+.sv2-nav::-webkit-scrollbar { display: none; }
+.sv2-tab {
+  display: flex; align-items: center; gap: .4rem;
+  padding: .5rem .85rem; border-radius: var(--rad2);
+  border: 1px solid var(--line2); background: var(--bg2);
+  color: var(--t3); font-family: var(--sans); font-size: .72rem;
+  font-weight: 600; cursor: pointer; transition: all .15s;
+  white-space: nowrap;
+}
+.sv2-tab svg { width: 13px; height: 13px; flex-shrink: 0; }
+.sv2-tab:hover { border-color: rgba(99,102,241,.3); color: var(--t2); background: var(--bg3); }
+.sv2-tab.active { background: rgba(99,102,241,.12); border-color: rgba(99,102,241,.4); color: var(--ac); }
+
+/* ─── PPOB Product Card ───────────────────────────────────────────── */
+.ppob-card {
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: var(--rad2); padding: .8rem .9rem;
+  cursor: pointer; transition: border-color .15s, background .15s, transform .1s;
+  display: flex; flex-direction: column; gap: .3rem; position: relative; overflow: hidden;
+}
+.ppob-card:hover { border-color: rgba(99,102,241,.4); background: var(--bg3); transform: translateY(-1px); }
+.ppob-card.selected { border-color: var(--em); background: rgba(74,222,128,.05); }
+.ppob-card-name  { font-size: .78rem; font-weight: 600; color: var(--t1); line-height: 1.3; }
+.ppob-card-brand { font-size: .63rem; color: var(--t3); text-transform: uppercase; letter-spacing: .06em; }
+.ppob-card-price { font-family: var(--mono); font-size: .8rem; color: var(--em); font-weight: 600; margin-top: .2rem; }
+.ppob-card-orig  { font-family: var(--mono); font-size: .63rem; color: var(--t3); text-decoration: line-through; }
+.ppob-card-disc  { display: inline-flex; align-items: center; font-size: .6rem; font-weight: 700; padding: .1rem .35rem; border-radius: 3px; background: rgba(74,222,128,.12); color: var(--em); border: 1px solid rgba(74,222,128,.2); margin-left: .3rem; }
+.ppob-card-check { position: absolute; top: .5rem; right: .5rem; width: 16px; height: 16px; border-radius: 50%; background: var(--em); display: none; align-items: center; justify-content: center; }
+.ppob-card.selected .ppob-card-check { display: flex; }
+.ppob-card-check svg { width: 9px; height: 9px; color: #08090c; stroke-width: 3; }
+
+/* ─── Category pills ──────────────────────────────────────────────── */
+.cat-pill {
+  flex-shrink: 0; padding: .28rem .65rem; border-radius: 99px;
+  border: 1px solid var(--line2); background: var(--bg3);
+  color: var(--t2); font-size: .68rem; font-weight: 600; cursor: pointer;
+  transition: all .15s; white-space: nowrap; text-transform: capitalize;
+}
+.cat-pill:hover { border-color: rgba(99,102,241,.4); color: var(--t1); }
+.cat-pill.active { border-color: var(--ac); background: rgba(99,102,241,.1); color: var(--ac); }
+
+/* ─── Check result card ───────────────────────────────────────────── */
+.check-result {
+  background: var(--bg2); border: 1px solid rgba(74,222,128,.3);
+  border-radius: var(--rad2); padding: .85rem 1rem;
+  display: flex; align-items: center; gap: .75rem; margin-top: .8rem;
+  animation: fadeSlideUp .2s ease;
+}
+.check-result.error { border-color: rgba(248,113,113,.3); }
+.check-result-icon { width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.check-result-icon.ok  { background: rgba(74,222,128,.12); color: var(--em); }
+.check-result-icon.err { background: rgba(248,113,113,.1); color: var(--red); }
+.check-result-icon svg { width: 14px; height: 14px; }
+.check-result-main { flex: 1; }
+.check-result-name { font-size: .85rem; font-weight: 600; color: var(--t1); }
+.check-result-sub  { font-size: .68rem; color: var(--t3); margin-top: .15rem; }
+
+/* ─── Tx Status panel ─────────────────────────────────────────────── */
+.tx-status-card {
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: var(--rad); padding: 1.1rem; margin-top: 1rem;
+  animation: fadeSlideUp .2s ease;
+}
+.tx-status-badge {
+  display: inline-block; font-size: .62rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; padding: .2rem .55rem; border-radius: 4px;
+}
+.tx-status-badge.pending  { background: rgba(251,191,36,.12); color: var(--yel); border: 1px solid rgba(251,191,36,.25); }
+.tx-status-badge.success  { background: rgba(74,222,128,.12); color: var(--em); border: 1px solid rgba(74,222,128,.25); }
+.tx-status-badge.failed   { background: rgba(248,113,113,.1); color: var(--red); border: 1px solid rgba(248,113,113,.25); }
+.tx-status-badge.process  { background: rgba(99,102,241,.1);  color: var(--ac); border: 1px solid rgba(99,102,241,.25); }
+
+</style>
+</head>
+<body>
+<!-- History Detail Bottom Sheet -->
+<div id="histDetailOverlay" onclick="histDetailClose(event)">
+  <div id="histDetailSheet">
+    <div class="hds-handle"></div>
+    <div class="hds-header">
+      <span class="hds-title" id="hdsTitle">Detail Order</span>
+      <button class="hds-close" onclick="closeHistDetail()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="hds-body" id="hdsBody"></div>
+  </div>
+</div>
+
+
+<!-- Header -->
+<header class="site-header">
+  <a href="/" class="logo" id="hStoreName">OTP<span>.</span></a>
+  <div class="header-right">
+    <div class="bal-pill" id="balPill" style="display:none" onclick="openDepModal()">
+      <span class="dot"></span>
+      <span class="bal-amount" id="balAmount">Rp0</span>
+    </div>
+    <button class="btn-icon" title="Riwayat" onclick="showTab('history')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+        <path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>
+      </svg>
+    </button>
+    <button class="btn-icon" id="btnTopup" title="Top Up Saldo" style="display:none" onclick="openDepModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M12 5v14M5 12l7-7 7 7"/>
+      </svg>
+    </button>
+    <button class="btn-icon" id="btnLogin" title="Login" onclick="location.href='/login?returnUrl=/otp'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-label">Virtual Numbers</div>
+    <h1 id="pageTitle">OTP Number</h1>
+    <p id="pageDesc">Nomor virtual untuk verifikasi SMS. Pilih platform, negara, dan beli nomor instan.</p>
+  </div>
+
+  <!-- OTP disabled notice -->
+  <div class="notice error" id="otpDisabledNotice" style="display:none;margin-bottom:.8rem">
+    Fitur OTP Number sedang tidak tersedia. Silakan coba lagi nanti atau hubungi admin.
+  </div>
+
+  <!-- Loading state -->
+  <div id="initLoader" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 1rem;gap:.9rem">
+    <span class="spin" style="width:22px;height:22px;border-width:2.5px;opacity:.7"></span>
+    <span style="font-size:.8rem;color:var(--t3)">Memuat halaman...</span>
+  </div>
+
+  <!-- Login gate (jika belum login) -->
+  <div class="login-gate" id="loginGate" style="display:none">
+    <h2>Login Dulu</h2>
+    <p>Kamu perlu login untuk membeli nomor OTP.</p>
+    <a href="/login?returnUrl=/otp" class="btn-primary">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      Login / Daftar
+    </a>
+  </div>
+
+  <!-- Main content (jika sudah login) -->
+  <div id="mainContent" style="display:none;position:relative;z-index:1">
+
+    <!-- Active Order (jika ada) -->
+    <div id="activeOrderWrap" style="display:none"></div>
+
+    <!-- Page Tabs -->
+    <div class="page-tabs">
+      <button class="p-tab active" id="tabBuy"     onclick="showTab('buy')">Beli Nomor</button>
+      <button class="p-tab"        id="tabHistory" onclick="showTab('history')">Riwayat</button>
+      <button class="p-tab"        id="tabAkun"    onclick="showTab('akun')">Akun</button>
+    </div>
+
+    <!-- BUY TAB -->
+    <div id="paneBuy">
+      <!-- Server selector -->
+      <div class="server-bar" id="serverBar">
+        <button class="sv-tab active" id="svBtn1" onclick="switchServer('smscode')">
+          <span class="sv-name">Server 1</span>
+          <span class="sv-badge" id="svBadge1">DigitalHub</span>
+        </button>
+        <button class="sv-tab" id="svBtn2" onclick="switchServer('rumahotp')">
+          <span class="sv-name">Server 2</span>
+          <span class="sv-badge" id="svBadge2">DigitalHub</span>
+        </button>
+      </div>
+
+      <!-- Provider balance info: tersembunyi dari user -->
+      <div id="provBalBar" style="display:none!important">
+        <span id="provBalAmt"></span>
+      </div>
+
+      <!-- Server down notice -->
+      <div class="notice error" id="serverNotice" style="display:none"></div>
+
+      <!-- ── SMSCODE VIEW ───────────────────────────────────────── -->
+      <div id="viewSmscode">
+        <!-- Service filter -->
+        <div class="panel">
+          <div class="panel-head">
+            <span class="panel-title">Pilih Platform</span>
+            <span id="scPlatformLabel" style="font-size:.7rem;color:var(--t3)"></span>
+          </div>
+          <div class="panel-body" style="padding-bottom:.6rem">
+            <div class="filter-row">
+              <div class="sel-wrap">
+                <select id="scCountrySelect" onchange="scOnCountryChange()">
+                  <option value="">Semua Negara</option>
+                </select>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="sel-wrap">
+                <select id="scServiceSelect" onchange="scOnServiceChange()">
+                  <option value="">Semua Platform</option>
+                </select>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+            <div class="search-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" id="scSearch" placeholder="Cari platform..." oninput="scRender()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Sort -->
+        <div class="sort-bar">
+          <button class="sort-btn active" id="sort-price_asc"     onclick="scSort('price_asc')">Harga Terendah</button>
+          <button class="sort-btn"        id="sort-price_desc"    onclick="scSort('price_desc')">Harga Tertinggi</button>
+          <button class="sort-btn"        id="sort-available_desc" onclick="scSort('available_desc')">Stok Terbanyak</button>
+        </div>
+
+        <div class="col-layout">
+          <div>
+            <div class="prod-scroll">
+              <div class="prod-grid" id="scGrid">
+                <div class="skel" style="height:80px"></div>
+                <div class="skel" style="height:80px"></div>
+                <div class="skel" style="height:80px"></div>
+                <div class="skel" style="height:80px"></div>
+                <div class="skel" style="height:80px"></div>
+                <div class="skel" style="height:80px"></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="order-panel" id="scOrderPanel">
+              <div style="font-size:.75rem;font-weight:600;margin-bottom:.8rem;color:var(--t2)">Ringkasan Order</div>
+              <div id="scOrderEmpty" style="text-align:center;padding:1rem 0;color:var(--t3);font-size:.75rem">Pilih nomor terlebih dahulu</div>
+              <div id="scOrderDetail" style="display:none">
+                <div class="order-row"><span class="order-key">Platform</span><span class="order-val" id="scOrdSvc">—</span></div>
+                <div class="order-row"><span class="order-key">Negara</span><span class="order-val" id="scOrdCnt">—</span></div>
+                <div class="order-row"><span class="order-key">Stok</span><span class="order-val" id="scOrdStock">—</span></div>
+                <div class="order-row"><span class="order-key">Harga</span><span class="order-val price" id="scOrdPrice">—</span></div>
+                <div class="order-row"><span class="order-key">Saldo</span><span class="order-val" id="scOrdBal">—</span></div>
+              </div>
+              <button class="btn-order" id="scBuyBtn" onclick="scBuy()" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                Beli Nomor
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── RUMAHOTP VIEW (Server 2) ─────────────────────────────── -->
+      <div id="viewRotp" style="display:none">
+
+        <!-- Sub-navigation Server 2 -->
+        <div class="sv2-nav">
+          <button class="sv2-tab active" id="sv2t-otp" onclick="sv2ShowTab('otp')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+            Nomor OTP
+          </button>
+          <button class="sv2-tab" id="sv2t-topup" onclick="sv2ShowTab('topup')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+            PPOB & Topup
+          </button>
+          <button class="sv2-tab" id="sv2t-cekrek" onclick="sv2ShowTab('cekrek')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Cek Rekening
+          </button>
+          <button class="sv2-tab" id="sv2t-cekgame" onclick="sv2ShowTab('cekgame')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15" cy="12" r="1"/><circle cx="18" cy="10" r="1"/><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
+            Cek Game ID
+          </button>
+        </div>
+
+        <!-- ── PANE: NOMOR OTP ─────────────────────────────────────── -->
+        <div id="sv2PaneOtp">
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-title">Pilih Platform</span>
+              <span id="rotpServiceLabel" style="font-size:.7rem;color:var(--t3)"></span>
+            </div>
+            <div class="panel-body" style="padding-bottom:.6rem">
+              <div class="filter-row">
+                <div class="sel-wrap">
+                  <select id="rotpServiceSelect" onchange="rotpOnServiceChange()">
+                    <option value="">Semua Platform</option>
+                  </select>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="sel-wrap">
+                  <select id="rotpCountrySelect" onchange="rotpOnCountryChange()" disabled>
+                    <option value="">Pilih Negara</option>
+                  </select>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+              </div>
+              <div class="search-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input type="text" id="rotpSearch" placeholder="Cari platform atau negara..." oninput="rotpFilterGrid()">
+              </div>
+            </div>
+          </div>
+
+          <div class="sort-bar">
+            <button class="sort-btn active" id="rotpSort-price_asc"  onclick="rotpGridSort('price_asc')">Harga Terendah</button>
+            <button class="sort-btn"        id="rotpSort-price_desc" onclick="rotpGridSort('price_desc')">Harga Tertinggi</button>
+            <button class="sort-btn"        id="rotpSort-stock_desc" onclick="rotpGridSort('stock_desc')">Stok Terbanyak</button>
+          </div>
+
+          <div class="col-layout">
+            <div>
+              <div class="prod-scroll">
+                <div class="prod-grid" id="rotpGrid">
+                  <div class="skel" style="height:80px"></div>
+                  <div class="skel" style="height:80px"></div>
+                  <div class="skel" style="height:80px"></div>
+                  <div class="skel" style="height:80px"></div>
+                  <div class="skel" style="height:80px"></div>
+                  <div class="skel" style="height:80px"></div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="order-panel" id="rotpRightPanel">
+                <div style="font-size:.75rem;font-weight:600;margin-bottom:.8rem;color:var(--t2)">Ringkasan Order</div>
+                <div id="rotpRightEmpty" style="text-align:center;padding:1rem 0;color:var(--t3);font-size:.75rem">Pilih platform & negara terlebih dahulu</div>
+                <div id="rotpRightOrder" style="display:none">
+                  <div id="rotpOperatorPanel" style="display:none;margin-bottom:.7rem">
+                    <b style="font-size:.72rem;color:var(--t2)">Pilih Operator:</b>
+                    <div id="rotpOpList" style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem"></div>
+                  </div>
+                  <div class="order-row"><span class="order-key">Platform</span><span class="order-val" id="rotpOrdSvc">—</span></div>
+                  <div class="order-row"><span class="order-key">Negara</span><span class="order-val" id="rotpOrdCnt">—</span></div>
+                  <div class="order-row"><span class="order-key">Operator</span><span class="order-val" id="rotpOrdOp">Any</span></div>
+                  <div class="order-row"><span class="order-key">Harga</span><span class="order-val price" id="rotpOrdPrice">—</span></div>
+                  <div class="order-row"><span class="order-key">Saldo</span><span class="order-val" id="rotpOrdBal">—</span></div>
+                  <button class="btn-order" id="rotpBuyBtn" onclick="rotpBuy()" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    Beli Nomor
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PANE: PPOB & TOPUP ──────────────────────────────────── -->
+        <div id="sv2PaneTopup" style="display:none">
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-title">Filter Produk</span>
+              <span id="ppobCountLabel" style="font-size:.7rem;color:var(--t3)"></span>
+            </div>
+            <div class="panel-body" style="padding-bottom:.6rem">
+              <div id="ppobCatRow" style="display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.75rem">
+                <button class="cat-pill active" id="ppobCat-all" onclick="ppobSetCat('')">Semua</button>
+              </div>
+              <div class="search-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input type="text" id="ppobSearch" placeholder="Cari produk, game, brand..." oninput="ppobRender()">
+              </div>
+            </div>
+          </div>
+
+          <div class="col-layout">
+            <div>
+              <div class="prod-scroll" style="max-height:460px">
+                <div class="prod-grid" id="ppobGrid">
+                  <div class="skel" style="height:80px"></div>
+                  <div class="skel" style="height:80px"></div>
+                  <div class="skel" style="height:80px"></div>
+                  <div class="skel" style="height:80px"></div>
+                  <div class="skel" style="height:80px"></div>
+                  <div class="skel" style="height:80px"></div>
+                </div>
+              </div>
+              <div id="ppobPagRow" style="display:flex;align-items:center;justify-content:space-between;margin-top:.7rem;font-size:.72rem;color:var(--t3)"></div>
+            </div>
+            <div>
+              <div class="order-panel" id="ppobOrderPanel">
+                <div style="font-size:.75rem;font-weight:600;margin-bottom:.8rem;color:var(--t2)">Ringkasan Order</div>
+                <div id="ppobOrderEmpty" style="text-align:center;padding:1rem 0;color:var(--t3);font-size:.75rem">Pilih produk terlebih dahulu</div>
+                <div id="ppobOrderDetail" style="display:none">
+                  <div class="order-row"><span class="order-key">Produk</span><span class="order-val" id="ppobOrdName" style="text-align:right;font-size:.72rem">—</span></div>
+                  <div class="order-row"><span class="order-key">Kategori</span><span class="order-val" id="ppobOrdCat">—</span></div>
+                  <div class="order-row"><span class="order-key">Harga</span><span class="order-val price" id="ppobOrdPrice">—</span></div>
+                  <div class="order-row"><span class="order-key">Saldo</span><span class="order-val" id="ppobOrdBal">—</span></div>
+                  <div style="margin:.8rem 0 .4rem">
+                    <label class="field-label" id="ppobTargetLabel">Nomor Tujuan / ID</label>
+                    <input type="text" id="ppobTarget" placeholder="Masukkan nomor atau ID...">
+                    <div class="field-hint" id="ppobTargetHint"></div>
+                  </div>
+                  <div id="ppobCheckRow" style="display:none;margin-bottom:.6rem">
+                    <button class="btn-sm" id="ppobCheckBtn" onclick="ppobCheck()">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                      Cek Akun
+                    </button>
+                  </div>
+                  <div id="ppobCheckResult"></div>
+                  <div id="ppobTxStatus"></div>
+                  <button class="btn-order" id="ppobBuyBtn" onclick="ppobBuy()" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    Beli Produk
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PANE: CEK REKENING ──────────────────────────────────── -->
+        <div id="sv2PaneCekRek" style="display:none">
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-title">Cek Nama Rekening</span>
+            </div>
+            <div class="panel-body">
+              <div class="notice" style="margin-bottom:1rem">
+                Cek nama pemilik rekening bank, e-wallet, atau akun digital sebelum transfer.
+              </div>
+              <div class="filter-row" style="margin-bottom:.8rem">
+                <div class="sel-wrap">
+                  <select id="rekBankSelect">
+                    <option value="">Pilih Bank / E-Wallet</option>
+                  </select>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="search-wrap" style="flex:1.5">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.24h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.94-.94a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.61 16.92z"/></svg>
+                  <input type="text" id="rekAccountNumber" placeholder="Nomor rekening / nomor HP">
+                </div>
+              </div>
+              <button class="btn-primary" style="width:100%;justify-content:center" id="rekCheckBtn" onclick="rekDoCheck()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                Cek Rekening
+              </button>
+              <div id="rekResult"></div>
+            </div>
+          </div>
+
+          <!-- Bank / E-Wallet list filter -->
+          <div class="panel" style="margin-top:.8rem">
+            <div class="panel-head">
+              <span class="panel-title">Daftar Bank & E-Wallet Tersedia</span>
+            </div>
+            <div class="panel-body">
+              <div id="rekBrandList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.4rem">
+                <div class="skel" style="height:36px"></div>
+                <div class="skel" style="height:36px"></div>
+                <div class="skel" style="height:36px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PANE: CEK GAME ID ───────────────────────────────────── -->
+        <div id="sv2PaneCekGame" style="display:none">
+          <div class="panel">
+            <div class="panel-head">
+              <span class="panel-title">Cek Nama Akun Game</span>
+            </div>
+            <div class="panel-body">
+              <div class="notice" style="margin-bottom:1rem">
+                Verifikasi nama akun game sebelum melakukan top-up diamond atau item.
+              </div>
+              <div class="filter-row" style="margin-bottom:.8rem">
+                <div class="sel-wrap">
+                  <select id="gameSelect" onchange="gameSelectChange()">
+                    <option value="">Pilih Game</option>
+                  </select>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="search-wrap" style="flex:1.5">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <input type="text" id="gameUserId" placeholder="User ID / Nomor Akun">
+                </div>
+              </div>
+              <div id="gameServerRow" style="display:none;margin-bottom:.6rem">
+                <input type="text" id="gameServerId" placeholder="Zone ID / Server ID (jika diperlukan)" style="width:100%">
+                <div class="field-hint">Beberapa game (MLBB, Arena of Valor) memerlukan Zone/Server ID tambahan.</div>
+              </div>
+              <button class="btn-primary" style="width:100%;justify-content:center" id="gameCheckBtn" onclick="gameDoCheck()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                Cek Akun Game
+              </button>
+              <div id="gameResult"></div>
+            </div>
+          </div>
+
+          <!-- Game list -->
+          <div class="panel" style="margin-top:.8rem">
+            <div class="panel-head">
+              <span class="panel-title">Daftar Game Tersedia</span>
+            </div>
+            <div class="panel-body">
+              <div id="gameBrandList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.4rem">
+                <div class="skel" style="height:36px"></div>
+                <div class="skel" style="height:36px"></div>
+                <div class="skel" style="height:36px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /paneBuy -->
+
+    <!-- HISTORY TAB -->
+    <div id="paneHistory" style="display:none;padding-top:.2rem">
+      <!-- Header riwayat -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;background:var(--bg1);padding:.75rem 1rem;border-radius:var(--rad);border:1px solid var(--line)">
+        <div>
+          <div style="font-size:.95rem;font-weight:700;letter-spacing:-.01em">Riwayat Order</div>
+          <div style="font-size:.68rem;color:var(--t3);margin-top:.1rem">30 transaksi terakhir</div>
+        </div>
+        <button onclick="loadHistory()" style="display:flex;align-items:center;gap:.35rem;background:var(--bg3);border:1px solid var(--line2);border-radius:var(--rad2);padding:.35rem .7rem;color:var(--t2);font-size:.68rem;font-weight:600;cursor:pointer;font-family:var(--sans);transition:border-color .15s" onmouseover="this.style.borderColor='var(--em)'" onmouseout="this.style.borderColor='var(--line2)'">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.86"/></svg>
+          Refresh
+        </button>
+      </div>
+      <!-- Filter status -->
+      <div class="sort-bar" id="histFilterBar" style="margin-bottom:1rem">
+        <button class="sort-btn active" id="hf-all"       onclick="histFilter('all')">Semua</button>
+        <button class="sort-btn"        id="hf-completed" onclick="histFilter('completed')">Berhasil</button>
+        <button class="sort-btn"        id="hf-waiting"   onclick="histFilter('waiting')">Menunggu</button>
+        <button class="sort-btn"        id="hf-expired"   onclick="histFilter('expired')">Kadaluarsa</button>
+        <button class="sort-btn"        id="hf-canceled"  onclick="histFilter('canceled')">Dibatalkan</button>
+      </div>
+      <!-- List -->
+      <div id="histList" style="min-height:100px">
+        <div class="skel" style="height:72px;margin-bottom:.5rem"></div>
+        <div class="skel" style="height:72px;margin-bottom:.5rem"></div>
+        <div class="skel" style="height:72px;margin-bottom:.5rem"></div>
+        <div class="skel" style="height:72px"></div>
+      </div>
+    </div>
+
+    <!-- AKUN TAB -->
+    <div id="paneAkun" style="display:none;padding-top:.2rem">
+      <!-- Kartu info akun -->
+      <div class="akun-section">
+        <div class="akun-card">
+          <div class="akun-card-head">
+            <span class="akun-card-title">Info Akun</span>
+            <span id="akunRefreshBtn" style="font-size:.68rem;color:var(--t3);cursor:pointer" onclick="loadAccountInfo()">↻ Refresh</span>
+          </div>
+          <!-- Saldo besar di atas -->
+          <div style="padding:1.1rem 1rem .8rem;border-bottom:1px solid var(--line);text-align:center">
+            <div style="font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.3rem">Saldo Kamu</div>
+            <div id="akunBalanceBig" style="font-size:1.6rem;font-weight:700;font-family:var(--mono);color:var(--em);letter-spacing:-.02em">...</div>
+          </div>
+          <div class="akun-info-grid" id="akunInfoGrid">
+            <div class="akun-info-row"><span class="akun-info-key">Username</span><span class="akun-info-val" id="akunUsername">...</span></div>
+            <div class="akun-info-row"><span class="akun-info-key">Saldo</span><span class="akun-info-val green" id="akunBalance">...</span></div>
+            <div class="akun-info-row"><span class="akun-info-key">Email</span><span class="akun-info-val" id="akunEmail">...</span></div>
+            <div class="akun-info-row"><span class="akun-info-key">WhatsApp</span><span class="akun-info-val" id="akunWhatsapp">...</span></div>
+            <div class="akun-info-row"><span class="akun-info-key">Bergabung</span><span class="akun-info-val" id="akunJoined">...</span></div>
+          </div>
+          <!-- API Key row — full width -->
+          <div style="padding:.75rem 1rem;border-top:1px solid var(--line)">
+            <div style="font-size:.65rem;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem">API Key</div>
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <span id="akunApiKey" style="font-size:.75rem;font-weight:500;font-family:var(--mono);word-break:break-all;flex:1;color:var(--t1)">...</span>
+              <button onclick="copyApiKey()" title="Salin API Key" style="flex-shrink:0;background:var(--bg3);border:1px solid var(--line2);border-radius:6px;padding:.3rem .55rem;cursor:pointer;font-size:.68rem;color:var(--t2);font-family:var(--sans);white-space:nowrap">Salin</button>
+            </div>
+            <div style="font-size:.62rem;color:var(--t3);margin-top:.35rem">Dipakai untuk autentikasi. Jangan bagikan ke orang lain.</div>
+          </div>
+          <div style="padding:.9rem 1rem;border-top:1px solid var(--line);display:flex;gap:.5rem">
+            <button class="btn-primary" style="flex:1;justify-content:center" onclick="openDepModal()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12l7-7 7 7"/></svg>
+              Top Up Saldo
+            </button>
+            <button onclick="showTab('history')" style="display:flex;align-items:center;gap:.4rem;background:var(--bg3);border:1px solid var(--line2);border-radius:var(--rad2);padding:.5rem .9rem;color:var(--t2);font-size:.72rem;font-weight:600;cursor:pointer;font-family:var(--sans);white-space:nowrap">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+              Riwayat
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="akun-section">
+        <div class="akun-card">
+          <div class="akun-card-head">
+            <span class="akun-card-title">Riwayat Deposit</span>
+            <span style="font-size:.68rem;color:var(--t3);cursor:pointer" onclick="loadDepositHistory()">Refresh</span>
+          </div>
+          <div id="depHistList" class="dep-hist-list">
+            <div class="skel" style="height:48px;margin:.3rem 0"></div>
+            <div class="skel" style="height:48px;margin:.3rem 0"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="akun-section">
+        <div class="akun-card">
+          <div class="akun-card-head">
+            <span class="akun-card-title">Ganti Password</span>
+          </div>
+          <div class="chpwd-form">
+            <div>
+              <label class="chpwd-label">Password Lama</label>
+              <input type="password" id="chpOld" placeholder="Password saat ini">
+            </div>
+            <div>
+              <label class="chpwd-label">Password Baru</label>
+              <input type="password" id="chpNew" placeholder="Minimal 6 karakter">
+            </div>
+            <div id="chpErr" class="notice error" style="display:none"></div>
+            <button class="btn-primary" style="width:100%;justify-content:center" id="chpBtn" onclick="changePassword()">Simpan Password</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="akun-section" style="text-align:center;padding-bottom:.5rem">
+        <button onclick="doLogout()" style="background:none;border:1px solid rgba(248,113,113,.3);border-radius:var(--rad2);padding:.55rem 1.1rem;color:var(--red);font-size:.75rem;font-weight:600;cursor:pointer;font-family:var(--sans)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle;margin-right:.35rem"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Deposit Modal — hanya input jumlah, QRIS di pay.html -->
+<div class="modal-overlay" id="depModal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Top Up Saldo</h3>
+      <button class="modal-close" onclick="closeDepModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <label class="field-label">Jumlah Top Up (Rp)</label>
+      <input type="number" id="depAmount" placeholder="50000" min="1000" max="10000000"
+        style="margin-bottom:.5rem"
+        onkeydown="if(event.key==='Enter')goToDepositPay()">
+      <div class="field-hint">Minimum Rp1.000 &mdash; Maksimum Rp10.000.000</div>
+      <!-- Quick amount chips -->
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin:.75rem 0 .5rem">
+        <button class="dep-chip" onclick="setDepAmount(10000)">10rb</button>
+        <button class="dep-chip" onclick="setDepAmount(25000)">25rb</button>
+        <button class="dep-chip" onclick="setDepAmount(50000)">50rb</button>
+        <button class="dep-chip" onclick="setDepAmount(100000)">100rb</button>
+        <button class="dep-chip" onclick="setDepAmount(200000)">200rb</button>
+        <button class="dep-chip" onclick="setDepAmount(500000)">500rb</button>
+      </div>
+      <div class="notice error" id="depErr" style="display:none;margin-top:.4rem"></div>
+      <button class="btn-primary" style="width:100%;margin-top:.85rem;justify-content:center" id="depGoBtn" onclick="goToDepositPay()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Bayar via QRIS
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<div id="toastZone"></div>
+
+<script>
+'use strict';
+
+/* ─── State ──────────────────────────────────────────────────────── */
+var _user     = null;
+var _balance  = 0;
+var _server   = 'smscode';
+var _activeOrd= null;
+var _activeTimer = null;
+
+/* SMSCode state */
+var _scProducts  = [];
+var _scCountries = [];
+var _scServices  = [];
+var _scSelected  = null;
+var _scSort      = 'price_asc';
+var _scCountryId = null;
+var _scSvcId     = null;
+
+/* RumahOTP state */
+var _rotpServices   = [];
+var _rotpPinned     = [];
+var _rotpSelSvc     = null;
+var _rotpCountries  = [];
+var _rotpSelCnt     = null;
+var _rotpSelOp      = 'any';
+var _rotpSelPrice   = null;
+var _rotpNumberId   = null;
+var _rotpProviderId = null;
+/* grid state (diinit ulang di rotpLoadServices) */
+var _rotpAllItems  = [];
+var _rotpGridSort  = 'price_asc';
+var _rotpSelItem   = null;
+
+/* ─── Utility ────────────────────────────────────────────────────── */
+function idr(n) { return 'Rp' + Number(n||0).toLocaleString('id-ID'); }
+function esc(s) { var d=document.createElement('div');d.textContent=s;return d.innerHTML; }
+function q(id)  { return document.getElementById(id); }
+
+var _redirecting = false;
+
+// Ambil API key dari localStorage
+function getApiKey() { return localStorage.getItem('userApiKey') || ''; }
+
+async function uf(method, url, body, ufOpts) {
+  var headers = { 'Content-Type': 'application/json' };
+  var apiKey = getApiKey();
+  if (apiKey) headers['x-api-key'] = apiKey;
+  var opts = { method, headers: headers, credentials: 'same-origin' };
+  if (body) opts.body = JSON.stringify(body);
+  var r = await fetch(url, opts);
+  if (r.status === 401) {
+    // noRedirect: cukup return { ok: false } tanpa redirect (dipakai saat cek status login awal)
+    if (ufOpts && ufOpts.noRedirect) return { ok: false, _unauthorized: true };
+    if (_redirecting) return { ok: false };
+    _redirecting = true;
+    localStorage.removeItem('userApiKey');
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('username');
+    location.href = '/login?returnUrl=' + encodeURIComponent(location.pathname);
+    return { ok: false };
+  }
+  return r.json();
+}
+
+function toast(msg, type) {
+  var el = document.createElement('div');
+  el.className = 'toast-item ' + (type||'');
+  el.textContent = msg;
+  q('toastZone').appendChild(el);
+  setTimeout(function(){ el.remove(); }, 3200);
+}
+
+/* ─── Background ─────────────────────────────────────────────────── */
+function applyGlobalBg(s) {
+  var old = document.getElementById('_gbg'); if (old) old.remove();
+  var oldStyle = document.getElementById('_gbg_style'); if (oldStyle) oldStyle.remove();
+  if (!s || !s.bgUrl) return;
+  var op = s.bgOpacity != null ? parseFloat(s.bgOpacity) : 0.15;
+  var el = document.createElement('div');
+  el.id = '_gbg';
+  el.setAttribute('aria-hidden','true');
+  el.style.cssText = 'position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;will-change:transform;transform:translateZ(0)';
+  if (s.bgType === 'video') {
+    var v = document.createElement('video');
+    v.src = s.bgUrl; v.autoplay = true; v.loop = true; v.muted = true; v.playsInline = true;
+    v.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:'+op+';transform:translateZ(0)';
+    el.appendChild(v);
+  } else {
+    var img = document.createElement('div');
+    img.style.cssText = 'position:absolute;inset:0;background-image:url('+JSON.stringify(s.bgUrl)+');background-size:cover;background-position:center;opacity:'+op+';transform:translateZ(0)';
+    el.appendChild(img);
+  }
+  document.body.insertBefore(el, document.body.firstChild);
+  // Override body background agar tidak menutupi _gbg
+  var st = document.createElement('style');
+  st.id = '_gbg_style';
+  st.textContent = 'html{background:var(--bg0,var(--bg,#0e0e0e))!important}body{background-color:transparent!important;background-image:none!important;}';
+  document.head.appendChild(st);
+}
+
+/* ─── Init ───────────────────────────────────────────────────────── */
+(async function init() {
+  // ── 1. Store settings (bg, music, nama toko, wa link) ─────────────
+  try {
+    var j = await uf('GET', '/api/products');
+    if (j.settings) {
+      var s = j.settings;
+      applyGlobalBg(s); applyMusicSettings(s);
+      if (s.storeName) { q('hStoreName').textContent = s.storeName; document.title = s.storeName + ' — OTP'; }
+      var _waUrl = j.wa || s.wa || s.cs || '';
+      if (_waUrl) {
+        document.querySelectorAll('[data-wa-link]').forEach(function(el){ el.href = _waUrl; });
+        ['waBtn','snavWaBtn','snavWaLink','ftWa','drawerWa'].forEach(function(id){
+          var el = document.getElementById(id); if (el) el.href = _waUrl;
+        });
+      }
+    }
+  } catch(e) {}
+
+  // ── 2. Cek apakah OTP diaktifkan admin ────────────────────────────
+  try {
+    var infoJ = await uf('GET', '/api/otp/info');
+    if (infoJ.ok && infoJ.settings && infoJ.settings.otpEnabled === false) {
+      var dn = q('otpDisabledNotice');
+      if (dn) { dn.style.display = ''; }
+      var mc = q('mainContent'); if (mc) mc.style.display = 'none';
+      var lg = q('loginGate');  if (lg) lg.style.display  = 'none';
+      var il = q('initLoader'); if (il) il.style.display  = 'none';
+      return; // stop init — OTP tidak aktif
+    }
+  } catch(e) {}
+
+  // ── 3. Cek status server (mana yang dikonfigurasi) ────────────────
+  try {
+    var srvJ = await uf('GET', '/api/otp/servers');
+    if (srvJ.ok && Array.isArray(srvJ.servers)) {
+      srvJ.servers.forEach(function(srv) {
+        var btn  = srv.id === 'smscode' ? q('svBtn1') : q('svBtn2');
+        var badge = srv.id === 'smscode' ? q('svBadge1') : q('svBadge2');
+        if (!btn) return;
+        if (!srv.active) {
+          btn.disabled = true;
+          btn.title = srv.name + ' belum dikonfigurasi';
+          if (badge) badge.textContent = 'Tidak aktif';
+        } else {
+          if (badge) badge.textContent = srv.name;
+        }
+      });
+      // Jika server 1 tidak aktif, auto-switch ke server 2
+      if (q('svBtn1') && q('svBtn1').disabled && q('svBtn2') && !q('svBtn2').disabled) {
+        switchServer('rumahotp');
+      }
+    }
+  } catch(e) {}
+
+  // ── 4. Login / user ───────────────────────────────────────────────
+  // Cek apiKey dulu — kalau tidak ada, langsung showLoggedOut (tampilkan loginGate)
+  // tanpa perlu hit backend sama sekali, sehingga tidak ada loop redirect.
+  if (!getApiKey()) {
+    var _il = q('initLoader'); if (_il) _il.style.display = 'none';
+    showLoggedOut();
+  } else {
+    try {
+      var me = await uf('GET', '/api/user/me-soft', null, { noRedirect: true });
+      var _il2 = q('initLoader'); if (_il2) _il2.style.display = 'none';
+      if (me.ok && me.data) {
+        _user    = me.data.username;
+        _balance = me.data.balance || 0;
+        showLoggedIn();
+        loadActiveOrder();
+        scLoadCatalog();
+        loadProviderBalance(_server); // tampilkan saldo provider
+      } else {
+        // API key tidak valid / expired — hapus & tampilkan loginGate
+        localStorage.removeItem('userApiKey');
+        localStorage.removeItem('userToken');
+        localStorage.removeItem('username');
+        showLoggedOut();
+      }
+    } catch(e) { var _il3 = q('initLoader'); if (_il3) _il3.style.display = 'none'; showLoggedOut(); }
+  }
+
+  // SSE
+  (function connectSSE() {
+    try {
+      var src = new EventSource('/api/store/stream');
+      src.onmessage = function(e) {
+        try {
+          var d = JSON.parse(e.data);
+          if (d.type === 'settings_update' && d.settings) { applyGlobalBg(d.settings); applyMusicSettings(d.settings); }
+        } catch(ex) {}
+      };
+      src.onerror = function() { src.close(); setTimeout(connectSSE, 5000); };
+    } catch(ex) {}
+  })();
+})();
+
+function showLoggedIn() {
+  q('loginGate').style.display   = 'none';
+  q('mainContent').style.display = '';
+  q('balPill').style.display     = 'flex';
+  q('btnTopup').style.display    = 'flex';
+  q('btnLogin').style.display    = 'none';
+  updateBal();
+}
+function showLoggedOut() {
+  q('loginGate').style.display   = '';
+  q('mainContent').style.display = 'none';
+  q('balPill').style.display     = 'none';
+  q('btnLogin').style.display    = 'flex';
+}
+function updateBal() {
+  q('balAmount').textContent = idr(_balance);
+  var els = document.querySelectorAll('.dyn-bal');
+  els.forEach(function(e){ e.textContent = idr(_balance); });
+}
+
+/* ─── Tab switching ──────────────────────────────────────────────── */
+function showTab(tab) {
+  var pH = q('paneHistory'), pA = q('paneAkun'), pB = q('paneBuy');
+  if (pB) pB.style.display = tab === 'buy'     ? '' : 'none';
+  if (pH) pH.style.display = tab === 'history' ? '' : 'none';
+  if (pA) pA.style.display = tab === 'akun'    ? '' : 'none';
+  q('tabBuy').classList.toggle('active',     tab === 'buy');
+  q('tabHistory').classList.toggle('active', tab === 'history');
+  q('tabAkun').classList.toggle('active',    tab === 'akun');
+  if (tab === 'history') { loadHistory(); }
+  if (tab === 'akun')    { loadAccountInfo(); loadDepositHistory(); }
+}
+
+/* ─── Server switch ──────────────────────────────────────────────── */
+function switchServer(srv) {
+  _server = srv;
+  q('svBtn1').classList.toggle('active', srv === 'smscode');
+  q('svBtn2').classList.toggle('active', srv === 'rumahotp');
+  q('viewSmscode').style.display = srv === 'smscode'  ? '' : 'none';
+  q('viewRotp').style.display    = srv === 'rumahotp' ? '' : 'none';
+  q('serverNotice').style.display = 'none';
+  if (srv === 'smscode' && _scProducts.length === 0) scLoadCatalog();
+  if (srv === 'rumahotp') {
+    // Reset to OTP sub-tab on first load
+    if (_rotpServices.length === 0) rotpLoadServices();
+    // Make sure OTP pane is visible, others hidden
+    sv2ShowTab(_sv2Tab || 'otp');
+  }
+  // Reload saldo provider untuk server yang baru dipilih
+  if (_user) loadProviderBalance(srv);
+}
+
+async function loadProviderBalance(srv) {
+  // Saldo provider disembunyikan dari user — hanya visible di panel admin
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   SMSCODE
+   ══════════════════════════════════════════════════════════════════ */
+async function scLoadCatalog() {
+  try {
+    var [rc, rs] = await Promise.all([
+      uf('GET', '/api/otp/smscode/countries'),
+      uf('GET', '/api/otp/smscode/services'),
+    ]);
+    if (rc.ok) {
+      _scCountries = rc.data || [];
+      var sel = q('scCountrySelect');
+      _scCountries.forEach(function(c) {
+        var o = document.createElement('option'); o.value = c.id; o.textContent = c.name;
+        sel.appendChild(o);
+      });
+    }
+    if (rs.ok) {
+      _scServices = rs.data || [];
+      var sel2 = q('scServiceSelect');
+      _scServices.forEach(function(s) {
+        var o = document.createElement('option'); o.value = s.id; o.textContent = s.name;
+        sel2.appendChild(o);
+      });
+    }
+    await scLoadProducts();
+  } catch(e) {
+    if (_server === 'smscode') {
+      q('serverNotice').style.display = '';
+      q('serverNotice').textContent = 'Gagal menghubungi Server 1. Coba Server 2.';
+    }
+  }
+}
+
+async function scLoadProducts() {
+  q('scGrid').innerHTML = [1,2,3,4,5,6].map(function(){ return '<div class="skel" style="height:80px"></div>'; }).join('');
+  try {
+    var url = '/api/otp/smscode/products?sort=' + _scSort;
+    if (_scCountryId) url += '&country_id=' + _scCountryId;
+    if (_scSvcId)     url += '&platform_id=' + _scSvcId;
+    var r = await uf('GET', url);
+    if (!r.ok) throw new Error(r.message);
+    _scProducts = r.data || [];
+    scRender();
+  } catch(e) {
+    q('scGrid').innerHTML = '<div class="notice error" style="grid-column:1/-1">' + esc(e.message) + '</div>';
+  }
+}
+
+function scRender() {
+  var q2 = (q('scSearch').value || '').toLowerCase().trim();
+  var list = _scProducts.filter(function(p){
+    if (!q2) return true;
+    return (p.name||'').toLowerCase().includes(q2);
+  });
+  if (!list.length) {
+    q('scGrid').innerHTML = '<div class="empty" style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Tidak ada hasil.</div>';
+    return;
+  }
+  q('scPlatformLabel').textContent = list.length + ' produk';
+  q('scGrid').innerHTML = list.map(function(p) {
+    var sel = _scSelected && _scSelected.id === p.id;
+    return '<div class="prod-card' + (sel?' selected':'') + '" onclick="scSelect('+p.id+')">'
+      + '<div class="prod-name">' + esc(p.name||'') + '</div>'
+      + '<div class="prod-meta">'
+      + '<span class="prod-price">' + esc(p.price_format||idr(p.price)) + '</span>'
+      + '<span class="prod-stock">' + (p.available||0) + ' stok</span>'
+      + '</div>'
+      + '<div class="prod-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></div>'
+      + '</div>';
+  }).join('');
+}
+
+function scSelect(id) {
+  _scSelected = _scProducts.find(function(p){ return p.id === id; });
+  scRender();
+  if (!_scSelected) return;
+  q('scOrderEmpty').style.display  = 'none';
+  q('scOrderDetail').style.display = '';
+  q('scOrdSvc').textContent   = _scSelected.name || '—';
+  // country name from country_id
+  var cnt = _scCountries.find(function(c){ return c.id === _scSelected.country_id; });
+  q('scOrdCnt').textContent   = cnt ? cnt.name : '—';
+  q('scOrdStock').textContent = (_scSelected.available||0) + ' tersedia';
+  q('scOrdPrice').textContent = _scSelected.price_format || idr(_scSelected.price);
+  q('scOrdBal').textContent   = idr(_balance);
+  q('scBuyBtn').disabled      = false;
+}
+
+function scOnCountryChange() {
+  _scCountryId = q('scCountrySelect').value ? parseInt(q('scCountrySelect').value) : null;
+  _scSelected  = null;
+  scLoadProducts();
+}
+function scOnServiceChange() {
+  _scSvcId    = q('scServiceSelect').value ? parseInt(q('scServiceSelect').value) : null;
+  _scSelected = null;
+  scLoadProducts();
+}
+function scSort(s) {
+  _scSort = s;
+  document.querySelectorAll('.sort-btn').forEach(function(b){ b.classList.toggle('active', b.id === 'sort-' + s); });
+  _scSelected = null;
+  scLoadProducts();
+}
+
+async function scBuy() {
+  if (!_scSelected) return;
+  var price = _scSelected.price;
+  if (_balance < price) {
+    toast('Saldo tidak cukup. Top up dulu.', 'err'); openDepModal(price - _balance > 1000 ? price - _balance : 10000); return;
+  }
+  var btn = q('scBuyBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Memproses...';
+  try {
+    var cnt  = _scCountries.find(function(c){ return c.id === _scSelected.country_id; });
+    var svc  = _scServices.find(function(s){ return s.id === _scSelected.platform_id; });
+    var body = {
+      provider      : 'smscode',
+      product_id    : _scSelected.id,
+      price         : price,
+      price_raw     : _scSelected.price_raw || price,
+      country_id    : _scSelected.country_id  || null,
+      platform_id   : _scSelected.platform_id || null,
+      service_name  : svc  ? svc.name  : (_scSelected.name||''),
+      country_name  : cnt  ? cnt.name  : '—',
+    };
+    var j = await uf('POST', '/api/otp/order', body);
+    if (!j.ok) { toast(j.message || 'Gagal order.', 'err'); return; }
+    _balance = j.balance || _balance;
+    updateBal();
+    toast('Nomor berhasil dibeli.', 'ok');
+    _scSelected = null;
+    scRender();
+    q('scOrderEmpty').style.display  = '';
+    q('scOrderDetail').style.display = 'none';
+    q('scBuyBtn').disabled = true;
+    loadActiveOrder(j.orderId);
+  } catch(e) { toast('Error: ' + e.message, 'err'); }
+  finally {
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg> Beli Nomor';
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   RUMAHOTP
+   ══════════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════
+   SERVER 2 — RUMAHOTP  (multi-tab: OTP | PPOB | Cek Rekening | Cek Game)
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ─── State ─────────────────────────────────────────────────────── */
+var _rotpServices   = [];
+var _rotpPinned     = [];
+var _rotpSelSvc     = null;
+var _rotpCountries  = [];
+var _rotpSelCnt     = null;
+var _rotpSelOp      = 'any';
+var _rotpSelPrice   = null;
+var _rotpNumberId   = null;
+var _rotpProviderId = null;
+var _rotpAllItems   = [];
+var _rotpGridSort   = 'price_asc';
+var _rotpSelItem    = null;
+var _rotpItemIndex  = {};   // map idx → item untuk onclick aman
+
+/* PPOB state */
+var _ppobProducts   = [];
+var _ppobFiltered   = [];
+var _ppobCat        = '';
+var _ppobPage       = 1;
+var _ppobPerPage    = 24;
+var _ppobSel        = null;
+var _ppobChecked    = false;
+var _ppobTxPoll     = null;
+
+/* Cek Rekening state */
+var _rekBrands  = [];
+var _rekLoaded  = false;
+
+/* Cek Game state */
+var _gameList   = [];
+var _gameLoaded = false;
+
+/* sv2 active tab */
+var _sv2Tab = 'otp';
+var _sv2TopupInit = false;
+var _sv2RekInit   = false;
+var _sv2GameInit  = false;
+
+/* ─── Sub-tab switch ─────────────────────────────────────────────── */
+function sv2ShowTab(tab) {
+  _sv2Tab = tab;
+  ['otp','topup','cekrek','cekgame'].forEach(function(t) {
+    var btn  = q('sv2t-' + t);
+    var pane = t === 'otp'     ? q('sv2PaneOtp')     :
+               t === 'topup'   ? q('sv2PaneTopup')   :
+               t === 'cekrek'  ? q('sv2PaneCekRek')  :
+               q('sv2PaneCekGame');
+    if (btn)  btn.classList.toggle('active', t === tab);
+    if (pane) pane.style.display = t === tab ? '' : 'none';
+  });
+  if (tab === 'topup'   && !_sv2TopupInit) { _sv2TopupInit = true; ppobInit(); }
+  if (tab === 'cekrek'  && !_sv2RekInit)   { _sv2RekInit   = true; rekInit();  }
+  if (tab === 'cekgame' && !_sv2GameInit)  { _sv2GameInit  = true; gameInit(); }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   NOMOR OTP (Server 2 Virtual Numbers)
+   ══════════════════════════════════════════════════════════════════ */
+async function rotpLoadServices() {
+  q('rotpGrid').innerHTML = '<div class="skel" style="height:80px"></div>'.repeat(6);
+  q('rotpServiceSelect').innerHTML = '<option value="">Semua Platform</option>';
+  q('rotpCountrySelect').innerHTML = '<option value="">Pilih Negara</option>';
+  q('rotpCountrySelect').disabled  = true;
+  try {
+    var [rs, rp] = await Promise.all([
+      uf('GET', '/api/otp/services'),
+      uf('GET', '/api/otp/pinned'),
+    ]);
+    if (!rs.ok) throw new Error(rs.message || 'Gagal load layanan');
+    _rotpServices = rs.data || [];
+    _rotpPinned   = rp.data || [];
+
+    _rotpServices = _rotpServices.map(function(s) {
+      return Object.assign({}, s, {
+        service_id: String(s.service_code !== undefined ? s.service_code : (s.service_id || s.id || '')),
+        name: s.service_name || s.name || String(s.service_code || ''),
+      });
+    });
+
+    var sorted = _rotpServices.slice().sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); });
+    // Pindahkan WhatsApp ke posisi paling atas
+    var waIdx = sorted.findIndex(function(s){ return (s.name||'').toLowerCase().includes('whatsapp'); });
+    if (waIdx > 0) { var wa = sorted.splice(waIdx,1)[0]; sorted.unshift(wa); }
+    var opts = sorted.map(function(s){ return '<option value="' + esc(s.service_id) + '">' + esc(s.name) + '</option>'; }).join('');
+    q('rotpServiceSelect').innerHTML = '<option value="">Semua Platform</option>' + opts;
+    q('rotpServiceLabel').textContent = sorted.length + ' platform';
+    // Default ke WhatsApp jika tersedia
+    if (waIdx !== -1 || sorted.length > 0) {
+      var defaultSvc = sorted.find(function(s){ return (s.name||'').toLowerCase().includes('whatsapp'); }) || null;
+      if (defaultSvc) {
+        q('rotpServiceSelect').value = defaultSvc.service_id;
+        await rotpOnServiceChange();
+        return;
+      }
+    }
+    rotpBuildGrid();
+  } catch(e) {
+    q('rotpGrid').innerHTML = '<div class="notice error" style="grid-column:1/-1">' + esc(e.message) + '</div>';
+  }
+}
+
+async function rotpOnServiceChange() {
+  var svcId = q('rotpServiceSelect').value;
+  q('rotpCountrySelect').innerHTML = '<option value="">Pilih Negara</option>';
+  q('rotpCountrySelect').disabled  = true;
+  _rotpCountries = [];
+  _rotpSelSvc    = svcId ? (_rotpServices.find(function(s){ return s.service_id === svcId; }) || null) : null;
+  _rotpSelCnt = null; _rotpSelItem = null; _rotpAllItems = [];
+  rotpResetOrder();
+
+  if (!svcId) { rotpBuildGrid(); return; }
+
+  q('rotpGrid').innerHTML = '<div class="skel" style="height:80px"></div>'.repeat(6);
+  try {
+    var r = await uf('GET', '/api/otp/countries/' + encodeURIComponent(svcId));
+    if (!r.ok) throw new Error(r.message || 'Gagal load negara');
+    _rotpCountries = r.data || [];
+
+    var cSorted = _rotpCountries.slice().sort(function(a,b){ return (a.name||a.country||'').localeCompare(b.name||b.country||''); });
+    var cOpts = cSorted.map(function(c){
+      var cname = c.name || c.country || '—';
+      return '<option value="' + esc(String(c.number_id)) + '">' + esc(cname) + '</option>';
+    }).join('');
+    q('rotpCountrySelect').innerHTML = '<option value="">Pilih Negara</option>' + cOpts;
+    q('rotpCountrySelect').disabled  = false;
+
+    // Default ke Indonesia jika tersedia
+    var idCnt = _rotpCountries.find(function(c){ return (c.name||c.country||'').toLowerCase().includes('indonesia'); });
+    if (idCnt) {
+      q('rotpCountrySelect').value = String(idCnt.number_id);
+      rotpOnCountryChange();
+    } else {
+      _rotpAllItems = [];
+      rotpBuildGrid();
+    }
+  } catch(e) {
+    q('rotpGrid').innerHTML = '<div class="notice error" style="grid-column:1/-1">' + esc(e.message) + '</div>';
+  }
+}
+
+function rotpOnCountryChange() {
+  var numId = q('rotpCountrySelect').value;
+  _rotpSelItem = null;
+  rotpResetOrder();
+  if (!numId) {
+    // Kembali ke state "pilih negara"
+    _rotpAllItems = [];
+    rotpBuildGrid();
+    return;
+  }
+  var cnt = _rotpCountries.find(function(c){ return String(c.number_id) === String(numId); });
+  if (cnt) {
+    // Expand SEMUA entri pricelist untuk negara ini sebagai kartu terpisah
+    var pricelists = (cnt.pricelist || []).filter(function(pl){ return pl.available !== false; });
+    if (!pricelists.length) pricelists = cnt.pricelist || [];
+    _rotpAllItems = pricelists.map(function(pl) {
+      return { svc: _rotpSelSvc, country: cnt, pl: pl };
+    });
+    rotpRenderGrid();
+  }
+}
+
+function rotpBuildGrid() {
+  if (!q('rotpServiceSelect').value) {
+    q('rotpGrid').innerHTML = '<div class="empty" style="grid-column:1/-1;padding:2rem 0;text-align:center;color:var(--t3);font-size:.75rem">'
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:28px;height:28px;display:block;margin:0 auto .6rem;opacity:.3"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>'
+      + 'Pilih platform untuk melihat negara & harga</div>';
+    return;
+  }
+  if (!q('rotpCountrySelect').value || _rotpAllItems.length === 0) {
+    q('rotpGrid').innerHTML = '<div class="empty" style="grid-column:1/-1;padding:2rem 0;text-align:center;color:var(--t3);font-size:.75rem">'
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:28px;height:28px;display:block;margin:0 auto .6rem;opacity:.3"><path d="M3 12a9 9 0 1 0 18 0A9 9 0 0 0 3 12"/><path d="M9 12h6M12 9v6"/></svg>'
+      + 'Pilih negara untuk melihat daftar harga</div>';
+    q('rotpServiceLabel').textContent = _rotpCountries.length + ' negara tersedia';
+    return;
+  }
+  rotpRenderGrid();
+}
+
+function rotpGridSort(mode) {
+  _rotpGridSort = mode;
+  ['price_asc','price_desc','stock_desc'].forEach(function(m){ var el=q('rotpSort-'+m); if(el) el.classList.toggle('active', m === mode); });
+  rotpRenderGrid();
+}
+
+function rotpFilterGrid() { rotpRenderGrid(); }
+
+function rotpRenderGrid() {
+  var q2   = (q('rotpSearch').value||'').toLowerCase();
+  var list = _rotpAllItems.filter(function(item){
+    if (!q2) return true;
+    var cname = item.country.name || item.country.country || '';
+    return cname.toLowerCase().includes(q2) || ((item.svc&&item.svc.name)||'').toLowerCase().includes(q2);
+  });
+
+  if (_rotpGridSort === 'price_desc') {
+    list = list.slice().sort(function(a,b){ return (b.pl.price||0) - (a.pl.price||0); });
+  } else if (_rotpGridSort === 'stock_desc') {
+    list = list.slice().sort(function(a,b){ return (b.pl.stock||0) - (a.pl.stock||0); });
+  } else {
+    list = list.slice().sort(function(a,b){ return (a.pl.price||0) - (b.pl.price||0); });
+  }
+
+  if (!list.length) {
+    q('rotpGrid').innerHTML = '<div class="empty" style="grid-column:1/-1">Tidak ada nomor tersedia</div>';
+    q('rotpServiceLabel').textContent = '0 item';
+    return;
+  }
+
+  _rotpItemIndex = {};
+  q('rotpGrid').innerHTML = list.map(function(item, idx) {
+    var c   = item.country;
+    var pl  = item.pl;
+    var cname = c.name || c.country || '—';
+    var key = String(c.number_id) + ':' + String(pl.provider_id||'');
+    var sel = _rotpSelItem && _rotpSelItem.key === key;
+    var pinned = item.svc && _rotpPinned.includes(item.svc.service_id);
+    // Badge server: tampilkan server_id jika ada lebih dari 1 pricelist
+    var serverBadge = (pl.server_id !== undefined && _rotpAllItems.length > 1)
+      ? ' <span style="font-size:.6rem;font-weight:600;padding:.1rem .35rem;border-radius:3px;background:rgba(99,102,241,.15);color:var(--ac);vertical-align:middle">Sv ' + pl.server_id + '</span>'
+      : '';
+    _rotpItemIndex[idx] = item;
+    return '<div class="prod-card' + (sel?' selected':'') + '" onclick="rotpSelectItem(' + idx + ')">'
+      + '<div class="prod-name">' + esc(cname) + serverBadge + (pinned ? ' <span class="pinned-badge">Top</span>' : '') + '</div>'
+      + '<div class="prod-meta">'
+      + '<span class="prod-price">' + esc(pl.price_format||idr(pl.price||0)) + '</span>'
+      + '<span class="prod-stock">' + (pl.stock||0) + ' stok</span>'
+      + '</div>'
+      + '<div class="prod-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></div>'
+      + '</div>';
+  }).join('');
+  q('rotpServiceLabel').textContent = list.length + ' harga tersedia';
+}
+
+async function rotpSelectItem(idx) {
+  var item = _rotpItemIndex[idx];
+  if (!item) { console.warn('rotpSelectItem: item not found at idx', idx); return; }
+  var c = item.country, pl = item.pl, svc = item.svc;
+  var cname = c.name || c.country || '—';
+  _rotpSelItem    = Object.assign({}, item, { key: String(c.number_id) + ':' + String(pl.provider_id||'') });
+  _rotpSelSvc     = svc;
+  _rotpSelCnt     = c;
+  _rotpSelOp      = 'any';
+  _rotpSelPrice   = pl.price || 0;
+  _rotpNumberId   = c.number_id;
+  _rotpProviderId = pl.provider_id;
+
+  rotpRenderGrid();
+  q('rotpRightEmpty').style.display  = 'none';
+  q('rotpRightOrder').style.display  = '';
+  q('rotpOrdSvc').textContent        = svc ? (svc.name||svc.service_id) : '—';
+  q('rotpOrdCnt').textContent        = cname;
+  q('rotpOrdOp').textContent         = 'Any';
+  q('rotpOrdPrice').textContent      = pl.price_format || idr(pl.price||0);
+  q('rotpOrdBal').textContent        = idr(_balance);
+  q('rotpBuyBtn').disabled           = false;
+
+  try {
+    var r = await uf('GET', '/api/otp/operators/' + encodeURIComponent(cname) + '/' + encodeURIComponent(String(pl.provider_id||'')));
+    if (r.ok && Array.isArray(r.data) && r.data.length > 1) {
+      q('rotpOperatorPanel').style.display = '';
+      // Gunakan single-quote di dalam attr HTML agar tidak conflik dengan attr double-quote
+      q('rotpOpList').innerHTML = '<button class="c-pill active" onclick="rotpSelOp(\'any\',this)">Any</button>'
+        + r.data.map(function(op){
+            // Operator value yang dikirim ke API: pakai name (indosat/telkomsel/any)
+            // Bukan numeric id, sesuai endpoint /api/v2/orders?operator_id=indosat
+            var opVal = String(op.name || op.operator || op.id || 'any');
+            var opLbl = esc(op.name || op.operator || String(op.id || 'any'));
+            return '<button class="c-pill" onclick="rotpSelOp(\'' + opVal + '\',this)">' + opLbl + '</button>';
+          }).join('');
+    } else { q('rotpOperatorPanel').style.display = 'none'; }
+  } catch(e) { q('rotpOperatorPanel').style.display = 'none'; }
+}
+
+function rotpResetOrder() {
+  q('rotpBuyBtn').disabled             = true;
+  q('rotpRightEmpty').style.display    = '';
+  q('rotpRightOrder').style.display    = 'none';
+  q('rotpOperatorPanel').style.display = 'none';
+  _rotpSelOp = 'any'; _rotpSelPrice = null; _rotpNumberId = null; _rotpProviderId = null;
+}
+
+function rotpSelOp(opId, btn) {
+  _rotpSelOp = opId;
+  // Tampilkan label dari tombol yang diklik (bukan raw opId)
+  var label = btn ? (btn.textContent || opId) : (opId === 'any' ? 'Any' : opId);
+  q('rotpOrdOp').textContent = label.trim();
+  q('rotpOpList').querySelectorAll('.c-pill').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+}
+
+async function rotpBuy() {
+  if (!_rotpSelSvc || !_rotpSelCnt || !_rotpSelPrice) return;
+  if (_balance < _rotpSelPrice) {
+    toast('Saldo tidak cukup. Top up dulu.','err');
+    openDepModal(_rotpSelPrice - _balance > 1000 ? _rotpSelPrice - _balance : 10000);
+    return;
+  }
+  var btn = q('rotpBuyBtn'); btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Memproses...';
+  try {
+    var svcId = String(_rotpSelSvc.service_id || _rotpSelSvc.service_code || _rotpSelSvc.id || '');
+    var cname = _rotpSelCnt.name || _rotpSelCnt.country || '—';
+    var body = {
+      provider     : 'rumahotp',
+      number_id    : _rotpNumberId,
+      provider_id  : _rotpProviderId,
+      operator_id  : _rotpSelOp || 'any',
+      price        : _rotpSelPrice,
+      service_id   : svcId,
+      service_name : _rotpSelSvc.name || _rotpSelSvc.service_name || svcId,
+      country_name : cname,
+    };
+    var j = await uf('POST', '/api/otp/order', body);
+    if (!j.ok) { toast(j.message || 'Gagal order.','err'); return; }
+    _balance = j.balance || _balance; updateBal();
+    toast('Nomor berhasil dibeli!', 'ok');
+    loadActiveOrder(j.orderId);
+    q('rotpServiceSelect').value = '';
+    q('rotpCountrySelect').innerHTML = '<option value="">Pilih Negara</option>';
+    q('rotpCountrySelect').disabled  = true;
+    _rotpSelSvc = null; _rotpSelCnt = null; _rotpSelItem = null; _rotpAllItems = [];
+    rotpResetOrder(); rotpBuildGrid();
+  } catch(e) { toast('Error: ' + e.message,'err'); }
+  finally {
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg> Beli Nomor';
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PPOB & TOPUP
+   ══════════════════════════════════════════════════════════════════ */
+async function ppobInit() {
+  q('ppobGrid').innerHTML = '<div class="skel" style="height:80px"></div>'.repeat(6);
+  try {
+    var r = await uf('GET', '/api/h2h/products');
+    if (!r.ok) throw new Error(r.message || 'Gagal load produk');
+    _ppobProducts = r.data || [];
+
+    // Build category pills
+    var cats = {};
+    _ppobProducts.forEach(function(p) { var c = (p.category||'lainnya').toLowerCase(); cats[c] = (cats[c]||0) + 1; });
+    var catKeys = Object.keys(cats).sort();
+    var pillHtml = '<button class="cat-pill active" id="ppobCat-all" onclick="ppobSetCat(\'\')">Semua (' + _ppobProducts.length + ')</button>';
+    catKeys.forEach(function(c) {
+      pillHtml += '<button class="cat-pill" id="ppobCat-' + esc(c) + '" onclick="ppobSetCat(\'' + esc(c) + '\')">' + esc(c) + ' (' + cats[c] + ')</button>';
+    });
+    q('ppobCatRow').innerHTML = pillHtml;
+
+    _ppobFiltered = _ppobProducts.slice();
+    _ppobPage = 1;
+    ppobRender();
+  } catch(e) {
+    q('ppobGrid').innerHTML = '<div class="notice error" style="grid-column:1/-1">' + esc(e.message) + '</div>';
+  }
+}
+
+function ppobSetCat(cat) {
+  _ppobCat = cat;
+  _ppobPage = 1;
+  _ppobSel  = null;
+  ppobResetOrder();
+  document.querySelectorAll('.cat-pill').forEach(function(b){ b.classList.remove('active'); });
+  var active = q('ppobCat-' + (cat || 'all')); if (active) active.classList.add('active');
+  ppobFilterProducts();
+}
+
+function ppobFilterProducts() {
+  var q2 = (q('ppobSearch').value||'').toLowerCase();
+  _ppobFiltered = _ppobProducts.filter(function(p) {
+    if (_ppobCat && (p.category||'').toLowerCase() !== _ppobCat) return false;
+    if (!q2) return true;
+    return (p.name||'').toLowerCase().includes(q2)
+      || (p.brand||'').toLowerCase().includes(q2)
+      || (p.type||'').toLowerCase().includes(q2)
+      || (p.code||'').toLowerCase().includes(q2);
+  });
+  _ppobPage = 1;
+  ppobRender();
+}
+
+function ppobRender() {
+  var total = _ppobFiltered.length;
+  var totalPages = Math.ceil(total / _ppobPerPage) || 1;
+  if (_ppobPage > totalPages) _ppobPage = totalPages;
+  var start = (_ppobPage - 1) * _ppobPerPage;
+  var pageItems = _ppobFiltered.slice(start, start + _ppobPerPage);
+
+  q('ppobCountLabel').textContent = total + ' produk';
+
+  if (!pageItems.length) {
+    q('ppobGrid').innerHTML = '<div class="empty" style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Produk tidak ditemukan.</div>';
+    q('ppobPagRow').innerHTML = '';
+    return;
+  }
+
+  // Pakai index-based onclick supaya aman (hindari quote issue)
+  _ppobIndexMap = {};
+  q('ppobGrid').innerHTML = pageItems.map(function(p, i) {
+    var sel = _ppobSel && _ppobSel.code === p.code;
+    var hasDisc = p.price_info && p.price_info.price_discount_percent > 0;
+    _ppobIndexMap[i] = p;
+    return '<div class="ppob-card' + (sel?' selected':'') + '" onclick="ppobSelectProduct(' + i + ')">'
+      + '<div class="ppob-card-brand">' + esc(p.brand||p.category||'') + '</div>'
+      + '<div class="ppob-card-name">' + esc(p.name||p.code||'') + '</div>'
+      + '<div>'
+      + '<span class="ppob-card-price">' + (p.price_format||idr(p.price||0)) + '</span>'
+      + (hasDisc ? '<span class="ppob-card-disc">-' + p.price_info.price_discount_percent + '%</span>' : '')
+      + '</div>'
+      + (hasDisc ? '<div class="ppob-card-orig">' + idr(p.price_info.price_original) + '</div>' : '')
+      + '<div class="ppob-card-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></div>'
+      + '</div>';
+  }).join('');
+
+  // Pagination row
+  var pagHtml = '<span>Hal ' + _ppobPage + ' / ' + totalPages + ' (' + total + ' produk)</span>';
+  pagHtml += '<div style="display:flex;gap:.4rem">';
+  if (_ppobPage > 1) pagHtml += '<button class="sort-btn" onclick="ppobChangePage(' + (_ppobPage-1) + ')">← Prev</button>';
+  if (_ppobPage < totalPages) pagHtml += '<button class="sort-btn" onclick="ppobChangePage(' + (_ppobPage+1) + ')">Next →</button>';
+  pagHtml += '</div>';
+  q('ppobPagRow').innerHTML = pagHtml;
+}
+
+function ppobChangePage(p) {
+  _ppobPage = p;
+  ppobRender();
+  var scroll = document.querySelector('#sv2PaneTopup .prod-scroll');
+  if (scroll) scroll.scrollTop = 0;
+}
+
+var _ppobIndexMap = {};
+function ppobSelectProduct(idx) {
+  _ppobSel = _ppobIndexMap[idx] || null;
+  if (!_ppobSel) { console.warn('ppobSelectProduct: not found at idx', idx); return; }
+  _ppobChecked = false;
+  q('ppobCheckResult').innerHTML = '';
+  q('ppobTxStatus').innerHTML    = '';
+  ppobRender();
+  if (!_ppobSel) return;
+  var p = _ppobSel;
+
+  q('ppobOrderEmpty').style.display  = 'none';
+  q('ppobOrderDetail').style.display = '';
+  q('ppobOrdName').textContent  = p.name || p.code;
+  q('ppobOrdCat').textContent   = (p.category||'') + (p.type ? ' / ' + p.type : '');
+  q('ppobOrdPrice').textContent = p.price_format || idr(p.price||0);
+  q('ppobOrdBal').textContent   = idr(_balance);
+
+  // Set target label & hint based on category/brand
+  var cat = (p.category||'').toLowerCase();
+  var brand = (p.brand||'').toLowerCase();
+  var targetLabel = 'Nomor Tujuan / User ID';
+  var hint = '';
+  var showCheck = false;
+  if (cat === 'game') {
+    targetLabel = 'User ID / Player ID';
+    hint = 'Masukkan User ID game ' + (p.brand||'') + '. Beberapa game membutuhkan Zone ID — pisahkan dengan spasi.';
+    showCheck = true;
+  } else if (brand.includes('dana') || brand.includes('ovo') || brand.includes('gopay') || brand.includes('shopeepay') || cat === 'emoney' || cat === 'ewallet') {
+    targetLabel = 'Nomor HP / Akun E-Wallet';
+    hint = 'Masukkan nomor HP yang terdaftar di ' + (p.brand||'e-wallet');
+    showCheck = true;
+  } else if (cat === 'pulsa' || cat === 'data' || cat === 'telepon') {
+    targetLabel = 'Nomor HP';
+    hint = 'Masukkan nomor HP tujuan (contoh: 08xx atau +62xx)';
+  } else if (brand.includes('pln') || cat === 'listrik' || cat === 'pln') {
+    targetLabel = 'ID Pelanggan PLN';
+    hint = 'Masukkan nomor ID pelanggan PLN (12 digit)';
+  } else {
+    hint = 'Masukkan nomor atau ID tujuan dengan benar';
+  }
+
+  q('ppobTargetLabel').textContent = targetLabel;
+  q('ppobTargetHint').textContent  = hint;
+  q('ppobTarget').value = '';
+  q('ppobTarget').placeholder = targetLabel + '...';
+  q('ppobCheckRow').style.display  = showCheck ? '' : 'none';
+  q('ppobBuyBtn').disabled         = false;
+}
+
+async function ppobCheck() {
+  if (!_ppobSel) return;
+  var target = (q('ppobTarget').value||'').trim();
+  if (!target) { toast('Masukkan nomor/ID tujuan dulu.','err'); return; }
+  var btn = q('ppobCheckBtn'); btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Memeriksa...';
+  q('ppobCheckResult').innerHTML = '';
+  try {
+    var p = _ppobSel;
+    var cat = (p.category||'').toLowerCase();
+    var url, r;
+    if (cat === 'game') {
+      var parts = target.split(/\s+/);
+      var userId = parts[0], serverId = parts[1]||'';
+      url = '/api/h2h/check-game?account_code=' + encodeURIComponent(p.brand||p.code) + '&account_number=' + encodeURIComponent(userId + (serverId ? '|' + serverId : ''));
+    } else {
+      url = '/api/h2h/check-rekening?bank_code=' + encodeURIComponent(p.brand||p.code) + '&account_number=' + encodeURIComponent(target);
+    }
+    r = await uf('GET', url);
+    if (!r.ok) throw new Error(r.message || 'Gagal verifikasi');
+    var d = r.data;
+    var name = d.account_name || d.name || d.nickname || '—';
+    _ppobChecked = true;
+    q('ppobCheckResult').innerHTML = '<div class="check-result">'
+      + '<div class="check-result-icon ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></div>'
+      + '<div class="check-result-main"><div class="check-result-name">' + esc(name) + '</div>'
+      + '<div class="check-result-sub">✓ Akun valid — ' + esc(d.account_number||target) + '</div></div>'
+      + '</div>';
+  } catch(e) {
+    q('ppobCheckResult').innerHTML = '<div class="check-result error">'
+      + '<div class="check-result-icon err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>'
+      + '<div class="check-result-main"><div class="check-result-name">Tidak Ditemukan</div>'
+      + '<div class="check-result-sub">' + esc(e.message) + '</div></div>'
+      + '</div>';
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> Cek Akun';
+}
+
+async function ppobBuy() {
+  if (!_ppobSel) return;
+  var target = (q('ppobTarget').value||'').trim();
+  if (!target) { toast('Masukkan nomor/ID tujuan.', 'err'); return; }
+  if (_balance < _ppobSel.price) {
+    toast('Saldo tidak cukup. Top up dulu.','err');
+    openDepModal(Math.max(10000, _ppobSel.price - _balance + 1000));
+    return;
+  }
+  var btn = q('ppobBuyBtn'); btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Memproses...';
+  q('ppobTxStatus').innerHTML = '';
+  try {
+    var body = { product_code: _ppobSel.code, target: target, price: _ppobSel.price };
+    var j = await uf('POST', '/api/h2h/transaksi', body);
+    if (!j.ok) { toast(j.message||'Transaksi gagal.','err'); return; }
+    if (j.balance !== undefined) { _balance = j.balance; updateBal(); }
+    var txData = j.data || {};
+    toast('Transaksi berhasil dikirim!','ok');
+    ppobShowTxStatus(txData);
+    if (txData.transaksi_id || txData.id) ppobPollTx(txData.transaksi_id || txData.id);
+  } catch(e) { toast('Error: ' + e.message, 'err'); }
+  finally {
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg> Beli Produk';
+  }
+}
+
+function ppobShowTxStatus(d) {
+  var st = (d.status||'pending').toLowerCase();
+  var stClass = st === 'success' ? 'success' : st === 'failed' || st === 'error' ? 'failed' : st === 'process' ? 'process' : 'pending';
+  var stLabel = { success:'Berhasil', pending:'Menunggu', failed:'Gagal', process:'Diproses', error:'Error' };
+  q('ppobTxStatus').innerHTML = '<div class="tx-status-card">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem">'
+    + '<span style="font-size:.75rem;font-weight:600;color:var(--t2)">Status Transaksi</span>'
+    + '<span class="tx-status-badge ' + stClass + '">' + esc(stLabel[st]||st) + '</span>'
+    + '</div>'
+    + (d.transaksi_id || d.id ? '<div class="order-row"><span class="order-key">ID Transaksi</span><span class="order-val" style="font-family:var(--mono);font-size:.7rem">' + esc(d.transaksi_id||d.id||'—') + '</span></div>' : '')
+    + (d.target ? '<div class="order-row"><span class="order-key">Tujuan</span><span class="order-val">' + esc(d.target) + '</span></div>' : '')
+    + (d.sn || d.serial ? '<div class="order-row"><span class="order-key">SN</span><span class="order-val" style="font-family:var(--mono)">' + esc(d.sn||d.serial) + '</span></div>' : '')
+    + (d.message ? '<div style="margin-top:.5rem;font-size:.72rem;color:var(--t3)">' + esc(d.message) + '</div>' : '')
+    + '</div>';
+}
+
+function ppobPollTx(txId) {
+  if (_ppobTxPoll) clearInterval(_ppobTxPoll);
+  var attempts = 0;
+  _ppobTxPoll = setInterval(async function() {
+    attempts++;
+    try {
+      var r = await uf('GET', '/api/h2h/transaksi/' + encodeURIComponent(txId));
+      if (!r.ok) { clearInterval(_ppobTxPoll); return; }
+      ppobShowTxStatus(r.data || {});
+      var st = (r.data && r.data.status||'').toLowerCase();
+      if (st === 'success' || st === 'failed' || st === 'error' || attempts >= 20) {
+        clearInterval(_ppobTxPoll);
+        if (st === 'success') { toast('Transaksi berhasil!','ok'); }
+        else if (st === 'failed' || st === 'error') { toast('Transaksi gagal: ' + (r.data&&r.data.message||''), 'err'); }
+      }
+    } catch(e) { if (attempts >= 10) clearInterval(_ppobTxPoll); }
+  }, 4000);
+}
+
+function ppobResetOrder() {
+  q('ppobOrderEmpty').style.display  = '';
+  q('ppobOrderDetail').style.display = 'none';
+  q('ppobBuyBtn').disabled           = true;
+  q('ppobCheckResult').innerHTML     = '';
+  q('ppobTxStatus').innerHTML        = '';
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CEK REKENING
+   ══════════════════════════════════════════════════════════════════ */
+async function rekInit() {
+  q('rekBrandList').innerHTML = '<div class="skel" style="height:36px"></div>'.repeat(6);
+  try {
+    var r = await uf('GET', '/api/h2h/rekening');
+    if (!r.ok) throw new Error(r.message || 'Gagal load bank');
+    _rekBrands = r.data || [];
+    // Populate select
+    var sel = q('rekBankSelect');
+    sel.innerHTML = '<option value="">Pilih Bank / E-Wallet</option>';
+    var banks = _rekBrands.filter(function(b){ return b.type === 'bank' || b.type === 'bank'; });
+    var ewallets = _rekBrands.filter(function(b){ return b.type === 'ewallet'; });
+    if (banks.length) {
+      var og = document.createElement('optgroup'); og.label = 'Bank';
+      banks.forEach(function(b){ var o=document.createElement('option');o.value=b.bank_code;o.textContent=b.bank_name;og.appendChild(o); });
+      sel.appendChild(og);
+    }
+    if (ewallets.length) {
+      var og2 = document.createElement('optgroup'); og2.label = 'E-Wallet';
+      ewallets.forEach(function(b){ var o=document.createElement('option');o.value=b.bank_code;o.textContent=b.bank_name;og2.appendChild(o); });
+      sel.appendChild(og2);
+    }
+    // Brand list display
+    var typeBadge = { bank:'Bank', ewallet:'E-Wallet' };
+    q('rekBrandList').innerHTML = _rekBrands.map(function(b) {
+      var typeColor = b.type === 'bank' ? 'rgba(99,102,241,.15)' : 'rgba(74,222,128,.1)';
+      var typeText  = b.type === 'bank' ? 'var(--ac)' : 'var(--em)';
+      return '<div style="background:var(--bg2);border:1px solid var(--line);border-radius:var(--rad2);padding:.5rem .7rem;display:flex;align-items:center;justify-content:space-between;font-size:.72rem;cursor:pointer" '
+        + 'onclick="q(\'rekBankSelect\').value=\'' + esc(b.bank_code) + '\'">'
+        + '<span style="font-weight:600;color:var(--t1)">' + esc(b.bank_name) + '</span>'
+        + '<span style="font-size:.6rem;padding:.1rem .3rem;border-radius:3px;background:' + typeColor + ';color:' + typeText + '">' + esc(typeBadge[b.type]||b.type) + '</span>'
+        + '</div>';
+    }).join('');
+  } catch(e) {
+    q('rekBrandList').innerHTML = '<div class="notice error">' + esc(e.message) + '</div>';
+  }
+}
+
+async function rekDoCheck() {
+  var bankCode = q('rekBankSelect').value;
+  var accNum   = (q('rekAccountNumber').value||'').trim();
+  if (!bankCode) { toast('Pilih bank/e-wallet dulu.','err'); return; }
+  if (!accNum)   { toast('Masukkan nomor rekening.','err'); return; }
+  var btn = q('rekCheckBtn'); btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Memeriksa...';
+  q('rekResult').innerHTML = '';
+  try {
+    var r = await uf('GET', '/api/h2h/check-rekening?bank_code=' + encodeURIComponent(bankCode) + '&account_number=' + encodeURIComponent(accNum));
+    if (!r.ok) throw new Error(r.message || 'Gagal cek rekening');
+    var d = r.data;
+    var name = d.account_name || d.name || '—';
+    var bankLabel = (_rekBrands.find(function(b){ return b.bank_code === bankCode; })||{}).bank_name || bankCode;
+    q('rekResult').innerHTML = '<div class="check-result">'
+      + '<div class="check-result-icon ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></div>'
+      + '<div class="check-result-main">'
+      + '<div class="check-result-name">' + esc(name) + '</div>'
+      + '<div class="check-result-sub">' + esc(bankLabel) + ' · ' + esc(d.account_number||accNum) + '</div>'
+      + '</div></div>';
+  } catch(e) {
+    q('rekResult').innerHTML = '<div class="check-result error">'
+      + '<div class="check-result-icon err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>'
+      + '<div class="check-result-main"><div class="check-result-name">Rekening Tidak Ditemukan</div>'
+      + '<div class="check-result-sub">' + esc(e.message) + '</div></div>'
+      + '</div>';
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> Cek Rekening';
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CEK GAME ID
+   ══════════════════════════════════════════════════════════════════ */
+/* Games yang butuh Zone/Server ID */
+var _gameNeedsServer = ['mlbb','mobilelegends','aov','roh','honkaiimpact','genshinimpact'];
+
+async function gameInit() {
+  q('gameBrandList').innerHTML = '<div class="skel" style="height:36px"></div>'.repeat(6);
+  try {
+    var r = await uf('GET', '/api/h2h/games');
+    if (!r.ok) throw new Error(r.message || 'Gagal load game list');
+    _gameList = r.data || [];
+    // Populate select
+    var sel = q('gameSelect');
+    sel.innerHTML = '<option value="">Pilih Game</option>';
+    _gameList.forEach(function(g) {
+      var o = document.createElement('option');
+      o.value = g.account_code || g.code || g.id;
+      o.textContent = g.account_name || g.name;
+      sel.appendChild(o);
+    });
+    // Brand list grid
+    q('gameBrandList').innerHTML = _gameList.map(function(g) {
+      var code = g.account_code || g.code || g.id;
+      var name = g.account_name || g.name || code;
+      return '<div style="background:var(--bg2);border:1px solid var(--line);border-radius:var(--rad2);padding:.5rem .7rem;font-size:.72rem;font-weight:600;color:var(--t1);cursor:pointer;transition:all .15s" '
+        + 'onclick="q(\'gameSelect\').value=\'' + esc(code) + '\';gameSelectChange()">'
+        + esc(name) + '</div>';
+    }).join('');
+  } catch(e) {
+    q('gameBrandList').innerHTML = '<div class="notice error">' + esc(e.message) + '</div>';
+  }
+}
+
+function gameSelectChange() {
+  var code = q('gameSelect').value;
+  var needsServer = _gameNeedsServer.some(function(k){ return code.toLowerCase().includes(k); });
+  q('gameServerRow').style.display = needsServer ? '' : 'none';
+  q('gameResult').innerHTML = '';
+}
+
+async function gameDoCheck() {
+  var code   = q('gameSelect').value;
+  var userId = (q('gameUserId').value||'').trim();
+  var srvId  = (q('gameServerId').value||'').trim();
+  if (!code)   { toast('Pilih game dulu.','err'); return; }
+  if (!userId) { toast('Masukkan User ID.','err'); return; }
+  var btn = q('gameCheckBtn'); btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Memeriksa...';
+  q('gameResult').innerHTML = '';
+  try {
+    var accountNum = userId + (srvId ? '|' + srvId : '');
+    var r = await uf('GET', '/api/h2h/check-game?account_code=' + encodeURIComponent(code) + '&account_number=' + encodeURIComponent(accountNum));
+    if (!r.ok) throw new Error(r.message || 'Gagal cek akun');
+    var d = r.data;
+    var name = d.account_name || d.name || d.nickname || '—';
+    var gameName = (_gameList.find(function(g){ return (g.account_code||g.code||g.id) === code; })||{}).account_name || code;
+    q('gameResult').innerHTML = '<div class="check-result">'
+      + '<div class="check-result-icon ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></div>'
+      + '<div class="check-result-main">'
+      + '<div class="check-result-name">' + esc(name) + '</div>'
+      + '<div class="check-result-sub">' + esc(gameName) + ' · ID: ' + esc(userId) + (srvId ? ' · Zone: ' + esc(srvId) : '') + '</div>'
+      + '</div></div>';
+  } catch(e) {
+    q('gameResult').innerHTML = '<div class="check-result error">'
+      + '<div class="check-result-icon err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>'
+      + '<div class="check-result-main"><div class="check-result-name">Akun Tidak Ditemukan</div>'
+      + '<div class="check-result-sub">' + esc(e.message) + '</div></div>'
+      + '</div>';
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> Cek Akun Game';
+}
+
+async function loadActiveOrder(forcedId) {
+  try {
+    var orders = await uf('GET', '/api/otp/orders');
+    if (!orders.ok || !orders.data) return;
+    var active = forcedId
+      ? orders.data.find(function(o){ return o.id === forcedId; })
+      : orders.data.find(function(o){ return o.status === 'waiting' || o.status === 'otp_received'; });
+    if (!active) { q('activeOrderWrap').style.display = 'none'; return; }
+    _activeOrd = active;
+    renderActiveOrder(active);
+    startActivePoll(active.id);
+  } catch(e) {}
+}
+
+function renderActiveOrder(ord) {
+  var wrap = q('activeOrderWrap'); wrap.style.display = '';
+  var timeLeft = Math.max(0, ord.expiresAt - Date.now());
+  var totalSec = Math.max(1, Math.round((ord.expiresAt - ord.createdAt) / 1000));
+  var pct = Math.min(100, timeLeft / (totalSec * 1000) * 100);
+  var barColor = pct > 50 ? 'var(--em)' : pct > 20 ? 'var(--yel)' : 'var(--red)';
+  var isCompleted = ord.status === 'completed';
+  var isDone = ['completed','canceled','expired'].includes(ord.status);
+  var srvLabel = ord.provider === 'smscode' ? 'Server 1' : 'Server 2';
+
+  wrap.innerHTML = '<div class="active-order">'
+    + '<div class="ao-header">'
+    + '<span class="ao-service">' + esc(ord.service||'—') + ' <span style="font-size:.65rem;color:var(--t3);font-weight:400">' + srvLabel + '</span></span>'
+    + '<span class="ao-status-badge ' + ord.status + '">' + esc(ord.status) + '</span>'
+    + '</div>'
+    + '<div class="ao-phone">' + esc(ord.phoneNumber||'—')
+    + '<button class="cp-btn" data-copy-val="' + esc(ord.phoneNumber||'') + '" title="Salin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>'
+    + '</div>'
+    + (ord.otp
+        ? '<div class="otp-box" id="aoOtpBox">' + esc(ord.otp)
+          + ' <button class="cp-btn" data-copy-val="' + esc(ord.otp) + '" title="Salin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>'
+          + '</div>'
+        : '<div class="otp-box" id="aoOtpBox" style="color:var(--t3);font-size:.85rem;font-family:var(--sans);letter-spacing:0">'
+          + (isDone ? (ord.status === 'canceled' ? 'Dibatalkan' : 'Kadaluarsa') : 'Menunggu OTP...')
+          + '</div>')
+    + (ord.otpMsg ? '<div class="otp-msg" id="aoOtpMsg">' + esc(ord.otpMsg) + '</div>' : '<div id="aoOtpMsg"></div>')
+    + (!isDone ? '<div class="timer-row" id="aoTimerRow"><span class="timer-val" id="aoTimerTxt">—</span><div class="timer-bar-wrap"><div class="timer-bar" id="aoTimerBar" style="width:' + pct + '%;background:' + barColor + '"></div></div></div>' : '')
+    + '<div class="ao-actions">'
+    + (!isDone && ord.provider === 'smscode' ? '<button class="btn-sm" onclick="aoResend()" id="aoBtnResend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.86"/></svg>Kirim Ulang</button>' : '')
+    + (!isDone && (isCompleted || ord.otp) ? '<button class="btn-sm primary" onclick="aoFinish()" id="aoBtnFinish"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Selesaikan</button>' : '')
+    + (function() {
+        if (isDone) return '';
+        // Pembatalan hanya boleh setelah 5 menit (berlaku untuk SEMUA server OTP)
+        var elapsed  = Date.now() - (ord.createdAt || Date.now());
+        var cooldown = 5 * 60 * 1000; // 5 menit
+        var remaining = Math.max(0, cooldown - elapsed);
+        if (remaining > 0) {
+          var remSec = Math.ceil(remaining / 1000);
+          var remMin = Math.floor(remSec / 60);
+          var remS   = remSec % 60;
+          var label  = remMin > 0 ? remMin + 'm ' + remS + 's' : remS + 's';
+          return '<button class="btn-sm danger" id="aoBtnCancel" disabled title="Pembatalan bisa setelah 5 menit">'
+            + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>'
+            + 'Batalkan <span id="aoCancelCd" style="font-family:var(--mono);font-size:.65rem;opacity:.8">(' + label + ')</span></button>';
+        }
+        return '<button class="btn-sm danger" onclick="aoCancel()" id="aoBtnCancel">'
+          + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>Batalkan</button>';
+      })()
+    + (isDone ? '<button class="btn-sm" onclick="q(\'activeOrderWrap\').style.display=\'none\'">Tutup</button>' : '')
+    + '</div>'
+    + '</div>';
+
+  if (!isDone) startCountdown(ord.expiresAt);
+}
+
+function startCountdown(expiresAt) {
+  if (_activeTimer) clearInterval(_activeTimer);
+  _activeTimer = setInterval(function() {
+    var diff = Math.max(0, expiresAt - Date.now());
+    var m = Math.floor(diff/60000), s = Math.floor((diff%60000)/1000);
+    var el = q('aoTimerTxt'); if (!el) { clearInterval(_activeTimer); return; }
+    el.textContent = m + ':' + String(s).padStart(2,'0');
+    var totalSec = 20 * 60;
+    var pct = diff / (totalSec * 1000) * 100;
+    var bar = q('aoTimerBar'); if (bar) {
+      bar.style.width     = Math.max(0,pct) + '%';
+      bar.style.background= pct > 50 ? 'var(--em)' : pct > 20 ? 'var(--yel)' : 'var(--red)';
+    }
+    if (diff === 0) clearInterval(_activeTimer);
+
+    // ── Cancel cooldown countdown — 5 menit, SEMUA server ──
+    if (_activeOrd) {
+      var cancelBtn = q('aoBtnCancel');
+      var cdEl      = q('aoCancelCd');
+      var cooldown  = 5 * 60 * 1000;
+      var elapsed   = Date.now() - (_activeOrd.createdAt || Date.now());
+      var remaining = Math.max(0, cooldown - elapsed);
+
+      if (cancelBtn && cancelBtn.disabled && remaining === 0) {
+        // Cooldown selesai — aktifkan tombol cancel
+        cancelBtn.disabled = false;
+        cancelBtn.onclick  = function(){ aoCancel(); };
+        cancelBtn.title    = '';
+        if (cdEl) cdEl.remove();
+      } else if (cancelBtn && cancelBtn.disabled && cdEl && remaining > 0) {
+        // Update countdown text
+        var rs  = Math.ceil(remaining / 1000);
+        var rm  = Math.floor(rs / 60);
+        var rs2 = rs % 60;
+        cdEl.textContent = '(' + (rm > 0 ? rm + 'm ' + rs2 + 's' : rs2 + 's') + ')';
+        cancelBtn.title  = 'Tunggu ' + cdEl.textContent + ' sebelum batalkan';
+      }
+    }
+  }, 1000);
+}
+
+var _pollTimer = null;
+function startActivePoll(ordId) {
+  if (_pollTimer) clearInterval(_pollTimer);
+  _pollTimer = setInterval(async function() {
+    if (!_activeOrd || ['completed','canceled','expired'].includes(_activeOrd.status) || _activeOrd.otp) {
+      clearInterval(_pollTimer); return;
+    }
+    try {
+      var j = await uf('GET', '/api/otp/order/' + ordId + '/status');
+      if (!j.ok) return;
+      if (j.status !== _activeOrd.status || (j.otp && j.otp !== _activeOrd.otp)) {
+        _activeOrd.status = j.status; _activeOrd.otp = j.otp; _activeOrd.otpMsg = j.otpMsg;
+        renderActiveOrder(_activeOrd);
+        if (['completed','canceled','expired'].includes(j.status)) {
+          clearInterval(_pollTimer);
+          if (_activeTimer) clearInterval(_activeTimer);
+          // refresh balance
+          var me = await uf('GET', '/api/user/me').catch(function(){ return null; });
+          if (me && me.ok) { _balance = me.data.balance||0; updateBal(); }
+        }
+      }
+    } catch(e) {}
+  }, 4000);
+}
+
+async function aoCancel() {
+  // Validasi cooldown untuk RumahOTP
+  if (_activeOrd && _activeOrd.provider === 'rumahotp') {
+    var elapsed   = Date.now() - (_activeOrd.createdAt || Date.now());
+    var remaining = Math.max(0, 3 * 60 * 1000 - elapsed);
+    if (remaining > 0) {
+      var rs = Math.ceil(remaining / 1000);
+      toast('Tunggu ' + rs + ' detik lagi sebelum membatalkan nomor.', 'err');
+      return;
+    }
+  }
+  var btn = q('aoBtnCancel'); if (btn) btn.disabled = true;
+  try {
+    var j = await uf('POST', '/api/otp/order/' + _activeOrd.id + '/cancel', {});
+    if (!j.ok) { toast(j.message||'Gagal cancel.','err'); if (btn) btn.disabled=false; return; }
+    _balance = j.balance || _balance; updateBal();
+    toast('Order dibatalkan.','ok');
+    _activeOrd.status = 'canceled';
+    renderActiveOrder(_activeOrd);
+    clearInterval(_pollTimer); clearInterval(_activeTimer);
+  } catch(e) { toast('Error: '+e.message,'err'); if (btn) btn.disabled=false; }
+}
+async function aoFinish() {
+  try {
+    var j = await uf('POST', '/api/otp/order/' + _activeOrd.id + '/finish', {});
+    if (!j.ok) { toast(j.message||'Gagal.','err'); return; }
+    toast('Order diselesaikan.','ok');
+    _activeOrd.status = 'completed'; renderActiveOrder(_activeOrd);
+  } catch(e) { toast('Error: '+e.message,'err'); }
+}
+async function aoResend() {
+  var btn = q('aoBtnResend'); if (btn) { btn.disabled=true; btn.textContent='...'; }
+  try {
+    var j = await uf('POST', '/api/otp/order/' + _activeOrd.id + '/resend', {});
+    toast(j.message || (j.ok ? 'Permintaan kirim ulang dikirim.' : 'Gagal.'),'ok');
+  } catch(e) { toast('Error: '+e.message,'err'); }
+  finally { if (btn) { btn.disabled=false; btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.86"/></svg>Kirim Ulang'; } }
+}
+
+function copyText(t) {
+  navigator.clipboard.writeText(t).then(function(){ toast('Disalin.','ok'); }).catch(function(){ toast('Gagal menyalin.','err'); });
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   HISTORY
+   ══════════════════════════════════════════════════════════════════ */
+/* ─── History state ──────────────────────────────────────────────── */
+var _histData   = [];
+var _histFilter = 'all';
+
+function histFilter(f) {
+  _histFilter = f;
+  ['all','completed','waiting','expired','canceled'].forEach(function(k) {
+    var b = q('hf-' + k);
+    if (b) b.classList.toggle('active', k === f);
+  });
+  renderHistList();
+}
+
+function renderHistList() {
+  var _hl = q('histList');
+  if (!_hl) return;
+  var list = _histFilter === 'all' ? _histData : _histData.filter(function(o){ return (o.status||'waiting') === _histFilter; });
+  if (!list.length) {
+    var emptyMsg = _histFilter === 'all' ? 'Belum ada riwayat order.' : 'Tidak ada order dengan status ini.';
+    _hl.innerHTML = '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>' + emptyMsg + '</div>';
+    return;
+  }
+  var iconMap = {
+    completed : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>',
+    waiting   : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    expired   : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+    canceled  : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+  };
+  var stLabel = { completed:'Berhasil', waiting:'Menunggu', expired:'Kadaluarsa', canceled:'Batal' };
+  q('histList').innerHTML = '<div class="hist-list">' + list.map(function(o, i) {
+    var st  = o.status || 'waiting';
+    var ic  = iconMap[st] || iconMap.waiting;
+    var lbl = stLabel[st] || st;
+    var dt  = o.createdAt ? new Date(o.createdAt).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+    var prov = o.provider === 'smscode' ? 'Server 1' : 'Server 2';
+    var svcRow = '<div class="hist-svc">' + esc(o.service || '—') + '</div>';
+    var phoneRow = o.phoneNumber ? '<div class="hist-phone">' + esc(o.phoneNumber) + '</div>' : '';
+    var subRow = '<div class="hist-sub">' + esc(o.country||'—') + ' &middot; ' + prov + ' &middot; ' + dt + '</div>';
+    var badge = '<span class="hist-badge ' + st + '">' + lbl + '</span>';
+    return '<div class="hist-item" data-idx="' + i + '" onclick="openHistDetail(' + i + ')">' 
+      + '<div class="hist-icon ' + st + '">' + ic + '</div>'
+      + '<div class="hist-main">' + svcRow + phoneRow + subRow + '</div>'
+      + '<div class="hist-right">'
+      + badge
+      + '<div class="hist-price">' + idr(o.price) + '</div>'
+      + (o.otp ? '<div class="hist-otp">' + esc(o.otp) + '</div>' : '')
+      + '</div>'
+      + '</div>';
+  }).join('') + '</div>';
+}
+
+async function loadHistory() {
+  var _hl = q('histList');
+  if (!_hl) return;
+  _hl.innerHTML = '<div class="skel" style="height:72px;margin-bottom:.5rem"></div>'.repeat(4);
+  try {
+    var j = await uf('GET', '/api/otp/orders');
+    if (!j.ok) { _hl.innerHTML = '<div class="notice error">' + esc(j.message||'Gagal memuat riwayat.') + '</div>'; return; }
+    _histData = j.data || [];
+    renderHistList();
+  } catch(e) { _hl.innerHTML = '<div class="notice error">Gagal memuat riwayat. Cek koneksi.</div>'; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   AKUN — account info, deposit history, change password, logout
+   ══════════════════════════════════════════════════════════════════ */
+async function loadAccountInfo() {
+  var _akunFields = ['akunUsername', 'akunBalance', 'akunEmail', 'akunWhatsapp', 'akunJoined', 'akunApiKey'];
+  function _akunSetLoading() {
+    _akunFields.forEach(function(id) { var el = q(id); if (el) { el.textContent = '...'; el.style.opacity = '.4'; } });
+    var bigBal = q('akunBalanceBig'); if (bigBal) { bigBal.textContent = '...'; bigBal.style.opacity = '.4'; }
+  }
+  function _akunResetDash() {
+    _akunFields.forEach(function(id) { var el = q(id); if (el) { el.textContent = '—'; el.style.opacity = ''; } });
+    var bigBal = q('akunBalanceBig'); if (bigBal) { bigBal.textContent = '—'; bigBal.style.opacity = ''; }
+  }
+  function _akunClearLoading() {
+    _akunFields.forEach(function(id) { var el = q(id); if (el) el.style.opacity = ''; });
+    var bigBal = q('akunBalanceBig'); if (bigBal) bigBal.style.opacity = '';
+  }
+  _akunSetLoading();
+  try {
+    var j = await uf('GET', '/api/user/me');
+    if (!j.ok) {
+      _akunResetDash();
+      // API key tidak valid — hapus & arahkan ke login
+      localStorage.removeItem('userApiKey');
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('username');
+      toast('Sesi kamu telah berakhir. Silakan login ulang.', 'err');
+      setTimeout(function() { location.href = '/login?returnUrl=/otp'; }, 1200);
+      return;
+    }
+    var d = j.data;
+    q('akunUsername').textContent = d.username || '—';
+    q('akunBalance').textContent  = idr(d.balance || 0);
+    var bigBal = q('akunBalanceBig'); if (bigBal) bigBal.textContent = idr(d.balance || 0);
+    q('akunEmail').textContent    = d.email || '—';
+    q('akunWhatsapp').textContent = d.whatsapp || '—';
+    q('akunJoined').textContent   = d.createdAt ? new Date(d.createdAt).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+    // Tampilkan API key — ambil dari localStorage (sudah di-fetch saat login)
+    var savedKey = getApiKey();
+    if (savedKey) {
+      q('akunApiKey').textContent = savedKey;
+    } else if (d.apiKey) {
+      // Fallback: simpan dari response /me jika belum ada di localStorage
+      localStorage.setItem('userApiKey', d.apiKey);
+      q('akunApiKey').textContent = d.apiKey;
+    } else {
+      // Belum ada apiKey sama sekali — fetch khusus
+      try {
+        var ak = await uf('GET', '/api/user/apikey');
+        if (ak.ok && ak.apiKey) {
+          localStorage.setItem('userApiKey', ak.apiKey);
+          q('akunApiKey').textContent = ak.apiKey;
+        } else {
+          q('akunApiKey').textContent = '—';
+        }
+      } catch(e) { q('akunApiKey').textContent = '—'; }
+    }
+    _akunClearLoading();
+    // Sync main balance
+    _balance = d.balance || 0; updateBal();
+  } catch(e) {
+    _akunResetDash();
+    toast('Gagal memuat info akun. Cek koneksi internet.', 'err');
+  }
+}
+
+function copyApiKey() {
+  var key = getApiKey() || (q('akunApiKey') && q('akunApiKey').textContent) || '';
+  if (!key || key === '...' || key === '—') { toast('API Key belum tersedia.', 'err'); return; }
+  navigator.clipboard.writeText(key).then(function() {
+    toast('API Key disalin!', 'ok');
+  }).catch(function() {
+    // Fallback for older browsers
+    var ta = document.createElement('textarea');
+    ta.value = key; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    toast('API Key disalin!', 'ok');
+  });
+}
+
+async function loadDepositHistory() {
+  var el = q('depHistList');
+  el.innerHTML = '<div class="skel" style="height:48px;margin:.3rem 0"></div>'.repeat(3);
+  try {
+    var j = await uf('GET', '/api/deposit/list');
+    if (!j.ok) { el.innerHTML = '<div class="notice error" style="margin:.5rem">Gagal memuat riwayat.</div>'; return; }
+    var list = (j.data || []).slice(0, 20);
+    if (!list.length) { el.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--t3);font-size:.75rem">Belum ada deposit.</div>'; return; }
+    var statusLabel = { success:'Berhasil', pending:'Menunggu', cancel:'Batal' };
+    el.innerHTML = list.map(function(d) {
+      var st  = d.status || 'pending';
+      var dt  = d.createdAt ? new Date(d.createdAt).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+      var lbl = statusLabel[st] || st;
+      return '<div class="dep-hist-item">'
+        + '<div class="dep-hist-dot ' + esc(st) + '"></div>'
+        + '<div class="dep-hist-main">'
+        + '<div class="dep-hist-amount">+ ' + idr(d.amount) + '</div>'
+        + '<div class="dep-hist-date">' + dt + '</div>'
+        + '</div>'
+        + '<div class="dep-hist-status ' + esc(st) + '">' + esc(lbl) + '</div>'
+        + '</div>';
+    }).join('');
+  } catch(e) { el.innerHTML = '<div class="notice error" style="margin:.5rem">Gagal memuat.</div>'; }
+}
+
+async function changePassword() {
+  var oldPwd = (q('chpOld').value || '').trim();
+  var newPwd = (q('chpNew').value || '').trim();
+  var errEl  = q('chpErr');
+  errEl.style.display = 'none';
+  if (!oldPwd) { errEl.textContent = 'Masukkan password lama.'; errEl.style.display=''; return; }
+  if (!newPwd || newPwd.length < 6) { errEl.textContent = 'Password baru minimal 6 karakter.'; errEl.style.display=''; return; }
+  var btn = q('chpBtn'); btn.disabled = true; btn.textContent = 'Menyimpan...';
+  try {
+    var j = await uf('POST', '/api/user/change-password', { oldPassword: oldPwd, newPassword: newPwd });
+    if (!j.ok) { errEl.textContent = j.message || 'Gagal.'; errEl.style.display=''; }
+    else { toast('Password berhasil diubah.', 'ok'); q('chpOld').value=''; q('chpNew').value=''; }
+  } catch(e) { errEl.textContent = 'Error: '+e.message; errEl.style.display=''; }
+  btn.disabled = false; btn.textContent = 'Simpan Password';
+}
+
+function doLogout() {
+  localStorage.removeItem('userApiKey');
+  localStorage.removeItem('userToken');
+  localStorage.removeItem('username');
+  uf('POST', '/api/user/logout', {}).catch(function(){});
+  location.href = '/login';
+}
+
+/* Deposit vars */
+var _depId   = null;
+var _depPoll = null;
+var _depCd   = null;
+
+/* ══════════════════════════════════════════════════════════════════
+   DEPOSIT — input jumlah di sini, QRIS di pay.html
+   ══════════════════════════════════════════════════════════════════ */
+function openDepModal(suggestedAmount) {
+  var modal = q('depModal');
+  modal.style.display = 'flex';
+  var inp = q('depAmount');
+  if (suggestedAmount && suggestedAmount > 0) {
+    inp.value = suggestedAmount;
+  } else {
+    inp.value = '';
+  }
+  q('depErr').style.display = 'none';
+  setTimeout(function() { inp.focus(); }, 80);
+  // Tutup modal kalau klik overlay
+  modal.onclick = function(e) { if (e.target === modal) closeDepModal(); };
+}
+
+function closeDepModal() {
+  q('depModal').style.display = 'none';
+  q('depAmount').value = '';
+  q('depErr').style.display = 'none';
+}
+
+function setDepAmount(val) {
+  q('depAmount').value = val;
+  q('depErr').style.display = 'none';
+}
+
+function showDepErr(msg) {
+  var el = q('depErr');
+  el.style.display = '';
+  el.textContent   = msg;
+}
+
+function goToDepositPay() {
+  var amountVal = parseInt(q('depAmount').value);
+  if (!amountVal || amountVal < 1000) { showDepErr('Minimal Rp1.000'); return; }
+  if (amountVal > 10000000) { showDepErr('Maksimum Rp10.000.000'); return; }
+  // Redirect ke pay.html dengan amount & from param
+  window.location.href = '/payotp?amount=' + amountVal + '&from=' + encodeURIComponent('/otp');
+}
+
+// Alias lama yang masih dipanggil dari beberapa tempat
+function createDeposit() { goToDepositPay(); }
+function cancelDeposit() { closeDepModal(); }
+function checkDepositManual() {}
+function startDepCd() {}
+function pollDeposit() {}
+
+</script>
+<script>(function(){var v="?v="+Date.now();document.querySelectorAll("img[data-logo-img]").forEach(function(el){if(el.src&&el.src.indexOf("/media/logo")>-1)el.src=el.src.split("?")[0]+v;});var fav=document.querySelector("link[rel=icon]");if(fav&&fav.href&&fav.href.indexOf("/media/logo")>-1)fav.href=fav.href.split("?")[0]+v;})();
+
+var _music = {
+  playlist: [],
+  idx: 0,
+  muted: false,
+  vol: 0.35,
+  ready: false,
+  panelOpen: false,
+  fadeTimer: null,
+  endBound: false,
+  gesturePending: false
+};
+
+function initMusic() {
+  try {
+    _music.muted = localStorage.getItem('musicMuted') === '1';
+    var sv = parseFloat(localStorage.getItem('musicVol'));
+    if (!isNaN(sv) && sv >= 0 && sv <= 1) _music.vol = sv;
+    var si = parseInt(localStorage.getItem('musicIdx'), 10);
+    if (!isNaN(si) && si >= 0) _music.idx = si;
+  } catch(e){}
+  var volEl = document.getElementById('mpVol');
+  if (volEl) volEl.value = Math.round(_music.vol * 100);
+}
+
+function applyMusicSettings(settings) {
+  var player = document.getElementById('musicPlayer');
+  var audio  = document.getElementById('bgMusic');
+  if (!settings || !settings.musicUrl || !settings.musicEnabled) {
+    if (player) player.style.display = 'none';
+    return;
+  }
+  // Set atribut mobile penting via JS (backup selain atribut HTML)
+  audio.playsInline = true;
+  audio.setAttribute('playsinline', '');
+  audio.setAttribute('webkit-playsinline', '');
+  var urls = settings.musicUrl.split(',')
+    .map(function(u){ return u.trim(); })
+    .filter(Boolean)
+    .map(function(u){
+      return /^https?:\/\//i.test(u) ? u : location.origin + u;
+    });
+  if (!urls.length) { if (player) player.style.display = 'none'; return; }
+
+  _music.playlist = urls;
+  _music.idx = Math.min(_music.idx, urls.length - 1);
+  _music.ready = true;
+  // Loop hanya aktif jika single track (multi-track dihandle via 'ended' event)
+  audio.loop = (urls.length === 1);
+
+  var prevBtn = document.getElementById('mpPrev');
+  var nextBtn = document.getElementById('mpNext');
+  if (prevBtn) prevBtn.style.display = urls.length > 1 ? '' : 'none';
+  if (nextBtn) nextBtn.style.display = urls.length > 1 ? '' : 'none';
+
+  if (player) player.style.display = 'flex';
+
+  _musicLoad(_music.idx, false);
+  _musicUpdateBtn();
+  _musicUpdateTitle();
+
+  if (!_music.endBound) {
+    _music.endBound = true;
+    audio.addEventListener('ended', function() {
+      if (_music.playlist.length > 1) {
+        _music.idx = (_music.idx + 1) % _music.playlist.length;
+        try { localStorage.setItem('musicIdx', _music.idx); } catch(e){}
+        _musicLoad(_music.idx, true);
+        _musicUpdateTitle();
+      } else {
+        audio.currentTime = 0;
+        if (!_music.muted) audio.play().catch(function(){});
+      }
+    });
+  }
+
+  if (!_music.muted) _musicFadeIn();
+}
+
+function _musicLoad(idx, autoPlay) {
+  var audio = document.getElementById('bgMusic');
+  var url = _music.playlist[idx];
+  // Atribut penting untuk iOS agar audio bisa diputar inline
+  audio.playsInline = true;
+  if (audio.src !== url) { audio.src = url; audio.load(); }
+  audio.volume = _music.muted ? 0 : _music.vol;
+  if (autoPlay && !_music.muted) _musicFadeIn();
+}
+
+function _musicFadeIn() {
+  var audio = document.getElementById('bgMusic');
+  if (!audio || !audio.src) return;
+  clearInterval(_music.fadeTimer);
+  audio.playsInline = true;
+  audio.setAttribute('playsinline', '');
+  // Langsung set volume target — tidak fade via setInterval karena di mobile
+  // interval callback BUKAN bagian dari user gesture, sehingga play() di dalamnya diblokir
+  audio.volume = _music.vol;
+  var p = audio.play();
+  if (p && p.catch) p.catch(function(e){
+    console.warn('[music] Autoplay blocked:', e && e.name);
+    _musicWaitForGesture();
+  });
+}
+
+// Daftarkan satu kali listener gesture (touchstart / click) untuk resume di HP
+function _musicWaitForGesture() {
+  if (_music.gesturePending) return;
+  _music.gesturePending = true;
+  function onGesture() {
+    _music.gesturePending = false;
+    document.removeEventListener('touchstart', onGesture, true);
+    document.removeEventListener('click', onGesture, true);
+    if (!_music.muted && _music.ready) {
+      var audio = document.getElementById('bgMusic');
+      if (audio && audio.paused) _musicFadeIn();
+    }
+  }
+  document.addEventListener('touchstart', onGesture, { capture: true, once: true, passive: true });
+  document.addEventListener('click', onGesture, { capture: true, once: true });
+}
+
+function _musicFadeOut(cb) {
+  var audio = document.getElementById('bgMusic');
+  if (!audio) { if (cb) cb(); return; }
+  clearInterval(_music.fadeTimer);
+  _music.fadeTimer = setInterval(function() {
+    if (audio.volume > 0.03) { audio.volume = Math.max(0, audio.volume - 0.04); }
+    else { audio.volume = 0; audio.pause(); clearInterval(_music.fadeTimer); if (cb) cb(); }
+  }, 35);
+}
+
+function toggleMusicPanel() {
+  if (!_music.ready) { toggleMusic(); return; }
+  var audio = document.getElementById('bgMusic');
+  // KUNCI MOBILE: audio.play() harus dipanggil langsung dalam gesture handler (tap/click).
+  // Kalau dipanggil lewat setTimeout atau nested function, browser mobile BLOKIR.
+  // Jadi kita play() dulu synchronous di sini, baru urus panel setelahnya.
+  if (audio && !_music.muted) {
+    // Set semua atribut mobile sebelum play
+    audio.playsInline = true;
+    audio.setAttribute('playsinline', '');
+    audio.setAttribute('webkit-playsinline', '');
+    if (audio.paused) {
+      // Pastikan src sudah ada
+      if (!audio.src && _music.playlist && _music.playlist.length) {
+        audio.src = _music.playlist[_music.idx] || _music.playlist[0];
+        audio.load();
+      }
+      audio.volume = _music.vol;
+      audio.play().catch(function(e){ console.warn('[music] play blocked:', e && e.name); });
+    }
+  }
+  _music.panelOpen = !_music.panelOpen;
+  var panel = document.getElementById('musicPanel');
+  if (!panel) return;
+  if (_music.panelOpen) panel.classList.add('open');
+  else panel.classList.remove('open');
+  _musicUpdateBtn();
+}
+
+function toggleMusic() {
+  if (!_music.ready) return;
+  _music.muted = !_music.muted;
+  try { localStorage.setItem('musicMuted', _music.muted ? '1' : '0'); } catch(e){}
+  if (_music.muted) {
+    _musicFadeOut();
+  } else {
+    // Play langsung synchronous dalam gesture untuk mobile
+    var audio = document.getElementById('bgMusic');
+    if (audio) {
+      audio.playsInline = true;
+      audio.setAttribute('playsinline', '');
+      if (!audio.src && _music.playlist && _music.playlist.length) {
+        audio.src = _music.playlist[_music.idx] || _music.playlist[0];
+        audio.load();
+      }
+      audio.volume = _music.vol;
+      audio.play().catch(function(e){ console.warn('[music] play blocked:', e && e.name); });
+    }
+  }
+  _musicUpdateBtn();
+}
+
+function musicNext() {
+  if (!_music.playlist.length) return;
+  var wasMuted = _music.muted;
+  _musicFadeOut(function() {
+    _music.idx = (_music.idx + 1) % _music.playlist.length;
+    try { localStorage.setItem('musicIdx', _music.idx); } catch(e){}
+    _musicLoad(_music.idx, false);
+    _musicUpdateTitle();
+    if (!wasMuted) _musicFadeIn();
+  });
+}
+
+function musicPrev() {
+  if (!_music.playlist.length) return;
+  var wasMuted = _music.muted;
+  _musicFadeOut(function() {
+    _music.idx = (_music.idx - 1 + _music.playlist.length) % _music.playlist.length;
+    try { localStorage.setItem('musicIdx', _music.idx); } catch(e){}
+    _musicLoad(_music.idx, false);
+    _musicUpdateTitle();
+    if (!wasMuted) _musicFadeIn();
+  });
+}
+
+function musicSetVol(val) {
+  _music.vol = val / 100;
+  try { localStorage.setItem('musicVol', String(_music.vol)); } catch(e){}
+  var audio = document.getElementById('bgMusic');
+  if (audio && !_music.muted) audio.volume = _music.vol;
+}
+
+function _musicUpdateBtn() {
+  var btn = document.getElementById('musicBtn');
+  if (!btn) return;
+  if (_music.muted) btn.classList.remove('playing'); else btn.classList.add('playing');
+  var pp = document.getElementById('mpPlayPause');
+  if (pp) {
+    if (_music.muted) {
+      pp.title = 'Play';
+      pp.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+    } else {
+      pp.title = 'Pause';
+      pp.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="4" x2="6" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/></svg>';
+    }
+  }
+}
+
+function _musicUpdateTitle() {
+  var el = document.getElementById('mpTitle');
+  if (!el || !_music.playlist.length) return;
+  var url = _music.playlist[_music.idx];
+  var raw = url.split('?')[0].split('/').pop();
+  var name = decodeURIComponent(raw).replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ') || ('Track ' + (_music.idx + 1));
+  var num = _music.playlist.length > 1 ? (_music.idx + 1) + '/' + _music.playlist.length + ' · ' : '';
+  el.textContent = '♪ ' + num + name;
+  el.title = name;
+}
+
+document.addEventListener('click', function(e) {
+  if (!_music.panelOpen) return;
+  var player = document.getElementById('musicPlayer');
+  if (player && !player.contains(e.target)) {
+    _music.panelOpen = false;
+    var panel = document.getElementById('musicPanel');
+    if (panel) panel.classList.remove('open');
+  }
+});
+</script>
+
+<div id="musicPlayer">
+  <div id="musicPanel">
+    <div class="mp-title" id="mpTitle">&#9834; Musik</div>
+    <div class="mp-controls">
+      <button class="mp-nav" id="mpPrev" title="Sebelumnya" onclick="musicPrev()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="4" x2="5" y2="20"/></svg>
+      </button>
+      <button class="mp-nav" id="mpPlayPause" title="Pause" onclick="toggleMusic()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="4" x2="6" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/></svg>
+      </button>
+      <button class="mp-nav" id="mpNext" title="Berikutnya" onclick="musicNext()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="4" x2="19" y2="20"/></svg>
+      </button>
+    </div>
+    <div class="mp-vol-row">
+      <span class="mp-vol-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span>
+      <input type="range" class="mp-vol-sl" id="mpVol" min="0" max="100" value="35" oninput="musicSetVol(this.value)">
+    </div>
+  </div>
+  <button id="musicBtn" title="Musik" onclick="toggleMusicPanel()">
+    <span class="mp-ico">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="mp-eq"><span></span><span></span><span></span><span></span></span>
+  </button>
+</div>
+<audio id="bgMusic" loop preload="none" playsinline webkit-playsinline x-webkit-airplay="allow"></audio>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   HISTORY DETAIL BOTTOM SHEET
+   ══════════════════════════════════════════════════════════ */
+var _histFilter = _histFilter || 'all';
+
+function _getHistCurrentList() {
+  return _histFilter === 'all'
+    ? _histData
+    : _histData.filter(function(o){ return (o.status||'waiting') === _histFilter; });
+}
+
+function openHistDetail(idx) {
+  var list = _getHistCurrentList();
+  var o = list[idx];
+  if (!o) return;
+
+  var stLabelMap = { completed:'Berhasil', waiting:'Menunggu', expired:'Kadaluarsa', canceled:'Dibatalkan', canceling:'Membatalkan' };
+  var st   = o.status || 'waiting';
+  var lbl  = stLabelMap[st] || st;
+  var dt   = o.createdAt ? new Date(o.createdAt).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+  var prov = o.server || (o.provider === 'smscode' ? 'Server 1' : 'Server 2');
+
+  q('hdsTitle').textContent = (o.service || 'OTP') + ' — ' + lbl;
+
+  var rows = '';
+
+  if (o.phoneNumber) {
+    rows += '<div class="hds-row">'
+      + '<span class="hds-label">Nomor</span>'
+      + '<div style="display:flex;align-items:center;gap:.35rem">'
+      + '<span class="hds-val" style="font-size:.85rem">' + esc(o.phoneNumber) + '</span>'
+      + '<button class="hds-copy" data-copy-val="' + esc(o.phoneNumber) + '" title="Salin nomor">'
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+      + '</button></div></div>';
+  }
+
+  if (o.otp) {
+    rows += '<div class="hds-otp-row">'
+      + '<div>'
+      + '<div style="font-size:.62rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem">Kode OTP</div>'
+      + '<div class="hds-otp-num">' + esc(o.otp) + '</div>'
+      + '</div>'
+      + '<button class="hds-copy" data-copy-val="' + esc(o.otp) + '" style="width:36px;height:36px" title="Salin OTP">'
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+      + '</button></div>';
+  } else if (st === 'waiting') {
+    rows += '<div class="hds-row"><span class="hds-label">OTP</span><span style="color:var(--t3);font-size:.78rem">Menunggu...</span></div>';
+  }
+
+  if (o.otpMsg) {
+    rows += '<div>'
+      + '<div style="font-size:.62rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem">Pesan SMS</div>'
+      + '<div class="hds-msg-box">' + esc(o.otpMsg) + '</div>'
+      + '</div>';
+  }
+
+  rows += '<div class="hds-row"><span class="hds-label">Layanan</span><span class="hds-val" style="font-family:var(--sans)">' + esc(o.service||'—') + '</span></div>';
+  rows += '<div class="hds-row"><span class="hds-label">Negara</span><span class="hds-val" style="font-family:var(--sans)">' + esc(o.country||'—') + '</span></div>';
+  rows += '<div class="hds-row"><span class="hds-label">Server</span><span class="hds-val" style="font-family:var(--sans)">' + esc(prov) + '</span></div>';
+  rows += '<div class="hds-row"><span class="hds-label">Harga</span><span class="hds-val" style="font-family:var(--sans)">' + idr(o.price) + '</span></div>';
+  rows += '<div class="hds-row"><span class="hds-label">Waktu</span><span class="hds-val" style="font-family:var(--sans);font-size:.72rem">' + dt + '</span></div>';
+  if (o.refunded) {
+    rows += '<div class="hds-row"><span class="hds-label">Refund</span><span style="color:var(--em);font-size:.78rem;font-weight:600">✓ Saldo dikembalikan</span></div>';
+  }
+  if (o.id) {
+    rows += '<div class="hds-row">'
+      + '<span class="hds-label">Order ID</span>'
+      + '<div style="display:flex;align-items:center;gap:.35rem">'
+      + '<span class="hds-val" style="font-size:.65rem">' + esc(o.id) + '</span>'
+      + '<button class="hds-copy" data-copy-val="' + esc(o.id) + '" title="Salin ID">'
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+      + '</button></div></div>';
+  }
+
+  q('hdsBody').innerHTML = rows;
+  q('histDetailOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeHistDetail() {
+  q('histDetailOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function histDetailClose(e) {
+  if (e.target === q('histDetailOverlay')) closeHistDetail();
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeHistDetail();
+});
+
+/* ── Event delegation: data-copy-val (fix salin nomor) ── */
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('[data-copy-val]');
+  if (!btn) return;
+  var val = btn.getAttribute('data-copy-val');
+  if (val === null || val === '') return;
+  e.stopPropagation();
+  copyText(val);
+  var orig = btn.innerHTML;
+  var origBg = btn.style.background, origBd = btn.style.borderColor, origClr = btn.style.color;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  btn.style.background = 'var(--em)'; btn.style.borderColor = 'var(--em)'; btn.style.color = '#000';
+  setTimeout(function() {
+    btn.innerHTML = orig;
+    btn.style.background = origBg; btn.style.borderColor = origBd; btn.style.color = origClr;
+  }, 1500);
+});
+</script>
+
+<a href="/admin-panell" title="Admin Panel" style="position:fixed;bottom:14px;left:14px;z-index:40;width:38px;height:38px;border-radius:50%;background:rgba(33,33,33,.85);backdrop-filter:blur(6px);border:1px solid var(--line2,#3a3a3a);color:var(--em,#6366f1);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.35);text-decoration:none;font-size:15px;opacity:.75;transition:opacity .15s,transform .15s" aria-label="Admin Panel">🛡️</a>
+</body>
+</html>

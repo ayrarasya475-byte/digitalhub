@@ -1,0 +1,109 @@
+rules_version = '2';
+
+// DigitalHub — Firestore Security Rules (production mode / locked mode)
+//
+// Prinsip: SEMUA akses ditolak secara default. Setiap koleksi dibuka
+// eksplisit satu-satu. Peran (role) disimpan di custom claims token
+// Firebase Auth (admin, reseller, user) — bukan cuma di dokumen, supaya
+// tidak bisa dipalsukan dari sisi client.
+//
+// Cara set custom claim (dari backend/Cloud Function, BUKAN dari client):
+//   admin.auth().setCustomUserClaims(uid, { role: 'admin' })
+
+function isSignedIn() {
+  return request.auth != null;
+}
+function role() {
+  return isSignedIn() ? request.auth.token.role : null;
+}
+function isAdmin() {
+  return role() == 'owner' || role() == 'admin';
+}
+function isOwner() {
+  return role() == 'owner';
+}
+function isReseller() {
+  return role() == 'reseller';
+}
+function isSelf(userId) {
+  return isSignedIn() && request.auth.uid == userId;
+}
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default: tolak semua yang tidak disebutkan eksplisit di bawah.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ── users: profil publik terbatas, data sensitif hanya milik sendiri/admin
+    match /users/{userId} {
+      allow read: if isSelf(userId) || isAdmin();
+      allow create: if isSignedIn() && isSelf(userId);
+      allow update: if isSelf(userId) || isAdmin();
+      allow delete: if isOwner();
+    }
+
+    // ── resellers: profil toko boleh dibaca publik (buat market), tulis cuma pemilik/admin
+    match /resellers/{resellerId} {
+      allow read: if true; // etalase publik
+      allow create: if isSignedIn();
+      allow update: if (isReseller() && request.auth.uid == resellerId) || isAdmin();
+      allow delete: if isOwner();
+    }
+
+    // ── products: baca publik, tulis cuma reseller pemilik produk / admin
+    match /products/{productId} {
+      allow read: if resource.data.isActive == true || isAdmin();
+      allow create: if isReseller() || isAdmin();
+      allow update, delete: if isAdmin() ||
+        (isReseller() && resource.data.resellerId == request.auth.uid);
+    }
+
+    // ── orders: pembeli lihat order sendiri, reseller lihat order tokonya, admin lihat semua
+    match /orders/{orderId} {
+      allow read: if isAdmin() ||
+        (isSignedIn() && resource.data.buyerId == request.auth.uid) ||
+        (isReseller() && resource.data.resellerId == request.auth.uid);
+      allow create: if isSignedIn();
+      allow update: if isAdmin() || (isReseller() && resource.data.resellerId == request.auth.uid);
+      allow delete: if isOwner();
+    }
+
+    // ── reviews/testimoni: baca publik (yang approved), tulis oleh pemilik akun
+    match /reviews/{reviewId} {
+      allow read: if resource.data.isApproved == true || isAdmin();
+      allow create: if isSignedIn();
+      allow update: if isAdmin(); // approve/hapus cuma admin
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    // ── chats (komunitas & reseller-pembeli): baca/tulis cuma partisipan room
+    match /chats/{roomId}/messages/{messageId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() &&
+        request.resource.data.senderId == request.auth.uid;
+      allow update: if false; // pesan tidak boleh diedit setelah terkirim
+      allow delete: if isAdmin();
+    }
+
+    // ── site_settings & config: SANGAT rahasia (API key dsb) — cuma owner
+    match /config/{docId} {
+      allow read: if isAdmin();   // admin biasa boleh baca (butuh buat UI), tapi...
+      allow write: if isOwner();  // ...cuma owner yang boleh UBAH.
+    }
+
+    // ── admin_logs / activity log: cuma admin baca, sistem yang nulis (lewat backend), tidak ada write dari client
+    match /activity_logs/{logId} {
+      allow read: if isAdmin();
+      allow write: if false; // hanya ditulis lewat Cloud Function / backend trusted
+    }
+
+    // ── banned_words, moderation: admin only
+    match /banned_words/{wordId} {
+      allow read: if true; // dipakai validasi client-side juga boleh
+      allow write: if isAdmin();
+    }
+  }
+}

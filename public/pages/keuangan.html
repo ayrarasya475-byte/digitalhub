@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Keuangan — DigitalHub</title>
+<link rel="icon" type="image/x-icon" href="/media/favicon.ico">
+<link rel="icon" type="image/jpeg" href="/media/logo.jpg">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#181818;--bg1:#1a1a1a;--bg2:#212121;--line:#2E2E2E;--line2:#3a3a3a;
+  --em:#6366f1;--em-rgb:99,102,241;--em2:#818cf8;--red:#f87171;--amber:#fbbf24;--green:#4ade80;
+  --t1:#e5e5e5;--t2:#a0a0a0;--t3:#616161;--font:'DM Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--t1);font-family:var(--font)}
+  body{padding-bottom:70px}
+  header{padding:1rem 1.1rem .3rem}
+  header h1{font-size:1.1rem}
+  .tabs{display:flex;gap:.4rem;padding:1rem 1.1rem .3rem;overflow-x:auto}
+  .tabs button{flex-shrink:0;padding:.55rem 1rem;border-radius:999px;border:1px solid var(--line2);background:var(--bg1);color:var(--t2);font-size:.78rem;font-family:var(--font)}
+  .tabs button.active{color:var(--em2);border-color:rgba(var(--em-rgb),.4);background:rgba(var(--em-rgb),.08)}
+  .panel{padding:1rem 1.1rem;display:none}
+  .panel.active{display:block}
+  .card{background:var(--bg1);border:1px solid var(--line2);border-radius:14px;padding:1.1rem;margin-bottom:.9rem}
+  .btn{background:var(--em);border:none;border-radius:10px;padding:.7rem 1.1rem;color:#fff;font-weight:700;font-size:.82rem;font-family:var(--font)}
+  .btn.outline{background:transparent;border:1px solid var(--line2);color:var(--t1)}
+  .btn.block{width:100%}
+  .inp{width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:8px;padding:.65rem .8rem;color:var(--t1);font-family:var(--font);margin-bottom:.6rem;font-size:.85rem}
+  .msg{font-size:.75rem;margin-top:.5rem}
+  .demo-badge{display:inline-block;background:rgba(251,191,36,.15);color:var(--amber);font-size:.6rem;font-weight:700;padding:.15rem .55rem;border-radius:999px;margin-left:.4rem;vertical-align:middle}
+  /* Dana */
+  .balance-hero{background:linear-gradient(135deg,var(--em),var(--em2));border-radius:16px;padding:1.2rem;margin-bottom:1rem}
+  .balance-hero .l{font-size:.7rem;color:rgba(255,255,255,.85)}
+  .balance-hero .v{font-family:var(--mono);font-size:1.7rem;font-weight:700;color:#fff;margin:.2rem 0}
+  .balance-hero .pts{font-size:.72rem;color:rgba(255,255,255,.85)}
+  .tx-row{display:flex;justify-content:space-between;padding:.55rem 0;border-bottom:1px solid var(--line);font-size:.78rem}
+  .tx-row:last-child{border-bottom:none}
+  .tx-row .amt.in{color:var(--green)}
+  .tx-row .amt.out{color:var(--red)}
+  /* Amal */
+  .ticker-strip{display:flex;gap:0;overflow:hidden;white-space:nowrap;border-radius:10px;margin-bottom:1rem}
+  .ticker-move{display:flex;animation:scrollx 18s linear infinite}
+  @keyframes scrollx{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .ticker-item{font-family:var(--mono);font-size:.7rem;padding:.6rem 1.2rem;background:var(--bg1);border:1px solid var(--line2);border-right:none;color:var(--t2);flex-shrink:0}
+  .campaign-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem}
+  .campaign-tile{background:var(--bg1);border:1px solid var(--line2);border-radius:12px;padding:.85rem;text-align:center}
+  .campaign-tile .ic{font-size:1.4rem;margin-bottom:.3rem}
+  .campaign-tile .name{font-size:.72rem;font-weight:700}
+  .progress-bar{height:6px;background:var(--bg2);border-radius:999px;overflow:hidden;margin:.5rem 0}
+  .progress-fill{height:100%;background:var(--em);border-radius:999px}
+  .lb-row{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--line);font-size:.78rem}
+  .lb-row .rank{width:22px;color:var(--t3);font-family:var(--mono)}
+  /* Event */
+  .checkin-box{display:flex;align-items:center;justify-content:space-between;gap:.7rem}
+  .voucher-card{border:1px dashed var(--line2);border-radius:12px;padding:.8rem;margin-bottom:.6rem;display:flex;justify-content:space-between;align-items:center;gap:.6rem}
+  .voucher-card .title{font-size:.82rem;font-weight:700}
+  .voucher-card .exp{font-size:.65rem;color:var(--t3)}
+  .fs-card{display:flex;gap:.7rem;background:var(--bg1);border:1px solid var(--line2);border-radius:12px;padding:.7rem;margin-bottom:.6rem}
+  .fs-card img{width:52px;height:52px;border-radius:8px;object-fit:cover;background:var(--bg2)}
+  .fs-card .name{font-size:.82rem;font-weight:700}
+  .fs-card .price{font-family:var(--mono);font-size:.78rem}
+  .fs-card .price .old{color:var(--t3);text-decoration:line-through;margin-right:.4rem}
+  .fs-card .price .new{color:var(--em2)}
+  .fs-card .timer{font-family:var(--mono);font-size:.68rem;color:var(--amber)}
+  .empty{text-align:center;color:var(--t3);font-size:.8rem;padding:2rem 1rem}
+</style>
+</head>
+<body>
+<header><h1>💰 Keuangan</h1></header>
+<div class="tabs">
+  <button class="active" data-tab="amal">Amal</button>
+  <button data-tab="reseller">Reseller</button>
+  <button data-tab="dana">Dana</button>
+  <button data-tab="event">Event</button>
+</div>
+
+<!-- ═══ AMAL (DEMO) ═══ -->
+<div class="panel active" id="panel-amal">
+  <p style="font-size:.78rem;color:var(--t2);margin-bottom:.8rem">Ini masih tahap uji coba<span class="demo-badge">DEMO</span> — donasi di sini belum beneran nyampe ke Rumah Zakat sampai kita selesai kerja sama resminya.</p>
+  <div class="ticker-strip"><div class="ticker-move" id="donationTicker"></div></div>
+  <div class="campaign-grid" id="campaignGrid"></div>
+  <div class="card">
+    <h3 style="font-size:.9rem;margin-bottom:.7rem">Papan Donatur</h3>
+    <div id="leaderboardList"></div>
+  </div>
+  <div class="card">
+    <h3 style="font-size:.9rem;margin-bottom:.7rem">Mau nyumbang (demo)?</h3>
+    <select id="donCampaign" class="inp">
+      <option value="sedekah">Sedekah</option>
+      <option value="santunan_anak">Santunan Anak Yatim</option>
+      <option value="bantuan_gaza">Bantuan Gaza</option>
+    </select>
+    <input id="donAmount" class="inp" type="number" placeholder="Jumlah (Rp)">
+    <input id="donName" class="inp" placeholder="Nama kamu (boleh dikosongin)">
+    <button class="btn block" id="donateBtn">Sumbang (Demo)</button>
+    <div class="msg" id="donMsg"></div>
+  </div>
+</div>
+
+<!-- ═══ RESELLER ═══ -->
+<div class="panel" id="panel-reseller">
+  <div class="card" style="text-align:center;padding:2rem 1.2rem">
+    <div style="font-size:2rem;margin-bottom:.5rem">🏪</div>
+    <h3 style="margin-bottom:.4rem">Belum buka toko?</h3>
+    <p style="font-size:.8rem;color:var(--t2);margin-bottom:1rem">Kalau kamu udah punya toko di sini, kelola saldo & produknya langsung dari dashboard reseller.</p>
+    <a class="btn" href="/reseller" style="text-decoration:none;display:inline-block">Buka / Masuk ke Toko</a>
+  </div>
+</div>
+
+<!-- ═══ DANA ═══ -->
+<div class="panel" id="panel-dana">
+  <div id="danaGuest" class="empty" style="display:none">Masuk dulu buat lihat saldo kamu. <a href="/login?returnUrl=/keuangan" style="color:var(--em)">Masuk / Daftar</a></div>
+  <div id="danaContent" style="display:none">
+    <div class="balance-hero">
+      <div class="l">SALDO</div>
+      <div class="v" id="danaBalance">Rp0</div>
+      <div class="pts" id="danaPoints">0 poin</div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:.9rem;margin-bottom:.7rem">Kirim Saldo</h3>
+      <input id="transferTo" class="inp" placeholder="Username tujuan">
+      <input id="transferAmount" class="inp" type="number" placeholder="Jumlah (Rp)">
+      <button class="btn block" id="transferBtn">Kirim</button>
+      <div class="msg" id="transferMsg"></div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:.9rem;margin-bottom:.4rem">Isi Saldo</h3>
+      <p style="font-size:.75rem;color:var(--t2);margin-bottom:.6rem">Sementara ini prosesnya manual — kirim jumlah yang kamu mau, nanti kami konfirmasi lewat chat.</p>
+      <button class="btn outline block" id="topupBtn">Ajukan Isi Saldo</button>
+    </div>
+    <div class="card">
+      <h3 style="font-size:.9rem;margin-bottom:.5rem">Riwayat</h3>
+      <div id="txLog"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EVENT ═══ -->
+<div class="panel" id="panel-event">
+  <div id="eventGuest" class="empty" style="display:none">Masuk dulu buat ikutan event & klaim poin. <a href="/login?returnUrl=/keuangan" style="color:var(--em)">Masuk / Daftar</a></div>
+  <div id="eventContent" style="display:none">
+    <div class="card checkin-box">
+      <div><div style="font-weight:700;font-size:.88rem">Absen Harian</div><div style="font-size:.72rem;color:var(--t2)">+2 poin tiap hari kamu mampir</div></div>
+      <button class="btn" id="checkinBtn">Absen</button>
+    </div>
+    <h3 style="font-size:.85rem;margin:1rem 0 .5rem;color:var(--t2)">Lagi Diskon</h3>
+    <div id="flashSaleList"></div>
+    <h3 style="font-size:.85rem;margin:1rem 0 .5rem;color:var(--t2)">Voucher Buat Diklaim</h3>
+    <div id="voucherList"></div>
+    <div class="card">
+      <h3 style="font-size:.9rem;margin-bottom:.5rem">Tukar Poin</h3>
+      <p style="font-size:.75rem;color:var(--t2);margin-bottom:.6rem">10 poin = Rp100 saldo, kelipatan 10 ya.</p>
+      <input id="redeemPoints" class="inp" type="number" placeholder="Jumlah poin" step="10">
+      <button class="btn block" id="redeemBtn">Tukar</button>
+      <div class="msg" id="redeemMsg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var TOKEN=localStorage.getItem('token');
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function rupiah(n){return 'Rp'+Number(n||0).toLocaleString('id-ID');}
+function api(path,opts){
+  opts=opts||{}; opts.headers=opts.headers||{}; opts.headers['Content-Type']='application/json';
+  if(TOKEN) opts.headers['Authorization']='Bearer '+TOKEN;
+  return fetch(path,opts).then(function(r){return r.json();});
+}
+
+document.querySelectorAll('.tabs button').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.tabs button').forEach(function(x){x.classList.remove('active');});
+    document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('active');});
+    b.classList.add('active'); document.getElementById('panel-'+b.dataset.tab).classList.add('active');
+  });
+});
+
+// ═══ AMAL ═══
+var CAMPAIGN_ICONS={sedekah:'🤲',santunan_anak:'🧒',bantuan_gaza:'🕊️'};
+function loadAmal(){
+  api('/api/keuangan/amal/campaigns').then(function(j){
+    if(!j.ok) return;
+    document.getElementById('campaignGrid').innerHTML = j.campaigns.map(function(c){
+      return '<div class="campaign-tile"><div class="ic">'+(CAMPAIGN_ICONS[c.key]||'💛')+'</div><div class="name">'+esc(c.label)+'</div>'+
+        '<div class="progress-bar"><div class="progress-fill" style="width:'+c.progress+'%"></div></div>'+
+        '<div style="font-size:.65rem;color:var(--t3)">'+rupiah(c.collected)+' / '+rupiah(c.target)+'</div></div>';
+    }).join('');
+    var ticker=j.campaigns.map(function(c){return '<span class="ticker-item">'+esc(c.label)+' · '+c.donorCount+' donatur · '+rupiah(c.collected)+'</span>';}).join('');
+    document.getElementById('donationTicker').innerHTML = ticker + ticker;
+  });
+  api('/api/keuangan/amal/leaderboard').then(function(j){
+    if(!j.ok) return;
+    document.getElementById('leaderboardList').innerHTML = j.leaderboard.map(function(l,i){
+      return '<div class="lb-row"><span><span class="rank">#'+(i+1)+'</span>'+esc(l.name)+'</span><b>'+rupiah(l.total)+'</b></div>';
+    }).join('') || '<p class="empty">Belum ada yang donasi. Jadi yang pertama?</p>';
+  });
+}
+document.getElementById('donateBtn').addEventListener('click',function(){
+  var campaign=document.getElementById('donCampaign').value, amount=parseInt(document.getElementById('donAmount').value), donorName=document.getElementById('donName').value.trim();
+  var msg=document.getElementById('donMsg');
+  if(!amount||amount<=0){ msg.style.color='var(--red)'; msg.textContent='Isi jumlahnya dulu.'; return; }
+  api('/api/keuangan/amal/donate',{method:'POST',body:JSON.stringify({campaign,amount,donorName})}).then(function(j){
+    msg.style.color=j.ok?'var(--em2)':'var(--red)'; msg.textContent=j.message||'';
+    if(j.ok){ document.getElementById('donAmount').value=''; loadAmal(); }
+  });
+});
+loadAmal();
+
+// ═══ DANA ═══
+function loadDana(){
+  if(!TOKEN){ document.getElementById('danaGuest').style.display='block'; return; }
+  document.getElementById('danaContent').style.display='block';
+  api('/api/keuangan/dana/summary').then(function(j){
+    if(!j.ok) return;
+    document.getElementById('danaBalance').textContent=rupiah(j.balance);
+    document.getElementById('danaPoints').textContent=j.points+' poin';
+    document.getElementById('txLog').innerHTML = j.log.map(function(t){
+      var isIn=['transfer_in','topup','giveaway','refund'].indexOf(t.type)!==-1;
+      return '<div class="tx-row"><span>'+esc(t.note||t.type)+(t.counterparty?' · '+esc(t.counterparty):'')+'</span><span class="amt '+(isIn?'in':'out')+'">'+(isIn?'+':'-')+rupiah(t.amount)+'</span></div>';
+    }).join('') || '<p class="empty">Belum ada transaksi.</p>';
+  });
+}
+document.getElementById('transferBtn').addEventListener('click',function(){
+  var toUsername=document.getElementById('transferTo').value.trim(), amount=parseInt(document.getElementById('transferAmount').value);
+  var msg=document.getElementById('transferMsg');
+  if(!toUsername||!amount){ msg.style.color='var(--red)'; msg.textContent='Isi username & jumlahnya.'; return; }
+  api('/api/keuangan/dana/transfer',{method:'POST',body:JSON.stringify({toUsername,amount})}).then(function(j){
+    msg.style.color=j.ok?'var(--em2)':'var(--red)'; msg.textContent=j.message||'';
+    if(j.ok){ document.getElementById('transferTo').value=''; document.getElementById('transferAmount').value=''; loadDana(); }
+  });
+});
+document.getElementById('topupBtn').addEventListener('click',function(){
+  var amount=prompt('Mau isi saldo berapa? (Rp)');
+  if(!amount||isNaN(parseInt(amount)))return;
+  api('/api/user/topup-request',{method:'POST',body:JSON.stringify({amount:parseInt(amount)})}).then(function(j){
+    alert(j.ok?'Permintaan udah kekirim, tunggu dikonfirmasi lewat chat ya.':(j.message||'Gagal.'));
+  });
+});
+loadDana();
+
+// ═══ EVENT ═══
+function loadEvent(){
+  if(!TOKEN){ document.getElementById('eventGuest').style.display='block'; }
+  else { document.getElementById('eventContent').style.display='block'; loadCheckinStatus(); loadVouchers(); }
+  loadFlashSales();
+}
+function loadCheckinStatus(){
+  api('/api/keuangan/event/checkin-status').then(function(j){
+    if(j.ok && j.checkedInToday){ var b=document.getElementById('checkinBtn'); b.textContent='Udah absen ✓'; b.disabled=true; b.style.opacity='.5'; }
+  });
+}
+document.getElementById('checkinBtn').addEventListener('click',function(){
+  api('/api/keuangan/event/checkin',{method:'POST'}).then(function(j){
+    if(j.ok){ this.textContent='Udah absen ✓'; this.disabled=true; this.style.opacity='.5'; loadDana(); }
+    else alert(j.message||'Gagal.');
+  }.bind(this));
+});
+function loadFlashSales(){
+  api('/api/keuangan/event/flash-sales').then(function(j){
+    if(!j.ok) return;
+    document.getElementById('flashSaleList').innerHTML = j.flashSales.map(function(f){
+      return '<div class="fs-card"><img src="'+(f.image||'/media/logo.jpg')+'"><div style="flex:1"><div class="name">'+esc(f.productName)+'</div>'+
+        '<div class="price"><span class="old">'+rupiah(f.originalPrice)+'</span><span class="new">'+rupiah(f.salePrice)+'</span></div>'+
+        '<div class="timer" data-end="'+f.endsAt+'">menghitung...</div></div></div>';
+    }).join('') || '<p class="empty">Nggak ada yang lagi diskon sekarang.</p>';
+    tickTimers();
+  });
+}
+function tickTimers(){
+  document.querySelectorAll('.timer[data-end]').forEach(function(el){
+    var end=parseInt(el.dataset.end), diff=end-Date.now();
+    if(diff<=0){ el.textContent='Udah selesai'; return; }
+    var m=Math.floor(diff/60000), s=Math.floor((diff%60000)/1000);
+    el.textContent='Sisa '+m+'m '+s+'s';
+  });
+}
+setInterval(tickTimers,1000);
+function loadVouchers(){
+  api('/api/keuangan/event/vouchers').then(function(j){
+    if(!j.ok) return;
+    document.getElementById('voucherList').innerHTML = j.vouchers.map(function(v){
+      var disc=v.discountType==='percent'?v.discountValue+'%':rupiah(v.discountValue);
+      var src=v.resellerName?('dari '+esc(v.resellerName)):'resmi DigitalHub';
+      return '<div class="voucher-card"><div><div class="title">Diskon '+disc+' — '+esc(v.title)+'</div><div class="exp">'+src+(v.expiresAt?' · sampai '+new Date(v.expiresAt).toLocaleDateString('id-ID'):'')+'</div></div>'+
+        (v.claimed?'<span style="font-size:.7rem;color:var(--t3)">Udah diklaim</span>':'<button class="btn outline" style="padding:.4rem .8rem;font-size:.7rem" onclick="claimVoucher('+v.id+',this)">Klaim</button>')+'</div>';
+    }).join('') || '<p class="empty">Nggak ada voucher aktif sekarang.</p>';
+  });
+}
+function claimVoucher(id,btn){
+  btn.disabled=true;
+  api('/api/keuangan/event/vouchers/'+id+'/claim',{method:'POST'}).then(function(j){
+    if(j.ok){ loadVouchers(); } else { alert(j.message||'Gagal.'); btn.disabled=false; }
+  });
+}
+document.getElementById('redeemBtn').addEventListener('click',function(){
+  var points=parseInt(document.getElementById('redeemPoints').value);
+  var msg=document.getElementById('redeemMsg');
+  api('/api/keuangan/event/redeem-points',{method:'POST',body:JSON.stringify({points})}).then(function(j){
+    msg.style.color=j.ok?'var(--em2)':'var(--red)'; msg.textContent=j.message||'';
+    if(j.ok){ document.getElementById('redeemPoints').value=''; loadDana(); }
+  });
+});
+loadEvent();
+</script>
+
+<nav class="dh-bottomnav" id="dhBottomNav">
+  <a href="/" data-nav="dashboard">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
+    <span>Beranda</span>
+  </a>
+  <a href="/toko" data-nav="toko">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9h18M9 21v-5h6v5"/></svg>
+    <span>Toko</span>
+  </a>
+  <a href="/ai" data-nav="ai">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3.2"/></svg>
+    <span>Asisten</span>
+  </a>
+  <a href="/ulasan" data-nav="testimoni">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 2.9 6.3L21 9l-4.6 4.5L17.5 21 12 17.8 6.5 21l1.1-7.5L3 9l6.1-.7z"/></svg>
+    <span>Ulasan</span>
+  </a>
+  <a href="/profil" data-nav="profil">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.4-3.6 4.4-5.5 7.5-5.5s6.1 1.9 7.5 5.5"/></svg>
+    <span>Akun</span>
+  </a>
+</nav>
+<style>
+.dh-bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;background:rgba(24,24,24,.94);backdrop-filter:blur(12px);border-top:1px solid #2E2E2E;padding:.35rem .3rem calc(.35rem + env(safe-area-inset-bottom))}
+.dh-bottomnav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.22rem;color:#71717a;text-decoration:none;font-size:.6rem;font-family:'DM Sans',system-ui,sans-serif;padding:.4rem .2rem;border-radius:12px}
+.dh-bottomnav a svg{width:21px;height:21px}
+.dh-bottomnav a.active{color:#818cf8;background:rgba(99,102,241,.1)}
+</style>
+</body>
+</html>

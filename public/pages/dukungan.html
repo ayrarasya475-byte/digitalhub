@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Hubungi Tim — DigitalHub</title>
+<link rel="icon" type="image/x-icon" href="/media/favicon.ico">
+<link rel="icon" type="image/jpeg" href="/media/logo.jpg">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#181818;--bg1:#1a1a1a;--bg2:#212121;--line:#2E2E2E;--line2:#3a3a3a;
+  --em:#6366f1;--em-rgb:99,102,241;--em2:#818cf8;--t1:#e5e5e5;--t2:#a0a0a0;--t3:#616161;--font:'DM Sans',system-ui,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--t1);font-family:var(--font);height:100%}
+  body{display:flex;flex-direction:column}
+  header{padding:1rem 1.1rem;border-bottom:1px solid var(--line)}
+  header h1{font-size:1.05rem}
+  header p{font-size:.72rem;color:var(--t2);margin-top:.15rem}
+
+  .picker{padding:1rem 1.1rem;display:flex;flex-direction:column;gap:.6rem}
+  .who-btn{display:flex;align-items:center;gap:.7rem;background:var(--bg1);border:1px solid var(--line2);border-radius:12px;padding:.85rem .9rem;text-align:left;color:var(--t1);font-family:var(--font)}
+  .who-btn.active{border-color:var(--em);background:rgba(var(--em-rgb),.08)}
+  .who-btn .ic{width:38px;height:38px;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+  .who-btn .lbl{font-size:.85rem;font-weight:700}
+  .who-btn .sub{font-size:.68rem;color:var(--t3)}
+  .who-btn:disabled{opacity:.4}
+
+  .chatArea{display:none;flex:1;flex-direction:column;overflow:hidden}
+  .chatArea.show{display:flex}
+  .msgs{flex:1;overflow-y:auto;padding:1rem 1.1rem;display:flex;flex-direction:column;gap:.6rem}
+  .msg{max-width:82%;padding:.6rem .8rem;border-radius:12px;font-size:.83rem;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+  .msg.user{align-self:flex-end;background:var(--em);color:#fff;border-bottom-right-radius:3px}
+  .msg.staff{align-self:flex-start;background:var(--bg1);border:1px solid var(--line2);border-bottom-left-radius:3px}
+  .msg img{max-width:100%;border-radius:8px;margin-top:.4rem;display:block}
+  .msg a.file-link{color:inherit;text-decoration:underline;font-size:.78rem}
+  .input-bar{padding:.7rem 1.1rem;border-top:1px solid var(--line);display:flex;gap:.5rem}
+  .input-bar input{flex:1;background:var(--bg1);border:1px solid var(--line2);border-radius:999px;padding:.7rem 1rem;color:var(--t1);font-family:var(--font);font-size:.85rem}
+  .input-bar button{width:42px;height:42px;border-radius:50%;background:var(--em);border:none;color:#fff;font-size:1rem;flex-shrink:0}
+  .input-bar .attach{background:var(--bg2);color:var(--t2);border:1px solid var(--line2)}
+  .empty{text-align:center;color:var(--t3);font-size:.85rem;padding:2rem 1rem}
+  .guest{text-align:center;padding:3rem 1.2rem}
+  .guest a{display:inline-block;margin-top:1rem;background:var(--em);color:#fff;padding:.7rem 1.4rem;border-radius:999px;font-weight:700;font-size:.85rem;text-decoration:none}
+</style>
+</head>
+<body>
+<header><h1>Hubungi Tim</h1><p>Pilih mau ngobrol sama siapa</p></header>
+
+<div id="guestView" class="guest" style="display:none">
+  <p style="color:var(--t2)">Masuk dulu ya buat mulai chat.</p>
+  <a href="/login?returnUrl=/dukungan">Masuk / Daftar</a>
+</div>
+
+<div id="mainView" style="display:none">
+  <div class="picker" id="picker"></div>
+  <div class="chatArea" id="chatArea">
+    <div class="msgs" id="msgs"></div>
+    <div class="input-bar">
+      <button class="attach" onclick="attachFile()" title="Lampirkan file (link)">📎</button>
+      <input id="inp" placeholder="Ketik pesan..." onkeydown="if(event.key==='Enter')send()">
+      <button onclick="send()">➤</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var TOKEN=localStorage.getItem('token');
+var SELECTED_TO=null, FILE_URL=null;
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function api(path,opts){
+  opts=opts||{}; opts.headers=opts.headers||{}; opts.headers['Content-Type']='application/json';
+  if(TOKEN) opts.headers['Authorization']='Bearer '+TOKEN;
+  return fetch(path,opts).then(function(r){return r.json();});
+}
+
+if(!TOKEN){ document.getElementById('guestView').style.display='block'; }
+else {
+  document.getElementById('mainView').style.display='block';
+  fetch('/api/admin/roles-available').then(function(r){return r.json();}).then(function(j){
+    var options=[
+      {key:'owner',label:'Owner',sub:'Pemilik DigitalHub',ic:'👑',available:j.owner},
+      {key:'admin',label:'Admin',sub:'Tim pengelola',ic:'🛠️',available:j.admin},
+      {key:'support_agent',label:'CS / Agent',sub:'Bantuan cepat',ic:'💬',available:j.supportAgent},
+    ];
+    document.getElementById('picker').innerHTML = options.map(function(o){
+      return '<button class="who-btn" '+(o.available?'':'disabled')+' onclick="pick(\''+o.key+'\',this)"><span class="ic">'+o.ic+'</span><span><div class="lbl">'+o.label+'</div><div class="sub">'+(o.available?o.sub:'Belum ada yang jaga role ini')+'</div></span></button>';
+    }).join('');
+  });
+}
+
+function pick(who,btn){
+  SELECTED_TO=who;
+  document.querySelectorAll('.who-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('chatArea').classList.add('show');
+  loadMessages();
+  connectStream();
+}
+
+var _es=null, _seenIds={};
+function connectStream(){
+  if(_es) _es.close();
+  _es=new EventSource('/api/support/stream?token='+encodeURIComponent(TOKEN));
+  _es.onmessage=function(ev){
+    try{
+      var msg=JSON.parse(ev.data);
+      if(_seenIds[msg.id]) return; // udah dirender duluan waktu kirim (hindari dobel)
+      _seenIds[msg.id]=true;
+      document.getElementById('msgs').insertAdjacentHTML('beforeend', renderMsg(msg));
+      scrollDown();
+    }catch(e){}
+  };
+}
+
+function loadMessages(){
+  api('/api/support/messages').then(function(j){
+    if(!j.ok) return;
+    j.messages.forEach(function(m){ _seenIds[m.id]=true; });
+    document.getElementById('msgs').innerHTML = j.messages.length ? j.messages.map(renderMsg).join('') : '<div class="empty">Belum ada obrolan. Tulis pesan pertamamu di bawah 👇</div>';
+    scrollDown();
+  });
+}
+function renderMsg(m){
+  var body=esc(m.text||'');
+  if(m.fileUrl){
+    var isImg=/\.(jpg|jpeg|png|gif|webp)$/i.test(m.fileUrl);
+    body += isImg ? '<img src="'+esc(m.fileUrl)+'">' : '<br><a class="file-link" href="'+esc(m.fileUrl)+'" target="_blank">📎 Lihat file</a>';
+  }
+  return '<div class="msg '+(m.from==='user'?'user':'staff')+'">'+body+'</div>';
+}
+function scrollDown(){ var el=document.getElementById('msgs'); el.scrollTop=el.scrollHeight; }
+
+function attachFile(){
+  var url=prompt('Tempel link file (foto, PDF, ZIP, dll):');
+  if(!url) return;
+  FILE_URL=url.trim();
+  document.getElementById('inp').placeholder='File siap dikirim, tulis pesan (opsional)...';
+}
+
+function send(){
+  var inp=document.getElementById('inp');
+  var text=inp.value.trim();
+  if(!text && !FILE_URL) return;
+  if(!SELECTED_TO){ alert('Pilih mau chat ke siapa dulu ya.'); return; }
+  api('/api/support/messages',{method:'POST',body:JSON.stringify({text:text,fileUrl:FILE_URL,to:SELECTED_TO})}).then(function(j){
+    if(j.ok){
+      _seenIds[j.message.id]=true;
+      document.getElementById('msgs').insertAdjacentHTML('beforeend', renderMsg(j.message));
+      inp.value=''; FILE_URL=null; inp.placeholder='Ketik pesan...'; scrollDown();
+    } else alert(j.message||'Gagal ngirim.');
+  });
+}
+</script>
+
+<a href="/admin-panell" title="Admin Panel" style="position:fixed;bottom:14px;left:14px;z-index:40;width:38px;height:38px;border-radius:50%;background:rgba(33,33,33,.85);backdrop-filter:blur(6px);border:1px solid #3a3a3a;color:#6366f1;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.35);text-decoration:none;font-size:15px;opacity:.75" aria-label="Admin Panel">🛡️</a>
+</body>
+</html>

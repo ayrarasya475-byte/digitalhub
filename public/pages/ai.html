@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>AI Assistant — DigitalHub</title>
+<link rel="icon" type="image/x-icon" href="/media/favicon.ico">
+<link rel="icon" type="image/jpeg" href="/media/logo.jpg">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#181818;--bg1:#1a1a1a;--bg2:#212121;--line:#2E2E2E;--line2:#3a3a3a;
+  --em:#6366f1;--em-rgb:99,102,241;--em2:#818cf8;--t1:#e5e5e5;--t2:#a0a0a0;--t3:#616161;
+  --font:'DM Sans',system-ui,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--t1);font-family:var(--font);height:100%}
+  body{display:flex;flex-direction:column}
+  header{padding:1rem 1.1rem;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:.6rem}
+  header .ic{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--em),var(--em2));display:flex;align-items:center;justify-content:center;font-size:1rem}
+  header h1{font-size:.98rem}
+  header p{font-size:.68rem;color:var(--t2)}
+  .msgs{flex:1;overflow-y:auto;padding:1rem 1.1rem;display:flex;flex-direction:column;gap:.7rem;padding-bottom:140px}
+  .msg{max-width:85%;padding:.65rem .85rem;border-radius:12px;font-size:.85rem;line-height:1.55;white-space:pre-wrap}
+  .msg.user{align-self:flex-end;background:var(--em);color:#fff;border-bottom-right-radius:3px}
+  .msg.ai{align-self:flex-start;background:var(--bg1);border:1px solid var(--line2);border-bottom-left-radius:3px}
+  .msg.ai.loading{color:var(--t3);font-style:italic}
+  .suggestions{display:flex;gap:.5rem;overflow-x:auto;padding:0 1.1rem 1rem}
+  .suggestions button{flex-shrink:0;background:var(--bg1);border:1px solid var(--line2);color:var(--t2);border-radius:999px;padding:.5rem .9rem;font-size:.72rem;font-family:var(--font)}
+  .input-bar{position:fixed;bottom:64px;left:0;right:0;background:var(--bg);border-top:1px solid var(--line);padding:.7rem 1.1rem;display:flex;gap:.5rem;z-index:45}
+  .input-bar input{flex:1;background:var(--bg1);border:1px solid var(--line2);border-radius:999px;padding:.7rem 1rem;color:var(--t1);font-family:var(--font);font-size:.85rem}
+  .input-bar button{width:42px;height:42px;border-radius:50%;background:var(--em);border:none;color:#fff;font-size:1rem;flex-shrink:0}
+  .disabled-note{text-align:center;padding:3rem 1rem;color:var(--t3);font-size:.85rem}
+</style>
+</head>
+<body>
+<header>
+  <div class="ic">✨</div>
+  <div><h1>AI Assistant DigitalHub</h1><p>Tanya produk apa aja, aku bantu carikan</p></div>
+</header>
+<div class="msgs" id="msgs">
+  <div class="msg ai">Hai! 👋 Aku asisten belanja DigitalHub. Mau cari produk apa hari ini? Panel hosting, OTP, atau akun premium?</div>
+</div>
+<div class="suggestions" id="suggestions">
+  <button onclick="ask('Panel hosting termurah apa?')">Panel termurah?</button>
+  <button onclick="ask('Cara beli OTP WhatsApp gimana?')">Cara beli OTP</button>
+  <button onclick="ask('Rekomendasi produk buat pemula')">Rekomendasi produk</button>
+</div>
+<div class="input-bar">
+  <input id="inp" placeholder="Ketik pertanyaan..." onkeydown="if(event.key==='Enter')send()">
+  <button onclick="send()">➤</button>
+</div>
+
+<script>
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function addMsg(text,who){
+  var m=document.getElementById('msgs');
+  var d=document.createElement('div');
+  d.className='msg '+who;
+  d.textContent=text;
+  m.appendChild(d);
+  m.scrollTop=m.scrollHeight;
+  return d;
+}
+function ask(text){ document.getElementById('inp').value=text; send(); }
+function send(){
+  var inp=document.getElementById('inp');
+  var text=inp.value.trim();
+  if(!text) return;
+  addMsg(text,'user');
+  inp.value='';
+  var loading=addMsg('Mikir...','ai loading');
+  fetch('/api/ai/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text})})
+    .then(function(r){return r.json();}).then(function(j){
+      loading.remove();
+      if(j.ok) addMsg(j.answer,'ai');
+      else addMsg(j.message||'AI sedang tidak bisa dihubungi.','ai');
+    }).catch(function(){ loading.remove(); addMsg('Koneksi bermasalah, coba lagi.','ai'); });
+}
+fetch('/api/ai/status').then(function(r){return r.json();}).then(function(j){
+  if(j.ok && !j.enabled){
+    document.getElementById('msgs').innerHTML='<div class="disabled-note">Fitur AI sedang dinonaktifkan admin.</div>';
+    document.getElementById('suggestions').style.display='none';
+    document.querySelector('.input-bar').style.display='none';
+  }
+}).catch(function(){});
+</script>
+
+<nav class="dh-bottomnav" id="dhBottomNav">
+  <a href="/" data-nav="dashboard">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
+    <span>Beranda</span>
+  </a>
+  <a href="/toko" data-nav="toko">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9h18M9 21v-5h6v5"/></svg>
+    <span>Toko</span>
+  </a>
+  <a href="/ai" data-nav="ai">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3.2"/></svg>
+    <span>Asisten</span>
+  </a>
+  <a href="/ulasan" data-nav="testimoni">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 2.9 6.3L21 9l-4.6 4.5L17.5 21 12 17.8 6.5 21l1.1-7.5L3 9l6.1-.7z"/></svg>
+    <span>Ulasan</span>
+  </a>
+  <a href="/profil" data-nav="profil">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.4-3.6 4.4-5.5 7.5-5.5s6.1 1.9 7.5 5.5"/></svg>
+    <span>Akun</span>
+  </a>
+</nav>
+<style>
+.dh-bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;background:rgba(24,24,24,.94);backdrop-filter:blur(12px);border-top:1px solid #2E2E2E;padding:.35rem .3rem calc(.35rem + env(safe-area-inset-bottom))}
+.dh-bottomnav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.22rem;color:#71717a;text-decoration:none;font-size:.6rem;font-family:'DM Sans',system-ui,sans-serif;padding:.4rem .2rem;border-radius:12px;transition:color .15s,background .15s}
+.dh-bottomnav a svg{width:21px;height:21px;transition:transform .15s}
+.dh-bottomnav a.active{color:#818cf8;background:rgba(99,102,241,.1)}
+.dh-bottomnav a.active svg{transform:translateY(-1px)}
+body{padding-bottom:68px !important}
+</style>
+<script>
+(function(){
+  var path=location.pathname;
+  var map={'/':'dashboard','/toko':'toko','/ai':'ai','/ulasan':'testimoni','/profil':'profil'};
+  var active=map[path];
+  document.querySelectorAll('#dhBottomNav a').forEach(function(a){
+    if(a.dataset.nav===active) a.classList.add('active');
+  });
+})();
+</script>
+</body>
+</html>

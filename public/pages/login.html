@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Masuk — DigitalHub</title>
+<link rel="icon" type="image/x-icon" href="/media/favicon.ico">
+<link rel="icon" type="image/jpeg" href="/media/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#181818;--bg1:#1a1a1a;--bg2:#212121;--line2:#3a3a3a;--line:#2E2E2E;
+    --em:#6366f1;--em-rgb:99, 102, 241;--em2:#818cf8;--red:#f87171;
+    --t1:#e5e5e5;--t2:#a0a0a0;--t3:#616161;--font:'DM Sans',system-ui,sans-serif;--rad:12px;--rs:7px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100vh;background:var(--bg);color:var(--t1);font-family:var(--font);font-size:13.5px;letter-spacing:-.3px}
+  body{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem}
+  .logo{width:50px;height:50px;border-radius:13px;object-fit:cover;margin:0 auto 1rem;display:block}
+  .card{width:100%;max-width:400px;background:var(--bg1);border:1px solid var(--line2);border-radius:var(--rad);padding:1.4rem;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+  h1{font-size:1.15rem;text-align:center;margin-bottom:.3rem}
+  .sub{text-align:center;color:var(--t2);font-size:.78rem;margin-bottom:1.2rem}
+  .tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:1rem}
+  .tab{flex:1;padding:.7rem;font-size:.78rem;font-weight:700;color:var(--t3);background:none;border:none;cursor:pointer;font-family:inherit}
+  .tab.active{color:var(--em);box-shadow:inset 0 -2px 0 var(--em)}
+  .pane{display:none}.pane.active{display:block}
+  .lbl{display:block;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin:.7rem 0 .35rem;font-family:'JetBrains Mono',monospace}
+  .lbl:first-child{margin-top:0}
+  .inp{width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:var(--rs);padding:.7rem .85rem;font-family:var(--font);font-size:.88rem;color:var(--t1);outline:none}
+  .btn{width:100%;margin-top:1rem;background:var(--em);border:none;border-radius:var(--rs);padding:.75rem;font-family:var(--font);font-size:.82rem;font-weight:700;color:#040d09;cursor:pointer}
+  .btn:disabled{opacity:.55}
+  .msg{font-size:.72rem;margin-top:.7rem;padding:.55rem .75rem;border-radius:var(--rs);display:none}
+  .msg.err{color:var(--red);background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.18)}
+  .msg.ok{color:var(--em);background:rgba(var(--em-rgb),.07);border:1px solid rgba(var(--em-rgb),.2)}
+  .foot{font-size:.66rem;color:var(--t3);text-align:center;margin-top:1rem}
+  .foot a{color:var(--t2);text-decoration:none}
+</style>
+</head>
+<body>
+<img class="logo" src="/media/logo.jpg" alt="">
+<div class="card">
+  <h1>Masuk ke DigitalHub</h1>
+  <div class="sub">Login untuk order, ulasan, dan chat.</div>
+  <div class="tabs">
+    <button class="tab active" data-tab="login">Masuk</button>
+    <button class="tab" data-tab="reg">Daftar</button>
+  </div>
+  <div class="pane active" id="pane-login">
+    <label class="lbl">Username</label>
+    <input id="lUser" class="inp" type="text" autocomplete="username">
+    <label class="lbl">Password</label>
+    <input id="lPass" class="inp" type="password" autocomplete="current-password">
+    <button class="btn" id="loginBtn">Masuk</button>
+    <div class="msg" id="loginMsg"></div>
+  </div>
+  <div class="pane" id="pane-reg">
+    <label class="lbl">Username</label>
+    <input id="rUser" class="inp" type="text">
+    <label class="lbl">Email (opsional)</label>
+    <input id="rEmail" class="inp" type="email">
+    <label class="lbl">Password</label>
+    <input id="rPass" class="inp" type="password" placeholder="Min. 6 karakter">
+    <button class="btn" id="regBtn">Daftar</button>
+    <div class="msg" id="regMsg"></div>
+  </div>
+</div>
+<div class="foot"><a href="/">← Kembali ke beranda</a></div>
+<script>
+(function(){
+  'use strict';
+  var $=function(i){return document.getElementById(i);};
+  var params=new URLSearchParams(location.search);
+  var returnUrl=params.get('returnUrl')||'/';
+
+  document.querySelectorAll('.tab').forEach(function(t){
+    t.addEventListener('click',function(){
+      document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
+      document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('active');});
+      t.classList.add('active'); $('pane-'+t.dataset.tab).classList.add('active');
+    });
+  });
+  function showMsg(el,txt,type){ el.textContent=txt; el.className='msg '+type; el.style.display='block'; }
+
+  function afterAuth(token, username){
+    localStorage.setItem('token', token);
+    localStorage.setItem('username', username);
+    // Ambil apikey user (dipakai halaman chat/ulasan/otp yang auth via x-api-key)
+    fetch('/api/user/apikey', { headers: { 'Authorization': 'Bearer ' + token } })
+      .then(function(r){ return r.json(); })
+      .then(function(j){ if (j.ok && j.apikey) localStorage.setItem('userApiKey', j.apikey); })
+      .catch(function(){})
+      .finally(function(){ location.href = returnUrl; });
+  }
+
+  $('loginBtn').addEventListener('click',function(){
+    var username=$('lUser').value.trim(), password=$('lPass').value;
+    if(!username||!password) return showMsg($('loginMsg'),'Isi username & password.','err');
+    var b=$('loginBtn'); b.disabled=true; b.textContent='Masuk…';
+    fetch('/api/user/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password})})
+      .then(function(r){return r.json();}).then(function(j){
+        if(j.ok){ afterAuth(j.token, j.username); }
+        else { showMsg($('loginMsg'),j.message||'Gagal masuk.','err'); b.disabled=false; b.textContent='Masuk'; }
+      }).catch(function(){ showMsg($('loginMsg'),'Koneksi bermasalah.','err'); b.disabled=false; b.textContent='Masuk'; });
+  });
+
+  $('regBtn').addEventListener('click',function(){
+    var username=$('rUser').value.trim(), email=$('rEmail').value.trim(), password=$('rPass').value;
+    if(username.length<3) return showMsg($('regMsg'),'Username minimal 3 karakter.','err');
+    if(password.length<6) return showMsg($('regMsg'),'Password minimal 6 karakter.','err');
+    var b=$('regBtn'); b.disabled=true; b.textContent='Mendaftar…';
+    fetch('/api/user/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,email,password})})
+      .then(function(r){return r.json();}).then(function(j){
+        if(j.ok){ afterAuth(j.token, j.username); }
+        else { showMsg($('regMsg'),j.message||'Gagal mendaftar.','err'); b.disabled=false; b.textContent='Daftar'; }
+      }).catch(function(){ showMsg($('regMsg'),'Koneksi bermasalah.','err'); b.disabled=false; b.textContent='Daftar'; });
+  });
+})();
+</script>
+<a href="/admin-panell" title="Admin Panel" style="position:fixed;bottom:14px;left:14px;z-index:40;width:38px;height:38px;border-radius:50%;background:rgba(33,33,33,.85);backdrop-filter:blur(6px);border:1px solid var(--line2,#3a3a3a);color:var(--em,#6366f1);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.35);text-decoration:none;font-size:15px;opacity:.75;transition:opacity .15s,transform .15s" aria-label="Admin Panel">🛡️</a>
+</body>
+</html>

@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+
+  <link rel="icon" type="image/x-icon" href="/media/favicon.ico">
+<link rel="icon" type="image/jpeg" href="/media/logo.jpg">
+  <link rel="apple-touch-icon" sizes="180x180" href="/media/icon.jpg">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+<meta name="theme-color" content="#181818">
+<meta name="description" content="Perpanjang panel Pterodactyl kamu dengan mudah dan cepat di DigitalHub.">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Perpanjang Panel — DigitalHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#181818;--bg1:#1a1a1a;--bg2:#212121;--bg3:#2a2a2a;
+  --line:#2E2E2E;--line2:#3a3a3a;--line3:#484848;
+  --em:#6366f1;--em-rgb:99, 102, 241;--em2:#818cf8;--red:#f87171;--yellow:#fbbf24;
+  --t1:#e5e5e5;--t2:#a0a0a0;--t3:#616161;--t4:rgba(255,255,255,.07);
+  --mono:'Ubuntu Mono',monospace;--font:'DM Sans',system-ui,sans-serif;--rad:4px;--rs:4px;
+}
+html,body{min-height:100%; overscroll-behavior: none;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--t1);letter-spacing:-.3px;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:.5rem 1rem 3rem;font-size:13.5px}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .7s linear infinite;display:inline-block}
+@keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.fadein{animation:fadein .35s ease forwards}
+
+.back-row{width:100%;max-width:460px;margin-bottom:1rem;position:relative;z-index:1}
+.back-btn{display:inline-flex;align-items:center;gap:.35rem;font-size:.65rem;font-weight:600;color:var(--t3);text-decoration:none;transition:color .15s}
+.back-btn:hover{color:var(--t1)}
+.back-btn svg{width:12px;height:12px}
+
+.card{width:100%;max-width:460px;background:var(--bg1);border:1px solid var(--line2);border-radius:4px;overflow:hidden;position:relative;z-index:1;box-shadow:0 0 0 1px rgba(255,255,255,.03),0 8px 24px rgba(0,0,0,.5)}
+.c-head{padding:1.1rem 1.25rem;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:.75rem}
+.c-icon{width:38px;height:38px;border-radius:4px;background:var(--bg2);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.c-icon svg{width:17px;height:17px;color:var(--em)}
+.c-title{font-weight:700;font-size:.85rem}
+.c-sub{font-size:.6rem;color:var(--t3);margin-top:.15rem}
+.c-body{padding:1.25rem}
+.c-foot{padding:.7rem 1.25rem;border-top:1px solid var(--line);text-align:center;font-size:.6rem;color:var(--t3)}
+
+.step{display:none}.step.active{display:block}
+
+.f-label{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);display:block;margin-bottom:.35rem}
+.f-inp{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:var(--rs);padding:.65rem .9rem;color:var(--t1);font-family:var(--font);font-size:.8rem;outline:none;transition:border-color .18s}
+.f-inp:focus{border-color:rgba(var(--em-rgb),.35)}
+.f-inp::placeholder{color:var(--t4)}
+.f-note{font-size:.6rem;color:var(--t3);margin-top:.35rem;line-height:1.5}
+
+.info-card{background:var(--bg2);border:1px solid rgba(var(--em-rgb),.15);border-radius:var(--rs);padding:.85rem 1rem;margin-bottom:1rem}
+.info-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.65rem}
+.info-dot{width:7px;height:7px;border-radius:50%;background:var(--em);flex-shrink:0;box-shadow:0 0 6px rgba(var(--em-rgb),.6)}
+.info-username{font-weight:700;font-size:.82rem}
+.info-row{display:flex;justify-content:space-between;font-size:.7rem;padding:.22rem 0;border-bottom:1px solid var(--line)}
+.info-row:last-child{border:none}
+.info-k{color:var(--t3)}.info-v{font-weight:600}
+.info-v.warn{color:var(--yellow)}.info-v.ok{color:var(--em)}
+
+.dur-label{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);margin-bottom:.5rem;display:block}
+.dur-grid{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.85rem;position:relative}
+.dur-radio{display:none}
+.dur-lbl{
+  flex:1;min-width:90px;padding:.65rem .5rem;border-radius:var(--rs);
+  border:1px solid var(--line);background:var(--bg2);
+  text-align:center;cursor:pointer;transition:all .18s;
+}
+.dur-lbl:hover{border-color:var(--line2)}
+.dur-radio:checked + .dur-lbl{border-color:rgba(var(--em-rgb),.4);background:rgba(var(--em-rgb),.07)}
+.dur-days{font-weight:700;font-size:.82rem;display:block}
+.dur-price{font-size:.65rem;color:var(--t3);display:block;margin-top:.15rem}
+.dur-radio:checked + .dur-lbl .dur-days{color:var(--em)}
+.dur-radio:checked + .dur-lbl .dur-price{color:var(--em2)}
+
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:.7rem 0;border-top:1px solid var(--line);margin-bottom:.85rem}
+.total-lbl{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--t3)}
+.total-val{font-family:'DM Sans',system-ui;font-size:1.5rem;letter-spacing:-.02em}
+
+.ph-wrap{margin-bottom:1rem}
+.ph-row{display:flex;align-items:center;border:1px solid var(--line);border-radius:var(--rs);background:var(--bg2);overflow:hidden;transition:border-color .18s}
+.ph-row:focus-within{border-color:rgba(var(--em-rgb),.35)}
+.ph-pre{font-size:.75rem;font-weight:600;color:var(--t3);padding:0 .7rem;border-right:1px solid var(--line)}
+.ph-inp{flex:1;background:none;border:none;padding:.65rem .75rem;color:var(--t1);font-family:var(--font);font-size:.8rem;outline:none}
+.ph-inp::placeholder{color:var(--t4)}
+
+.btn{width:100%;font-family:var(--font);font-size:.75rem;font-weight:700;padding:.72rem;border-radius:var(--rs);border:none;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:.35rem;text-decoration:none;margin-bottom:.4rem}
+.btn-em{background:#4f46e5;color:#fff;border:1px solid #4f46e5}
+.btn-em:hover:not(:disabled){background:#6366f1;cursor:not-allowed}
+.btn-ghost{background:#27272a;border:1px solid #3f3f46;color:#d4d4d8}
+.btn-ghost:hover{border-color:#52525b;background:#3f3f46}
+
+.err-box{background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:var(--rs);padding:.6rem .85rem;font-size:.7rem;color:var(--red);margin-bottom:.75rem;display:none}
+.err-box.show{display:block}
+
+.toast{position:fixed;top:1rem;left:50%;transform:translateX(-50%) translateY(-12px);display:flex;align-items:center;gap:.5rem;padding:.65rem 1.1rem .65rem .75rem;border-radius:4px;font-size:.78rem;font-weight:700;z-index:9999;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;white-space:nowrap;max-width:92vw;backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:rgba(24,24,24,.97);border:1.5px solid rgba(var(--em-rgb),.5);color:var(--em)}
+.toast.err{background:rgba(24,24,24,.97);border:1.5px solid rgba(248,113,113,.5);color:var(--red)}
+.toast.info{background:rgba(24,24,24,.97);border:1.5px solid rgba(255,255,255,.15);color:var(--t1)}
+.t-ico{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.toast.ok .t-ico{background:rgba(var(--em-rgb),.18)}.toast.err .t-ico{background:rgba(248,113,113,.18)}.toast.info .t-ico{background:rgba(255,255,255,.08)}
+
+@media(max-width:480px){body{padding:1rem .75rem 2.5rem}}
+
+body{
+  background-color:#181818!important;
+  background-image:
+    linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px)!important;
+  background-size:50px 50px!important;
+  position:relative;
+}
+
+body::before{
+  content:'';position:fixed;top:40%;left:50%;
+  transform:translate(-50%,-50%);
+  width:800px;height:600px;
+  background:radial-gradient(ellipse,rgba(255,255,255,.028) 0%,transparent 65%)!important;
+  filter:blur(80px)!important;pointer-events:none;z-index:0;
+}
+
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.018),transparent 55%),
+    radial-gradient(ellipse at 100% 100%,rgba(255,255,255,.01),transparent 50%)!important;
+}
+
+button,a,[role=button]{min-height:36px}
+@media(max-width:480px){
+  button,a,[role=button]{min-height:40px}
+}
+
+@media(max-width:600px){
+  .modal{border-radius:4px 20px 0 0!important;max-height:93vh!important;
+    animation:_mobileModalIn .32s cubic-bezier(.32,1,.4,1) both!important}
+  @keyframes _mobileModalIn{
+    from{opacity:0;transform:translateY(100%)}
+    to{opacity:1;transform:translateY(0)}
+  }
+  .overlay,.modal-bg{align-items:flex-end!important;padding:0!important}
+  .cfd{border-radius:4px 20px 0 0!important;max-width:100%!important;width:100%!important}
+}
+
+.m-body,.cnt-tbl-scroll,.ord-card,.dep-card{-webkit-overflow-scrolling:touch}
+
+.card,.ord-card,.dep-card,.acc-card{
+  animation:_cardIn .4s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes _cardIn{
+  from{opacity:0;transform:translateY(16px) scale(.98)}
+  to{opacity:1;transform:none}
+}
+
+button:active:not(:disabled){transform:scale(.97)!important;transition:transform .08s!important}
+
+.sec.on{animation:_secIn .3s cubic-bezier(.22,1,.36,1) both}
+@keyframes _secIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.cnt-tbl tbody tr{transition:background .12s ease}
+
+.f-inp,.pf-input,.finp,.l-inp,.f-inp{transition:border-color .15s ease,box-shadow .15s ease!important}
+
+@keyframes _pulse{0%{box-shadow:0 0 0 0 rgba(99, 102, 241,.35)}70%{box-shadow:0 0 0 8px rgba(99, 102, 241,0)}100%{box-shadow:0 0 0 0 rgba(99, 102, 241,0)}}
+.ab-pulse{animation:_pulse 2s ease infinite!important}
+
+@keyframes _shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel{background:linear-gradient(90deg,var(--bg1) 25%,var(--bg2) 50%,var(--bg1) 75%)!important;background-size:400% 100%!important;animation:_shimmer 1.6s ease infinite!important}
+
+.modal-bg,.overlay,.cfd-bg{transition:opacity .2s ease!important}
+
+.toast.on,.notif.show{animation:_toastIn .28s cubic-bezier(.34,1.56,.64,1) both!important}
+@keyframes _toastIn{from{opacity:0;transform:translateX(-50%) translateY(-20px) scale(.9)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+
+:root{--trans:.18s cubic-bezier(.4,0,.2,1)}
+
+.nav-btn,.n-btn{border-radius:4px!important;transition:all var(--trans)!important}
+
+.btn-em,.m-pay-btn,.l-btn,.submit-btn,.free-claim-btn{
+  border-radius:4px!important;
+  transition:all var(--trans)!important;
+  position:relative;overflow:hidden;
+}
+.btn-em:not(:disabled){box-shadow:none!important}
+.btn-em:hover:not(:disabled){
+}
+
+.card:hover,.ord-card:hover,.plan-card:hover,.info-link-card:hover{
+  transition:all var(--trans)!important;
+}
+
+.badge,.qr-badge,.ord-status,.sbadge,.card-badge{border-radius:4px!important}
+
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px}
+
+.wrap,.main,.c-body{animation:_pageIn .35s ease both}
+@keyframes _pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+nav,.nav,.topbar{backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+
+.btn-sm,.vc-apply-btn,.cnt-buy-btn,.cnt-buy,.receipt-btn{border-radius:4px!important}
+
+.cnt-sort-btn,.dur-lbl,.days-lbl,.cat{border-radius:4px!important}
+
+/* ── Global UI Refinement v7.2 ─────────────────────────────────── */
+
+/* --- Compact, refined buttons --- */
+button, .btn, .n-btn, .nav-btn, .snav-btn, .tb-btn, .tb-f,
+.act-btn, .pf-cat, .chip, .cat, .tag-btn, .filter-btn {
+  font-size: .67rem !important;
+  letter-spacing: -.01em;
+  transition: all .15s ease !important;
+}
+
+/* Primary action buttons: smaller but still prominent */
+.btn-em, .l-btn, .submit-btn, .free-claim-btn, .buy-btn, .order-btn {
+  font-size: .73rem !important;
+  padding: .5rem .95rem !important;
+  letter-spacing: -.01em;
+  border-radius: 5px !important;
+}
+
+/* Nav bar tighter */
+.nav-inner, .nav-wrap { height: 46px !important; }
+
+/* Inputs slimmer */
+.l-inp, .f-inp, .finp, .ph-inp, .pf-input,
+.cnt-search, .srv-search, .tb-search, .prod-search,
+.dr-inp, .dp-inp, .chat-inp, .msg-inp {
+  font-size: .73rem !important;
+  padding: .48rem .72rem !important;
+}
+
+/* Cards: lighter shadow, crisper */
+.sc, .card, .prod-card, .srv-card, .rv-card, .dl-card,
+.ord-card, .dep-card, .notif-item {
+  box-shadow: 0 1px 5px rgba(0,0,0,.2) !important;
+  transition: box-shadow .15s ease, transform .15s ease !important;
+}
+.sc:hover, .card:hover, .prod-card:hover, .srv-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,.3) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Toasts smaller */
+.toast { font-size: .7rem !important; padding: .55rem .85rem !important; }
+
+/* Skeleton shimmer smoother */
+.skeleton, .skel { animation-duration: 1.6s !important; }
+
+/* Scrollbars thin and subtle */
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.22); }
+
+/* Mobile overrides */
+@media (max-width: 680px) {
+  .main, .page, .main-wrap {
+    padding-left: .85rem !important;
+    padding-right: .85rem !important;
+  }
+  .btn-em, .l-btn, .submit-btn {
+    font-size: .7rem !important;
+    padding: .48rem .85rem !important;
+  }
+  .n-btn, .nav-btn, .snav-btn {
+    height: 30px !important;
+    font-size: .64rem !important;
+    padding: 0 .65rem !important;
+  }
+  /* Drawer links more compact */
+  .dr-link, .snav-dr-link {
+    padding: .55rem .7rem !important;
+    font-size: .72rem !important;
+    min-height: 36px !important;
+    border-radius: 5px !important;
+  }
+  /* Section headers tighter */
+  .sec-title, .section-title, .tab-title {
+    font-size: .65rem !important;
+    margin-bottom: .6rem !important;
+  }
+  /* Reduce gap between grid items */
+  .srv-grid, .prod-grid {
+    gap: .6rem !important;
+  }
+}
+/* ── End Global UI Refinement ───────────────────────────────────── */
+
+  /* ── Logo image fix: gem container auto-width & transparent ── */
+  .logo-gem img[data-logo-img],
+  .snav-gem img[data-logo-img],
+  .nav-gem img[data-logo-img] {
+    display: block !important;
+    visibility: visible !important;
+  }
+  .logo-gem:has(img[data-logo-img]),
+  .snav-gem:has(img[data-logo-img]),
+  .nav-gem:has(img[data-logo-img]) {
+    width: auto !important;
+    min-width: 26px;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+</style>
+
+<style>
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:var(--line3)}
+body{
+  background-color:var(--bg) !important;
+  background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px) !important;
+  background-size:40px 40px !important;
+}
+::selection{background:rgba(74,222,128,.18);color:#e5e5e5}
+
+/* ── Shared Navbar ─────────────────────────────────────────── */
+.snav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(24,24,24,.96);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--line);
+  height:46px;display:flex;align-items:center;
+  padding:0 1.2rem;gap:.6rem;
+}
+.snav-logo{
+  display:flex;align-items:center;gap:9px;
+  font-size:.9rem;font-weight:700;letter-spacing:-.02em;color:var(--t1);
+  text-decoration:none;flex-shrink:0;
+}
+.snav-gem{
+  width:26px;height:26px;border-radius:4px;
+  background:linear-gradient(135deg,#1a2e25,#0d1f18);
+  border:1px solid rgba(var(--em-rgb,99, 102, 241),.35);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 12px rgba(var(--em-rgb,99, 102, 241),.2);flex-shrink:0;
+}
+.snav-gem svg{width:13px;height:13px}
+.snav-name{color:var(--t1)}
+.snav-r{display:flex;align-items:center;gap:.4rem;margin-left:auto}
+.snav-btn{
+  font-family:var(--font,'DM Sans',system-ui);font-size:.7rem;font-weight:600;
+  padding:.28rem .75rem;border-radius:4px;
+  border:1px solid var(--line2);background:var(--bg2);
+  color:var(--t2);cursor:pointer;transition:all .18s;text-decoration:none;
+  display:inline-flex;align-items:center;gap:.3rem;height:32px;min-height:unset;
+}
+.snav-btn:hover{border-color:var(--line3);color:var(--t1)}
+.snav-btn.em{border-color:#4f46e5;color:#fff;background:#4f46e5}
+.snav-btn.em:hover{background:#6366f1;border-color:#6366f1}
+.snav-hbg{
+  display:none;width:34px;height:34px;border-radius:4px;
+  background:var(--bg2);border:1px solid var(--line2);
+  align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;min-height:unset;
+  position:relative;
+}
+.snav-hbg .bar{display:block;position:absolute;width:14px;height:1.5px;background:var(--t2);transition:all .22s;border-radius:2px;left:10px}
+.snav-hbg .bar1{top:12px}.snav-hbg .bar2{top:16.5px}.snav-hbg .bar3{top:21px}
+.snav-hbg.open .bar1{transform:rotate(45deg) translateY(4.5px)}
+.snav-hbg.open .bar2{opacity:0;transform:scaleX(0)}
+.snav-hbg.open .bar3{transform:rotate(-45deg) translateY(-4.5px)}
+@media(max-width:680px){
+  .snav-btn.hide-m{display:none}
+  .snav-hbg{display:flex}
+}
+/* Drawer */
+.snav-backdrop{
+  display:none;position:fixed;inset:0;top:0;z-index:198;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  opacity:0;transition:opacity .25s;
+}
+.snav-backdrop.open{display:block;opacity:1}
+.snav-drawer{
+  position:fixed;top:52px;right:0;bottom:0;z-index:199;
+  width:min(280px,83vw);
+  background:rgba(20,20,20,.99);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-left:1px solid var(--line);
+  flex-direction:column;padding:1rem .75rem 2rem;
+  transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);
+  display:flex;
+}
+.snav-drawer.open{transform:translateX(0)}
+.snav-dhead{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:.9rem;padding-bottom:.75rem;border-bottom:1px solid var(--line);
+}
+.snav-dtitle{font-size:.7rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em}
+.snav-dclose{
+  width:28px;height:28px;border-radius:4px;background:var(--bg2);border:1px solid var(--line2);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);
+  transition:all .15s;min-height:unset;
+}
+.snav-dclose:hover{border-color:var(--line3);color:var(--t1)}
+.snav-dclose svg{width:12px;height:12px}
+.snav-dlink{
+  padding:.65rem .85rem;border-radius:4px;background:transparent;border:1px solid transparent;
+  font-size:.78rem;font-weight:600;color:var(--t2);text-decoration:none;transition:all .15s;
+  display:flex;align-items:center;gap:.55rem;margin-bottom:.18rem;cursor:pointer;
+}
+.snav-dlink:hover{color:var(--t1);background:var(--bg2);border-color:var(--line)}
+.snav-dlink svg{width:15px;height:15px;opacity:.5;flex-shrink:0}
+.snav-dlink:hover svg{opacity:.9}
+.snav-dlink.active{color:var(--em);background:rgba(var(--em-rgb,99, 102, 241),.07);border-color:rgba(var(--em-rgb,99, 102, 241),.2)}
+.snav-dlink.active svg{opacity:1}
+.snav-dlink.wa-link{color:#25d366;background:rgba(37,211,102,.06);border-color:rgba(37,211,102,.18);margin-top:auto}
+.snav-dlink.wa-link:hover{background:rgba(37,211,102,.12)}
+.snav-dsep{height:1px;background:var(--line);margin:.4rem 0 .6rem}
+.snav-dlink.em-link{color:var(--em);background:rgba(var(--em-rgb,99, 102, 241),.07);border-color:rgba(var(--em-rgb,99, 102, 241),.2)}
+.snav-dlink.em-link:hover{background:rgba(var(--em-rgb,99, 102, 241),.12)}
+.snav-dlink.em-link svg{opacity:.8}
+
+</style>
+
+<style id="mobile-patch">
+/* ============================================================
+   MOBILE FRIENDLY PATCH v2 — DigitalHub V7
+   Targeted fixes: no overflow, proper sizing, no conflicts
+   ============================================================ */
+
+/* ── CSS variables ───────────────────────────────────────── */
+:root {
+  --btn-h: 48px;
+  --btn-h-sm: 40px;
+  --inp-h: 48px;
+  --rad-mob: 8px;
+}
+
+/* ── Prevent horizontal overflow globally ────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  max-width: 100vw;
+  }
+
+/* ── Prevent iOS font zoom on input focus ────────────────── */
+@media (max-width: 680px) {
+  /* Only apply to inputs, not to other elements */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  input[type="url"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* ── Navbar height ───────────────────────────────────────── */
+@media (max-width: 680px) {
+  /* index.html navbar */
+  .nav-inner {
+    height: 54px !important;
+    padding: 0 1rem !important;
+  }
+  /* Shared navbar (pay, produk, etc) */
+  .snav {
+    height: 54px !important;
+    padding: 0 1rem !important;
+  }
+  /* otp/cpanel style nav */
+  .nav:not(.mob-bar):not(.chat-nav) {
+    height: 54px !important;
+    padding: 0 1rem !important;
+  }
+  /* Logo sizes */
+  .logo, .snav-logo, .nav-logo { font-size: .95rem !important; }
+  .logo-gem, .snav-gem, .nav-gem {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  /* Hamburger */
+  .hbg {
+    width: 38px !important;
+    height: 38px !important;
+    min-height: unset !important;
+  }
+  /* Nav buttons — keep small, just ensure tap target */
+  .n-btn, .snav-btn, .nav-btn {
+    height: 34px !important;
+    min-height: unset !important;
+    padding: 0 .85rem !important;
+    font-size: .68rem !important;
+  }
+}
+
+/* ── Drawer ──────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .drawer {
+    width: min(290px, 86vw) !important;
+    top: 54px !important;
+    padding: .85rem .65rem 2rem !important;
+  }
+  .drawer-close {
+    width: 34px !important;
+    height: 34px !important;
+    min-height: unset !important;
+  }
+  /* Drawer links — bigger tap target */
+  .dr-link {
+    padding: .6rem .75rem !important;
+    font-size: .74rem !important;
+    border-radius: 5px !important;
+    margin-bottom: .2rem !important;
+    min-height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  .dr-link svg {
+    width: 17px !important;
+    height: 17px !important;
+    flex-shrink: 0;
+  }
+}
+
+/* ── Primary action buttons (full-width) ─────────────────── */
+@media (max-width: 680px) {
+  /* .btn is used across all pages as the main CTA */
+  .btn {
+    min-height: var(--btn-h) !important;
+    padding: .6rem .9rem !important;
+    font-size: .88rem !important;
+    border-radius: var(--rad-mob) !important;
+    width: 100%;
+  }
+  /* Pay button in produk.html bottom sheet */
+  .btn-pay {
+    min-height: var(--btn-h) !important;
+    font-size: .88rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  /* Pay button in sidebar */
+  .btn-pay-sidebar {
+    min-height: var(--btn-h) !important;
+    font-size: .88rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  /* Free claim */
+  .free-claim-btn {
+    min-height: var(--btn-h) !important;
+    font-size: .88rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  /* Mobile bottom bar buy button (produk.html) */
+  .mob-btn {
+    height: 44px !important;
+    min-height: unset !important;
+    padding: 0 1.25rem !important;
+    font-size: .82rem !important;
+    border-radius: 8px !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/* ── Small buttons — DON'T blow up in tables/rows ────────── */
+@media (max-width: 680px) {
+  /* Table action buttons — keep compact */
+  .actn-btn {
+    min-height: unset !important;
+    height: auto !important;
+    padding: .28rem .6rem !important;
+    font-size: .62rem !important;
+    white-space: nowrap;
+  }
+  /* Copy button */
+  .cp-btn {
+    width: 28px !important;
+    height: 28px !important;
+    min-height: unset !important;
+    flex-shrink: 0;
+  }
+  /* Receipt print button */
+  .receipt-btn {
+    min-height: unset !important;
+    padding: .3rem .65rem !important;
+    font-size: .65rem !important;
+  }
+  /* Download QR button */
+  .qr-dl-btn {
+    min-height: unset !important;
+  }
+  /* btn-sm stays small */
+  .btn-sm {
+    min-height: var(--btn-h-sm) !important;
+    padding: .48rem 1rem !important;
+    font-size: .76rem !important;
+    border-radius: 6px !important;
+  }
+  /* Voucher apply button */
+  .vc-apply, .vc-apply-btn {
+    min-height: 44px !important;
+    padding: 0 1rem !important;
+    font-size: .8rem !important;
+    border-radius: 6px !important;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
+/* ── Table buy button — special case ────────────────────── */
+@media (max-width: 680px) {
+  /* cnt-buy-btn lives inside a table td — use comfortable but not huge size */
+  .cnt-buy-btn, .cnt-buy {
+    min-height: 36px !important;
+    height: 36px !important;
+    padding: 0 .85rem !important;
+    font-size: .7rem !important;
+    border-radius: 6px !important;
+    white-space: nowrap;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+}
+
+/* ── Input fields ────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .f-inp, .finp, .l-inp, .ph-inp, .pf-input, .bw-input,
+  .cnt-search, .srv-search, .captcha-inp {
+    min-height: var(--inp-h) !important;
+    padding: .8rem 1rem !important;
+    border-radius: var(--rad-mob) !important;
+    font-size: 16px !important; /* prevents iOS zoom */
+    width: 100%;
+  }
+  /* Search with icon — preserve left padding for icon */
+  .cnt-search { padding-left: 2.5rem !important; }
+
+  /* Phone input inside a flex row */
+  .ph-inp, .ph-row input {
+    min-height: var(--inp-h) !important;
+    padding: .8rem .85rem !important;
+    font-size: 16px !important;
+  }
+  /* Textarea */
+  textarea.f-inp, textarea.pf-input, textarea.bw-input {
+    min-height: 80px !important;
+    padding: .75rem 1rem !important;
+  }
+  /* Select */
+  select.f-inp {
+    padding-right: 2.5rem !important;
+    background-position: right .75rem center !important;
+  }
+  /* Captcha number input — compact */
+  .captcha-inp {
+    min-height: 44px !important;
+    width: 90px !important;
+    text-align: center;
+  }
+  /* Voucher row */
+  .vc-row {
+    display: flex !important;
+    gap: .5rem !important;
+    align-items: stretch !important;
+  }
+  .vc-row input, .vc-row .bw-input {
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+}
+
+/* ── Voucher / action rows — prevent overflow ────────────── */
+@media (max-width: 680px) {
+  .ph-row {
+    display: flex !important;
+    align-items: stretch !important;
+    overflow: hidden;
+    border-radius: var(--rad-mob) !important;
+  }
+  .ph-pre {
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 .75rem !important;
+    font-size: .88rem !important;
+    flex-shrink: 0;
+  }
+}
+
+/* ── Category / filter pills ─────────────────────────────── */
+@media (max-width: 680px) {
+  .cat {
+    min-height: 38px !important;
+    padding: .5rem 1rem !important;
+    font-size: .76rem !important;
+    border-radius: 20px !important;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .cats {
+    padding-bottom: .5rem !important;
+    gap: .4rem !important;
+  }
+  /* Tab buttons */
+  .sec-tab, .tab {
+    min-height: 38px !important;
+    padding: .55rem .85rem !important;
+    font-size: .76rem !important;
+    border-radius: 6px !important;
+  }
+  /* Sort buttons */
+  .cnt-sort-btn {
+    min-height: 36px !important;
+    padding: 0 .85rem !important;
+    font-size: .72rem !important;
+    border-radius: 6px !important;
+    white-space: nowrap;
+  }
+  /* Duration labels */
+  .dur-lbl, .days-lbl {
+    min-height: 38px !important;
+    padding: .5rem .85rem !important;
+    font-size: .76rem !important;
+    border-radius: 6px !important;
+  }
+}
+
+/* ── Cards grid ──────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: .6rem !important;
+  }
+  .card-body {
+    padding: .75rem .85rem .9rem !important;
+  }
+  .card-name { font-size: .82rem !important; }
+  .card-price b { font-size: .86rem !important; }
+}
+@media (max-width: 360px) {
+  .grid { gap: .45rem !important; }
+  .card-name { font-size: .75rem !important; }
+}
+
+/* ── Order / product cards ───────────────────────────────── */
+@media (max-width: 680px) {
+  .ord-card {
+    padding: .85rem 1rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  .ord-head { padding: .75rem .9rem !important; }
+  .dep-card {
+    padding: .85rem 1rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  .acc-card {
+    padding: .85rem 1rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+}
+
+/* ── Wrap / main content areas ───────────────────────────── */
+@media (max-width: 680px) {
+  .wrap { padding-left: .9rem !important; padding-right: .9rem !important; }
+  .main { padding-left: .9rem !important; padding-right: .9rem !important; }
+  .c-body { padding: 1rem !important; }
+  .m-body { padding: 1rem !important; border-radius: var(--rad-mob) !important; }
+  .card-body.main-card-body { padding: 1rem !important; }
+  /* Track / renew centered body */
+  body[style*="align-items:center"],
+  body[style*="align-items: center"] {
+    padding-left: .9rem !important;
+    padding-right: .9rem !important;
+  }
+}
+
+/* ── Plan/variant cards (renew, produk) ──────────────────── */
+@media (max-width: 680px) {
+  .plan-card {
+    padding: .85rem 1rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  .plan-card:has(input[type="radio"]) {
+    cursor: pointer;
+  }
+  /* Variant radio pills */
+  .bw-vr {
+    padding: .7rem .85rem !important;
+    border-radius: 8px !important;
+  }
+  .bw-vr-name { font-size: .8rem !important; }
+  .bw-vr-price { font-size: .72rem !important; }
+  .bw-vr-radio {
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0;
+  }
+}
+
+/* ── Hero slider ─────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .hero-wrap { max-height: 260px !important; }
+  .slide h1 {
+    font-size: clamp(1.1rem, 5vw, 1.6rem) !important;
+    margin-bottom: .4rem !important;
+  }
+  .slide p {
+    font-size: .76rem !important;
+    margin-bottom: .85rem !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .slide-cta {
+    min-height: 40px !important;
+    padding: .55rem 1.1rem !important;
+    font-size: .78rem !important;
+    border-radius: 8px !important;
+    white-space: nowrap;
+  }
+}
+
+/* ── Tables — horizontal scroll, prevent overflow ────────── */
+@media (max-width: 680px) {
+  .tbl-wrap, .cnt-tbl-scroll {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+  }
+  .cnt-tbl th, .cnt-tbl td {
+    padding: .6rem .75rem !important;
+    font-size: .76rem !important;
+  }
+  .cnt-tbl th { font-size: .6rem !important; }
+  .tbl th, .tbl td {
+    padding: .55rem .7rem !important;
+    font-size: .76rem !important;
+    white-space: nowrap;
+  }
+}
+
+/* ── Server picker cards (otp.html) ──────────────────────── */
+@media (max-width: 680px) {
+  .srv-card {
+    padding: .75rem .55rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  .srv-img { width: 36px !important; height: 36px !important; }
+  .srv-jump {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin-top: .5rem;
+  }
+}
+
+/* ── FAQ section ─────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .faq-section { padding: 0 .9rem 2.5rem !important; }
+  .faq-list summary {
+    font-size: .86rem !important;
+    padding: .85rem 0 !important;
+  }
+  .faq-ans { font-size: .8rem !important; line-height: 1.7 !important; }
+}
+
+/* ── Chat page ───────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .chat-inp {
+    min-height: 46px !important;
+    font-size: 16px !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  .chat-send {
+    width: 46px !important;
+    height: 46px !important;
+    min-height: unset !important;
+    border-radius: var(--rad-mob) !important;
+    flex-shrink: 0;
+  }
+  .msg-bubble {
+    font-size: .82rem !important;
+    padding: .65rem .9rem !important;
+    border-radius: 14px !important;
+    max-width: 86% !important;
+  }
+}
+
+/* ── Upload / TikTok pages ───────────────────────────────── */
+@media (max-width: 680px) {
+  .drop-zone {
+    padding: 1.75rem 1rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+}
+
+/* ── Data rows (pay.html result) ─────────────────────────── */
+@media (max-width: 680px) {
+  .data-row {
+    font-size: .8rem !important;
+    padding: .5rem .6rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: .5rem !important;
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+  .d-k { flex-shrink: 0; }
+  .d-v-wrap {
+    flex: 1 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: .4rem !important;
+    overflow: hidden;
+  }
+  .d-v {
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    max-width: none !important; /* remove fixed 180px */
+  }
+}
+
+/* ── QR code section (pay.html) ─────────────────────────── */
+@media (max-width: 480px) {
+  .qr-canvas-bg {
+    max-width: 100% !important;
+    overflow: hidden;
+  }
+  .qr-canvas-bg img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+
+/* ── Cancel / back buttons ───────────────────────────────── */
+@media (max-width: 680px) {
+  .cancel-btn {
+    min-height: 44px !important;
+    font-size: .82rem !important;
+    border-radius: var(--rad-mob) !important;
+    padding: .7rem !important;
+  }
+  .back-btn {
+    min-height: unset !important;
+    font-size: .76rem !important;
+    padding: .3rem 0 !important;
+  }
+}
+
+/* ── Music player ────────────────────────────────────────── */
+@media (max-width: 680px) {
+  #musicPlayer {
+    bottom: 1.15rem !important;
+    right: .85rem !important;
+  }
+  #musicBtn {
+    width: 42px !important;
+    height: 42px !important;
+    min-height: unset !important;
+    border-radius: 8px !important;
+  }
+  #musicPanel {
+    width: 200px !important;
+    border-radius: 8px !important;
+  }
+  .mp-nav {
+    width: 34px !important;
+    height: 34px !important;
+    min-height: unset !important;
+  }
+}
+
+/* ── PWA banner ──────────────────────────────────────────── */
+@media (max-width: 680px) {
+  #pwaInstall {
+    bottom: 1.15rem !important;
+    right: .85rem !important;
+    left: .85rem !important;
+    max-width: none !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  .pi-btn {
+    min-height: 36px !important;
+    padding: .45rem 1rem !important;
+    font-size: .76rem !important;
+    border-radius: 6px !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .pi-close { min-height: unset !important; }
+}
+
+/* ── Modals / confirm dialogs ────────────────────────────── */
+@media (max-width: 680px) {
+  .modal, .cfd {
+    border-radius: var(--rad-mob) !important;
+    padding: 1.4rem 1.2rem !important;
+    max-width: calc(100vw - 2rem) !important;
+    width: 100% !important;
+  }
+  .cfd-btn {
+    min-height: 44px !important;
+    font-size: .84rem !important;
+    border-radius: 8px !important;
+    padding: .75rem 1rem !important;
+    flex: 1;
+  }
+  .cfd-btns {
+    display: flex !important;
+    gap: .5rem !important;
+  }
+  .lb-close, .cfd-close {
+    width: 36px !important;
+    height: 36px !important;
+    min-height: unset !important;
+  }
+  .ad-close {
+    width: 32px !important;
+    height: 32px !important;
+    min-height: unset !important;
+  }
+}
+
+/* ── Section headings ────────────────────────────────────── */
+@media (max-width: 680px) {
+  .sec-label { font-size: .66rem !important; margin-bottom: .75rem !important; }
+  .card-head { padding: 1rem 1.15rem !important; }
+  .card-body:not(.card-thumb) { padding: 1rem 1.15rem !important; }
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  footer, .page-footer {
+    padding: 1.2rem 1rem !important;
+    font-size: .7rem !important;
+    line-height: 1.9 !important;
+    text-align: center !important;
+  }
+}
+
+/* ── Touch feedback — only on touch devices ──────────────── */
+@media (hover: none) and (pointer: coarse) {
+  .btn:active:not(:disabled),
+  .dr-link:active,
+  .cat:active,
+  .card:active,
+  .ord-card:active,
+  .plan-card:active,
+  .bw-vr:active,
+  button:active:not(:disabled) {
+    transform: scale(.97) !important;
+    transition: transform .08s !important;
+  }
+}
+
+/* ── Safe area (notch / home bar) ────────────────────────── */
+@media (max-width: 680px) {
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .mob-bar {
+    padding-bottom: calc(.6rem + env(safe-area-inset-bottom)) !important;
+  }
+  #musicPlayer {
+    bottom: calc(1.15rem + env(safe-area-inset-bottom)) !important;
+  }
+  #pwaInstall {
+    bottom: calc(1.15rem + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* ── Smooth scrolling ────────────────────────────────────── */
+@media (max-width: 680px) {
+  html { -webkit-overflow-scrolling: touch; }
+  .cats, .cnt-tbl-scroll, .tbl-wrap, .gallery-thumbs {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: none;
+  }
+}
+
+</style>
+
+<style id="mobile-fix-global">
+/* Fix over-aggressive global min-height on all <a> tags */
+/* Only apply min-height to actual interactive buttons, not all anchors */
+@media (max-width: 480px) {
+  /* Reset the blanket rule */
+  a { min-height: unset !important; }
+  /* Only apply to nav links and buttons that need it */
+  button:not(.actn-btn):not(.cp-btn):not(.qr-dl-btn):not(.mp-nav):not(.drawer-close):not(.hbg):not(.ad-close):not(.pi-close):not(.lb-close):not(.back-btn):not(.receipt-btn) {
+    min-height: 44px;
+  }
+  /* Specifically fix nav links in drawers */
+  .dr-link { min-height: 44px !important; }
+  /* Links that are styled as buttons */
+  .btn, .btn-em, .btn-ghost, .btn-pay, .n-btn, .snav-btn, .mob-btn { 
+    min-height: unset; /* let our patch control these */
+  }
+  /* Logo and breadcrumb links — no min-height */
+  .logo, .snav-logo, .nav-logo, .back-btn, .nav-breadcrumb a,
+  .page-footer a, footer a, .faq-ans a, .content-link,
+  .tick-item, .rc, .dr-link { 
+    min-height: unset !important; 
+  }
+}
+
+/* ── Music Player ─────────────────────────────────── */
+#musicPlayer{
+  position:fixed;bottom:1.15rem;right:1.15rem;z-index:300;
+  display:none;flex-direction:column;align-items:flex-end;gap:.38rem;
+}
+#musicPanel{
+  background:var(--bg2);border:1px solid var(--line2);border-radius:4px;
+  box-shadow:0 6px 28px rgba(0,0,0,.6);
+  width:196px;padding:.65rem .8rem;
+  display:none;flex-direction:column;gap:.5rem;
+}
+#musicPanel.open{display:flex;animation:mpUp .16s ease;}
+@keyframes mpUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.mp-title{
+  font-size:.62rem;color:var(--t2);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;letter-spacing:.02em;
+}
+.mp-controls{display:flex;align-items:center;justify-content:center;gap:.4rem;}
+.mp-nav{
+  width:28px;height:28px;border-radius:4px;border:1px solid var(--line2);
+  background:var(--bg3);color:var(--t3);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+  flex-shrink:0;
+}
+.mp-nav:hover{border-color:var(--line3);color:var(--t1);}
+.mp-nav svg{width:12px;height:12px;display:block;}
+.mp-vol-row{display:flex;align-items:center;gap:.45rem;}
+.mp-vol-ico{color:var(--t3);flex-shrink:0;}
+.mp-vol-ico svg{width:12px;height:12px;display:block;}
+.mp-vol-sl{
+  flex:1;-webkit-appearance:none;appearance:none;
+  height:2px;border-radius:2px;background:var(--line2);
+  cursor:pointer;outline:none;
+}
+.mp-vol-sl::-webkit-slider-thumb{
+  -webkit-appearance:none;width:11px;height:11px;border-radius:50%;
+  background:var(--em);cursor:pointer;box-shadow:0 0 4px rgba(0,0,0,.4);
+}
+.mp-vol-sl::-moz-range-thumb{
+  width:11px;height:11px;border-radius:50%;border:none;
+  background:var(--em);cursor:pointer;
+}
+/* Equalizer bars (animated when playing) */
+.mp-eq{display:none;align-items:flex-end;gap:2px;height:15px;width:15px;justify-content:center;}
+.mp-eq span{
+  width:2px;background:var(--em);border-radius:1px;
+  animation:mpEq .75s ease-in-out infinite;
+}
+.mp-eq span:nth-child(1){animation-duration:.65s;}
+.mp-eq span:nth-child(2){animation-duration:.9s;animation-delay:.13s;}
+.mp-eq span:nth-child(3){animation-duration:.6s;animation-delay:.27s;}
+.mp-eq span:nth-child(4){animation-duration:.8s;animation-delay:.06s;}
+@keyframes mpEq{0%,100%{height:2px}50%{height:14px}}
+/* Main toggle button */
+#musicBtn{
+  width:38px;height:38px;min-height:unset!important;
+  border-radius:4px;background:var(--bg2);border:1px solid var(--line2);
+  color:var(--t3);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .18s;box-shadow:0 4px 16px rgba(0,0,0,.5);
+  overflow:hidden;position:relative;
+}
+#musicBtn:hover{border-color:var(--line3);color:var(--t1);background:var(--bg3);}
+#musicBtn.playing{border-color:rgba(var(--em-rgb),.38);color:var(--em);background:rgba(var(--em-rgb),.08);}
+#musicBtn .mp-ico svg{width:15px;height:15px;display:block;}
+#musicBtn.playing .mp-ico{display:none;}
+#musicBtn.playing .mp-eq{display:flex;}
+</style>
+</head>
+<body>
+<!-- ── Shared Navbar ── -->
+<div class="snav-backdrop" id="snavBackdrop" onclick="snavClose()"></div>
+<div class="snav-drawer" id="snavDrawer">
+  <div class="snav-dhead">
+    <span class="snav-dtitle">Menu</span>
+    <button class="snav-dclose" onclick="snavClose()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <a href="/" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </a>
+  
+  <a href="/otp" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+    Beli OTP
+  </a>
+  <a href="/renew" class="snav-dlink active" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+    Perpanjang Panel
+  </a>
+  <a href="/track" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    Track Order
+  </a>
+  <a href="/cpanel" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    cPanel
+  </a>
+  <div class="snav-dsep"></div>
+  <a href="/reseller" class="snav-dlink" onclick="snavClose()" style="color:var(--em);border-color:rgba(var(--em-rgb,99, 102, 241),.2);background:rgba(var(--em-rgb,99, 102, 241),.06)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6l9 16 9-16-3-4z"/><path d="M3 6h18"/><path d="m12 2-3 4 3 16 3-16z"/></svg>
+    Buka Toko Reseller
+  </a>
+  <a href="/tiktok" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+    TikTok Downloader
+  </a>
+  <a href="/keuangan" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/><circle cx="16" cy="14" r="1.5"/></svg>
+    Keuangan
+  </a>
+  <a href="/ulasan" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h8M8 14h5"/></svg>
+    Ulasan
+  </a>
+  <a href="/chat" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><circle cx="9" cy="10" r=".5" fill="currentColor"/><circle cx="12" cy="10" r=".5" fill="currentColor"/><circle cx="15" cy="10" r=".5" fill="currentColor"/></svg>
+    Live Chat
+  </a>
+  <a href="/dukungan" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+    Hubungi Tim
+  </a>
+  <div class="snav-dsep"></div>
+  <a href="#" id="snavWaLink" class="snav-dlink wa-link" target="_blank" rel="noopener" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+    Hubungi CS
+  </a>
+  <a href="#" data-channel-link target="_blank" rel="noopener" class="snav-dlink" onclick="snavClose()" style="display:none;color:#25d366;border-color:rgba(37,211,102,.2);background:rgba(37,211,102,.06)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+    Channel WhatsApp
+  </a>
+</div>
+<nav class="snav">
+  <a href="/" class="snav-logo" id="snavLogo">
+    <div class="snav-gem" id="snavGem">
+      <img data-logo-img src="/media/logo.jpg" alt="Logo" style="height:26px;width:auto;max-width:60px;object-fit:contain;border-radius:4px;display:block">
+    </div>
+    <span class="snav-name" id="snavName">DigitalHub</span>
+  </a>
+    <div class="snav-r">
+    <a href="/" class="snav-btn hide-m">Beranda</a>
+    
+    <a href="/track" class="snav-btn hide-m">Track Order</a>
+    <a href="/cpanel" class="snav-btn hide-m">cPanel</a>
+    <a href="#" id="snavWaBtn" target="_blank" rel="noopener noreferrer" class="snav-btn em hide-m">Hubungi CS</a>
+    <button class="snav-hbg" id="snavHbg" onclick="snavToggle()">
+      <span class="bar bar1"></span>
+      <span class="bar bar2"></span>
+      <span class="bar bar3"></span>
+    </button>
+  </div>
+  </nav>
+<script>
+(function(){
+  function snavToggle(){
+    var d=document.getElementById('snavDrawer'),b=document.getElementById('snavBackdrop'),h=document.getElementById('snavHbg');
+    var isOpen=d.classList.contains('open');
+    if(isOpen){d.classList.remove('open');b.classList.remove('open');h.classList.remove('open');document.body.style.overflow='';}
+    else{d.classList.add('open');b.classList.add('open');h.classList.add('open');document.body.style.overflow='hidden';}
+  }
+  function snavClose(){
+    var d=document.getElementById('snavDrawer'),b=document.getElementById('snavBackdrop'),h=document.getElementById('snavHbg');
+    d.classList.remove('open');b.classList.remove('open');h.classList.remove('open');document.body.style.overflow='';
+  }
+  window.snavToggle=snavToggle;window.snavClose=snavClose;
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')snavClose();});
+  // Apply store settings to nav
+  fetch('/api/products').then(function(r){return r.json();}).then(function(j){
+    if(!j)return;
+    var name=j.store||(j.settings&&j.settings.storeName)||'';
+    if(name){
+      var el=document.getElementById('snavName');if(el)el.textContent=name;
+      document.querySelectorAll('.js-store-name,[data-store-name]').forEach(function(el){el.textContent=name;});
+    }
+    var wa=j.wa||(j.settings&&j.settings.wa)||'';
+    if(wa){
+      var wb=document.getElementById('snavWaBtn');if(wb)wb.href=wa;
+      var wl=document.getElementById('snavWaLink');if(wl)wl.href=wa;
+    }
+    var ch=j.channel||(j.settings&&(j.settings.channelWa||j.settings.channel))||'';
+    if(ch)document.querySelectorAll('[data-channel-link]').forEach(function(el){el.href=ch;el.style.display=''});
+    var pc=(j.settings&&j.settings.primaryColor)||'';
+    if(pc){
+      function hexRgb(h){h=h.replace('#','');if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];return parseInt(h.slice(0,2),16)+','+parseInt(h.slice(2,4),16)+','+parseInt(h.slice(4,6),16);}
+      document.documentElement.style.setProperty('--em',pc);
+      document.documentElement.style.setProperty('--em-rgb',hexRgb(pc));
+    }
+  }).catch(function(){});
+})();
+</script>
+
+<div class="toast" id="toast"><div class="t-ico" id="toastIco"></div><span id="toastMsg"></span></div>
+
+
+
+<div class="card fadein">
+  <div class="c-head">
+    <div class="c-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+      </svg>
+    </div>
+    <div>
+      <div class="c-title">Perpanjang Panel</div>
+      <div class="c-sub">Tambah durasi panel Pterodactyl yang sudah aktif</div>
+    </div>
+  </div>
+
+  <div class="c-body">
+
+    <div class="step active" id="step1">
+      <label class="f-label">Username Panel</label>
+      <input type="text" class="f-inp" id="usernameInp" placeholder="contoh: botku123"
+        maxlength="20" oninput="this.value=this.value.replace(/[^a-z0-9_]/gi,'').toLowerCase()"
+        onkeydown="if(event.key==='Enter')doLookup()">
+      <div class="f-note">Masukkan username panel yang sudah aktif. Username harus persis sama dengan yang dipakai saat beli.</div>
+      <div class="err-box" id="lookupErr"></div>
+      <div style="height:.85rem"></div>
+      <button class="btn btn-em" id="lookupBtn" onclick="doLookup()">Cek Panel &rarr;</button>
+      <a href="/track" class="btn btn-ghost">Track Order</a>
+    </div>
+
+    <div class="step" id="step2">
+
+      <div class="info-card" id="infoCard"></div>
+
+      <label class="dur-label">Pilih Durasi Perpanjangan</label>
+      <div class="dur-grid" id="durGrid"></div>
+
+      <div class="ph-wrap">
+        <label class="f-label">WhatsApp <span style="color:var(--t3);font-size:.6rem">(opsional)</span></label>
+        <div class="ph-row">
+          <span class="ph-pre">+62</span>
+          <input type="number" class="ph-inp" id="phoneInp" placeholder="812xxxxxxxx">
+        </div>
+      </div>
+
+      <div class="total-row">
+        <span class="total-lbl">Total Perpanjangan</span>
+        <span class="total-val" id="totalEl">—</span>
+      </div>
+
+      <div class="err-box" id="orderErr"></div>
+      <button class="btn btn-em" id="orderBtn" onclick="doOrder()" disabled>Bayar Sekarang</button>
+      <button class="btn btn-ghost" onclick="goStep(1)">&#8592; Kembali</button>
+    </div>
+
+  </div>
+
+  <div class="c-foot">Perpanjang otomatis · Expiry langsung diupdate · DigitalHub QRIS</div>
+</div>
+
+<script>
+var panelData  = null;
+var selDays    = 0;
+var selPrice   = 0;
+var idr=function(n){var v=Number(n);if(!isFinite(v)||isNaN(v))v=0;return 'Rp'+v.toLocaleString('id-ID');};
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function toast(m,type){var t=document.getElementById('toast'),ic=document.getElementById('toastIco'),ms=document.getElementById('toastMsg');type=type||'ok';var icons={ok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" width="10" height="10"><polyline points="20 6 9 17 4 12"/></svg>',err:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" width="10" height="10"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="10" height="10"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'};if(ic)ic.innerHTML=icons[type]||icons.ok;if(ms)ms.textContent=m;t.className='toast show '+type;clearTimeout(t._tt);t._tt=setTimeout(function(){t.classList.remove('show');},type==='err'?4000:2500);}
+function showErr(elId, msg){ var e=document.getElementById(elId); e.textContent=msg; e.classList.add('show'); }
+function hideErr(elId){ document.getElementById(elId).classList.remove('show'); }
+
+function goStep(n) {
+  document.querySelectorAll('.step').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById('step'+n).classList.add('active');
+}
+
+function fmtDate(ts) {
+  if (!ts) return '—';
+  return new Date(ts).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
+}
+
+function daysLeft(ts) {
+  if (!ts) return 0;
+  return Math.max(0, Math.ceil((ts - Date.now()) / 86400000));
+}
+
+async function doLookup() {
+  var username = document.getElementById('usernameInp').value.trim();
+  if (!username) return;
+  hideErr('lookupErr');
+  var btn = document.getElementById('lookupBtn');
+  btn.disabled = true; btn.textContent = 'Mencari...';
+
+  try {
+    var r = await fetch('/api/renew/lookup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'username=' + encodeURIComponent(username),
+    });
+    var j = await r.json();
+    if (!j.ok) {
+      showErr('lookupErr', j.message || 'Tidak ditemukan.');
+      btn.disabled = false; btn.textContent = 'Cek Panel →';
+      return;
+    }
+    panelData = j;
+    renderStep2();
+    goStep(2);
+  } catch(e) {
+    showErr('lookupErr', 'Koneksi error: ' + e.message);
+  }
+  btn.disabled = false; btn.textContent = 'Cek Panel →';
+}
+
+async function renderStep2() {
+  var d = panelData;
+  var left = daysLeft(d.expiresAt);
+  var expStatus = left <= 3 ? 'warn' : 'ok';
+  var expText   = left <= 0 ? '⚠ Sudah expired' : left + ' hari lagi';
+
+  var statusWarning = '';
+  if (d.panelStatus === 'EXPIRED' || left <= 0) {
+    statusWarning = '<div style="background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.25);border-radius:4px;padding:.55rem .8rem;font-size:.68rem;color:#fbbf24;margin-bottom:.75rem">⚠ Panel sudah expire. Perpanjang untuk mengaktifkan kembali.</div>';
+  }
+  if (d.pteroStatus === 'deleted') {
+    statusWarning = '<div style="background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.25);border-radius:4px;padding:.55rem .8rem;font-size:.68rem;color:#f87171;margin-bottom:.75rem">⚠ Server dihapus dari panel. Perpanjang akan memperbarui expiry di sistem. Hubungi admin untuk reinstall server.</div>';
+  }
+
+  document.getElementById('infoCard').innerHTML =
+    statusWarning
+    + '<div class="info-head"><div class="info-dot"></div><div class="info-username">@' + esc(d.username) + '</div></div>'
+    + '<div class="info-row"><span class="info-k">Paket</span><span class="info-v">' + esc(d.ram || d.plan || '') + '</span></div>'
+    + '<div class="info-row"><span class="info-k">Expired</span><span class="info-v">' + fmtDate(d.expiresAt) + '</span></div>'
+    + '<div class="info-row"><span class="info-k">Sisa Hari</span><span class="info-v ' + expStatus + '">' + expText + '</span></div>';
+
+  var dayPrices = {30: 0};
+  try {
+    var pr = await fetch('/api/products');
+    var pj = await pr.json();
+    if (pj.ok) {
+      var panelProd = pj.data.find(function(p){ return p.type === 'panel'; });
+      if (panelProd) {
+        var matchVar = panelProd.variants.find(function(v){ return v.plan === d.plan; })
+          || (d.variantId && panelProd.variants.find(function(v){ return v.id === d.variantId; }))
+          || panelProd.variants[0];
+        if (matchVar) {
+          // Harga perpanjang = harga produk panel, bukan prorata harian
+          dayPrices[30] = matchVar.salePrice != null && matchVar.salePrice >= 0
+            ? matchVar.salePrice : (matchVar.price || 0);
+        }
+      }
+    }
+  } catch(e) {}
+
+  // Hanya tersedia 30 hari — tampilkan sebagai info statis, bukan grid pilihan
+  var grid = document.getElementById('durGrid');
+  grid.innerHTML = '';
+  selDays = 30;
+  selPrice = dayPrices[30] || 0;
+
+  var radio = document.createElement('input');
+  radio.type = 'radio'; radio.name = 'durSel'; radio.id = 'dur30';
+  radio.value = 30; radio.className = 'dur-radio';
+  radio.style.position = 'absolute'; radio.style.opacity = '0';
+  radio.checked = true;
+
+  var lbl = document.createElement('label');
+  lbl.className = 'dur-lbl'; lbl.htmlFor = 'dur30';
+  lbl.innerHTML = '<span class="dur-days">30 Hari</span><span class="dur-price">' + (selPrice ? idr(selPrice) : '—') + '</span>';
+
+  grid.appendChild(radio); grid.appendChild(lbl);
+
+  if (selPrice) {
+    document.getElementById('totalEl').textContent = idr(selPrice);
+    document.getElementById('orderBtn').disabled = false;
+  }
+}
+
+async function doOrder() {
+  if (!selDays || !panelData) return;
+  hideErr('orderErr');
+  var btn = document.getElementById('orderBtn');
+  btn.disabled = true; btn.textContent = 'Memproses...';
+
+  try {
+    var phone = document.getElementById('phoneInp').value.trim();
+    var r = await fetch('/api/renew/order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'username=' + encodeURIComponent(panelData.username)
+          + '&days=' + selDays
+          + (phone ? '&phone=' + encodeURIComponent(phone) : ''),
+    });
+    var j = await r.json();
+    if (j.ok) {
+      window.location.href = '/pay?id=' + j.orderId;
+    } else {
+      showErr('orderErr', j.message || 'Gagal membuat order.');
+      btn.disabled = false; btn.textContent = 'Bayar Sekarang';
+    }
+  } catch(e) {
+    showErr('orderErr', 'Koneksi error: ' + e.message);
+    btn.disabled = false; btn.textContent = 'Bayar Sekarang';
+  }
+}
+
+function _hexToRgb(hex) {
+  hex = hex.replace('#','');
+  if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  var r = parseInt(hex.substring(0,2),16);
+  var g = parseInt(hex.substring(2,4),16);
+  var b = parseInt(hex.substring(4,6),16);
+  return r+','+g+','+b;
+}
+function applyGlobalSettings(s) {
+  if (!s) return;
+  if (s.primaryColor) {
+    document.documentElement.style.setProperty('--em', s.primaryColor);
+    document.documentElement.style.setProperty('--em2', s.primaryColor);
+    document.documentElement.setAttribute('data-em', s.primaryColor);
+
+    var _rgb = _hexToRgb(s.primaryColor);
+    document.documentElement.style.setProperty('--em-rgb', _rgb);
+    var _tmeta = document.querySelector('meta[name="theme-color"]'); if (_tmeta) _tmeta.setAttribute('content', s.primaryColor);
+  }
+  if (s.storeName) {
+    document.querySelectorAll('[data-store-name], #storeName, #ftName, .js-store-name').forEach(function(el){ el.textContent = s.storeName; });
+    if (!document.title.toLowerCase().includes('admin')) document.title = s.storeName;
+    document.querySelectorAll('[data-logo-placeholder]').forEach(function(el){ el.style.display = 'none'; });
+  }
+  if (s.footerText) document.querySelectorAll('[data-footer-text]').forEach(function(el){ el.textContent = s.footerText; });
+  if (s.wa) document.querySelectorAll('[data-wa-link]').forEach(function(el){ el.href = s.wa; });
+  if (s.announcement) { var ab = document.getElementById('announcementBar'); if (ab) { ab.textContent = s.announcement; ab.style.display = ''; } }
+  applyGlobalBg(s);
+  applyMusicSettings(s);
+}
+function applyGlobalBg(s) {
+  var old = document.getElementById('_gbg'); if (old) old.remove();
+  var oldStyle = document.getElementById('_gbg_style'); if (oldStyle) oldStyle.remove();
+  if (!s || !s.bgUrl) return;
+  var op = s.bgOpacity != null ? parseFloat(s.bgOpacity) : 0.15;
+  var el = document.createElement('div');
+  el.id = '_gbg';
+  el.setAttribute('aria-hidden','true');
+  el.style.cssText = 'position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;will-change:transform;transform:translateZ(0)';
+  if (s.bgType === 'video') {
+    var v = document.createElement('video');
+    v.src = s.bgUrl; v.autoplay = true; v.loop = true; v.muted = true; v.playsInline = true;
+    v.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:'+op+';transform:translateZ(0)';
+    el.appendChild(v);
+  } else {
+    var img = document.createElement('div');
+    img.style.cssText = 'position:absolute;inset:0;background-image:url('+JSON.stringify(s.bgUrl)+');background-size:cover;background-position:center;opacity:'+op+';transform:translateZ(0)';
+    el.appendChild(img);
+  }
+  document.body.insertBefore(el, document.body.firstChild);
+  // Override body background agar tidak menutupi _gbg
+  var st = document.createElement('style');
+  st.id = '_gbg_style';
+  st.textContent = 'html{background:var(--bg0,var(--bg,#0e0e0e))!important}body{background-color:transparent!important;background-image:none!important;}';
+  document.head.appendChild(st);
+}
+
+fetch('/api/products').then(function(r){return r.json();}).then(function(j){
+  if(j.settings) applyGlobalSettings(j.settings);
+}).catch(function(){});
+
+(function connectStoreSSE() {
+  try {
+    var _src = new EventSource('/api/store/stream');
+    _src.onmessage = function(e) {
+      try {
+        var d = JSON.parse(e.data);
+
+        if (d.type === 'reconnect') { _src.close(); setTimeout(connectStoreSSE, 1500); return; }
+        if (d.type === 'settings_update' && d.settings) {
+          applyGlobalSettings(d.settings);
+        }
+        if (d.type === 'reload') {
+
+          fetch('/api/products').then(function(r){return r.json();}).then(function(j){
+            if (j.settings) applyGlobalSettings(j.settings);
+          }).catch(function(){});
+        }
+        if (d.type === 'maintenance' && d.on) {
+          document.body.innerHTML = '<div style="position:fixed;inset:0;background:#0a0a0f;display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif;color:#f0f0f0;font-size:.9rem;text-align:center;padding:2rem">' + esc(d.msg || 'Sedang dalam maintenance.') + '</div>';
+        }
+      } catch(ex){}
+    };
+
+    _src.onerror = function(){ _src.close(); setTimeout(connectStoreSSE, 5000); };
+  } catch(ex){}
+})();
+
+</script>
+<script>(function(){var v="?v="+Date.now();document.querySelectorAll("img[data-logo-img]").forEach(function(el){if(el.src&&el.src.indexOf("/media/logo")>-1)el.src=el.src.split("?")[0]+v;});var fav=document.querySelector("link[rel=icon]");if(fav&&fav.href&&fav.href.indexOf("/media/logo")>-1)fav.href=fav.href.split("?")[0]+v;})();
+
+var _music = {
+  playlist: [],
+  idx: 0,
+  muted: false,
+  vol: 0.35,
+  ready: false,
+  panelOpen: false,
+  fadeTimer: null,
+  endBound: false,
+  gesturePending: false
+};
+
+function initMusic() {
+  try {
+    _music.muted = localStorage.getItem('musicMuted') === '1';
+    var sv = parseFloat(localStorage.getItem('musicVol'));
+    if (!isNaN(sv) && sv >= 0 && sv <= 1) _music.vol = sv;
+    var si = parseInt(localStorage.getItem('musicIdx'), 10);
+    if (!isNaN(si) && si >= 0) _music.idx = si;
+  } catch(e){}
+  var volEl = document.getElementById('mpVol');
+  if (volEl) volEl.value = Math.round(_music.vol * 100);
+}
+
+function applyMusicSettings(settings) {
+  var player = document.getElementById('musicPlayer');
+  var audio  = document.getElementById('bgMusic');
+  if (!settings || !settings.musicUrl || !settings.musicEnabled) {
+    if (player) player.style.display = 'none';
+    return;
+  }
+  // Set atribut mobile penting via JS (backup selain atribut HTML)
+  audio.playsInline = true;
+  audio.setAttribute('playsinline', '');
+  audio.setAttribute('webkit-playsinline', '');
+  var urls = settings.musicUrl.split(',')
+    .map(function(u){ return u.trim(); })
+    .filter(Boolean)
+    .map(function(u){
+      return /^https?:\/\//i.test(u) ? u : location.origin + u;
+    });
+  if (!urls.length) { if (player) player.style.display = 'none'; return; }
+
+  _music.playlist = urls;
+  _music.idx = Math.min(_music.idx, urls.length - 1);
+  _music.ready = true;
+  // Loop hanya aktif jika single track (multi-track dihandle via 'ended' event)
+  audio.loop = (urls.length === 1);
+
+  var prevBtn = document.getElementById('mpPrev');
+  var nextBtn = document.getElementById('mpNext');
+  if (prevBtn) prevBtn.style.display = urls.length > 1 ? '' : 'none';
+  if (nextBtn) nextBtn.style.display = urls.length > 1 ? '' : 'none';
+
+  if (player) player.style.display = 'flex';
+
+  _musicLoad(_music.idx, false);
+  _musicUpdateBtn();
+  _musicUpdateTitle();
+
+  if (!_music.endBound) {
+    _music.endBound = true;
+    audio.addEventListener('ended', function() {
+      if (_music.playlist.length > 1) {
+        _music.idx = (_music.idx + 1) % _music.playlist.length;
+        try { localStorage.setItem('musicIdx', _music.idx); } catch(e){}
+        _musicLoad(_music.idx, true);
+        _musicUpdateTitle();
+      } else {
+        audio.currentTime = 0;
+        if (!_music.muted) audio.play().catch(function(){});
+      }
+    });
+  }
+
+  if (!_music.muted) _musicFadeIn();
+}
+
+function _musicLoad(idx, autoPlay) {
+  var audio = document.getElementById('bgMusic');
+  var url = _music.playlist[idx];
+  // Atribut penting untuk iOS agar audio bisa diputar inline
+  audio.playsInline = true;
+  if (audio.src !== url) { audio.src = url; audio.load(); }
+  audio.volume = _music.muted ? 0 : _music.vol;
+  if (autoPlay && !_music.muted) _musicFadeIn();
+}
+
+function _musicFadeIn() {
+  var audio = document.getElementById('bgMusic');
+  if (!audio || !audio.src) return;
+  clearInterval(_music.fadeTimer);
+  audio.playsInline = true;
+  audio.setAttribute('playsinline', '');
+  // Langsung set volume target — tidak fade via setInterval karena di mobile
+  // interval callback BUKAN bagian dari user gesture, sehingga play() di dalamnya diblokir
+  audio.volume = _music.vol;
+  var p = audio.play();
+  if (p && p.catch) p.catch(function(e){
+    console.warn('[music] Autoplay blocked:', e && e.name);
+    _musicWaitForGesture();
+  });
+}
+
+// Daftarkan satu kali listener gesture (touchstart / click) untuk resume di HP
+function _musicWaitForGesture() {
+  if (_music.gesturePending) return;
+  _music.gesturePending = true;
+  function onGesture() {
+    _music.gesturePending = false;
+    document.removeEventListener('touchstart', onGesture, true);
+    document.removeEventListener('click', onGesture, true);
+    if (!_music.muted && _music.ready) {
+      var audio = document.getElementById('bgMusic');
+      if (audio && audio.paused) _musicFadeIn();
+    }
+  }
+  document.addEventListener('touchstart', onGesture, { capture: true, once: true, passive: true });
+  document.addEventListener('click', onGesture, { capture: true, once: true });
+}
+
+function _musicFadeOut(cb) {
+  var audio = document.getElementById('bgMusic');
+  if (!audio) { if (cb) cb(); return; }
+  clearInterval(_music.fadeTimer);
+  _music.fadeTimer = setInterval(function() {
+    if (audio.volume > 0.03) { audio.volume = Math.max(0, audio.volume - 0.04); }
+    else { audio.volume = 0; audio.pause(); clearInterval(_music.fadeTimer); if (cb) cb(); }
+  }, 35);
+}
+
+function toggleMusicPanel() {
+  if (!_music.ready) { toggleMusic(); return; }
+  var audio = document.getElementById('bgMusic');
+  // KUNCI MOBILE: audio.play() harus dipanggil langsung dalam gesture handler (tap/click).
+  // Kalau dipanggil lewat setTimeout atau nested function, browser mobile BLOKIR.
+  // Jadi kita play() dulu synchronous di sini, baru urus panel setelahnya.
+  if (audio && !_music.muted) {
+    // Set semua atribut mobile sebelum play
+    audio.playsInline = true;
+    audio.setAttribute('playsinline', '');
+    audio.setAttribute('webkit-playsinline', '');
+    if (audio.paused) {
+      // Pastikan src sudah ada
+      if (!audio.src && _music.playlist && _music.playlist.length) {
+        audio.src = _music.playlist[_music.idx] || _music.playlist[0];
+        audio.load();
+      }
+      audio.volume = _music.vol;
+      audio.play().catch(function(e){ console.warn('[music] play blocked:', e && e.name); });
+    }
+  }
+  _music.panelOpen = !_music.panelOpen;
+  var panel = document.getElementById('musicPanel');
+  if (!panel) return;
+  if (_music.panelOpen) panel.classList.add('open');
+  else panel.classList.remove('open');
+  _musicUpdateBtn();
+}
+
+function toggleMusic() {
+  if (!_music.ready) return;
+  _music.muted = !_music.muted;
+  try { localStorage.setItem('musicMuted', _music.muted ? '1' : '0'); } catch(e){}
+  if (_music.muted) {
+    _musicFadeOut();
+  } else {
+    // Play langsung synchronous dalam gesture untuk mobile
+    var audio = document.getElementById('bgMusic');
+    if (audio) {
+      audio.playsInline = true;
+      audio.setAttribute('playsinline', '');
+      if (!audio.src && _music.playlist && _music.playlist.length) {
+        audio.src = _music.playlist[_music.idx] || _music.playlist[0];
+        audio.load();
+      }
+      audio.volume = _music.vol;
+      audio.play().catch(function(e){ console.warn('[music] play blocked:', e && e.name); });
+    }
+  }
+  _musicUpdateBtn();
+}
+
+function musicNext() {
+  if (!_music.playlist.length) return;
+  var wasMuted = _music.muted;
+  _musicFadeOut(function() {
+    _music.idx = (_music.idx + 1) % _music.playlist.length;
+    try { localStorage.setItem('musicIdx', _music.idx); } catch(e){}
+    _musicLoad(_music.idx, false);
+    _musicUpdateTitle();
+    if (!wasMuted) _musicFadeIn();
+  });
+}
+
+function musicPrev() {
+  if (!_music.playlist.length) return;
+  var wasMuted = _music.muted;
+  _musicFadeOut(function() {
+    _music.idx = (_music.idx - 1 + _music.playlist.length) % _music.playlist.length;
+    try { localStorage.setItem('musicIdx', _music.idx); } catch(e){}
+    _musicLoad(_music.idx, false);
+    _musicUpdateTitle();
+    if (!wasMuted) _musicFadeIn();
+  });
+}
+
+function musicSetVol(val) {
+  _music.vol = val / 100;
+  try { localStorage.setItem('musicVol', String(_music.vol)); } catch(e){}
+  var audio = document.getElementById('bgMusic');
+  if (audio && !_music.muted) audio.volume = _music.vol;
+}
+
+function _musicUpdateBtn() {
+  var btn = document.getElementById('musicBtn');
+  if (!btn) return;
+  if (_music.muted) btn.classList.remove('playing'); else btn.classList.add('playing');
+  var pp = document.getElementById('mpPlayPause');
+  if (pp) {
+    if (_music.muted) {
+      pp.title = 'Play';
+      pp.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+    } else {
+      pp.title = 'Pause';
+      pp.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="4" x2="6" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/></svg>';
+    }
+  }
+}
+
+function _musicUpdateTitle() {
+  var el = document.getElementById('mpTitle');
+  if (!el || !_music.playlist.length) return;
+  var url = _music.playlist[_music.idx];
+  var raw = url.split('?')[0].split('/').pop();
+  var name = decodeURIComponent(raw).replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ') || ('Track ' + (_music.idx + 1));
+  var num = _music.playlist.length > 1 ? (_music.idx + 1) + '/' + _music.playlist.length + ' · ' : '';
+  el.textContent = '♪ ' + num + name;
+  el.title = name;
+}
+
+document.addEventListener('click', function(e) {
+  if (!_music.panelOpen) return;
+  var player = document.getElementById('musicPlayer');
+  if (player && !player.contains(e.target)) {
+    _music.panelOpen = false;
+    var panel = document.getElementById('musicPanel');
+    if (panel) panel.classList.remove('open');
+  }
+});
+</script>
+
+<div id="musicPlayer">
+  <div id="musicPanel">
+    <div class="mp-title" id="mpTitle">&#9834; Musik</div>
+    <div class="mp-controls">
+      <button class="mp-nav" id="mpPrev" title="Sebelumnya" onclick="musicPrev()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="4" x2="5" y2="20"/></svg>
+      </button>
+      <button class="mp-nav" id="mpPlayPause" title="Pause" onclick="toggleMusic()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="4" x2="6" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/></svg>
+      </button>
+      <button class="mp-nav" id="mpNext" title="Berikutnya" onclick="musicNext()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="4" x2="19" y2="20"/></svg>
+      </button>
+    </div>
+    <div class="mp-vol-row">
+      <span class="mp-vol-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span>
+      <input type="range" class="mp-vol-sl" id="mpVol" min="0" max="100" value="35" oninput="musicSetVol(this.value)">
+    </div>
+  </div>
+  <button id="musicBtn" title="Musik" onclick="toggleMusicPanel()">
+    <span class="mp-ico">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="mp-eq"><span></span><span></span><span></span><span></span></span>
+  </button>
+</div>
+<audio id="bgMusic" loop preload="none" playsinline webkit-playsinline x-webkit-airplay="allow"></audio>
+<a href="/admin-panell" title="Admin Panel" style="position:fixed;bottom:14px;left:14px;z-index:40;width:38px;height:38px;border-radius:50%;background:rgba(33,33,33,.85);backdrop-filter:blur(6px);border:1px solid var(--line2,#3a3a3a);color:var(--em,#6366f1);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.35);text-decoration:none;font-size:15px;opacity:.75;transition:opacity .15s,transform .15s" aria-label="Admin Panel">🛡️</a>
+</body>
+</html>

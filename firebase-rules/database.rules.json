@@ -1,0 +1,35 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "presence": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+
+    "live_chat": {
+      "$room": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "$msgId": {
+          ".validate": "newData.hasChildren(['senderId','text','createdAt']) && newData.child('senderId').val() === auth.uid"
+        }
+      }
+    },
+
+    "otp_status": {
+      "$orderId": {
+        ".read": "auth != null && (data.child('userId').val() === auth.uid || root.child('roles').child(auth.uid).val() === 'admin' || root.child('roles').child(auth.uid).val() === 'owner')",
+        ".write": false
+      }
+    },
+
+    "roles": {
+      ".read": "auth != null",
+      ".write": false
+    }
+  }
+}

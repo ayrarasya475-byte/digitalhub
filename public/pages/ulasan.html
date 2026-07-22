@@ -1,0 +1,2080 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="/media/favicon.ico">
+<link rel="icon" type="image/jpeg" href="/media/logo.jpg">
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='36' fill='%23080808'/%3E%3Ctext x='90' y='90' dominant-baseline='central' text-anchor='middle' font-family='system-ui,sans-serif' font-weight='700' font-size='100' fill='%236366f1'%3ED%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+<meta name="theme-color" content="#181818">
+<meta name="description" content="Ulasan & Rating Pelanggan — DigitalHub">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Ulasan Pelanggan — DigitalHub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#181818;--bg1:#1a1a1a;--bg2:#212121;--bg3:#2a2a2a;--bg4:#313131;
+  --line:#2E2E2E;--line2:#3a3a3a;--line3:#484848;
+  --em:#6366f1;--em2:#818cf8;--em-rgb:99, 102, 241;
+  --sky:#38bdf8;--sky-rgb:56,189,248;
+  --yel:#fbbf24;--yel-rgb:251,191,36;
+  --red:#f87171;--red-rgb:248,113,113;
+  --pur:#a78bfa;--pur-rgb:167,139,250;
+  --t1:#e5e5e5;--t2:#a0a0a0;--t3:#616161;--t4:rgba(255,255,255,.07);
+  --mono:'Ubuntu Mono',monospace;--font:'DM Sans',system-ui,sans-serif;
+  --rad:4px;--rs:4px;
+  --trans:.18s cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth}
+html,body{min-height:100vh;background:var(--bg);color:var(--t1);font-family:var(--font);font-size:13.5px;overflow-x:hidden}
+body{
+  background-color:#181818;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+
+#topBar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--em),var(--sky),var(--em));background-size:200%;z-index:9998;width:0;transition:width .3s;pointer-events:none;display:none}
+#topBar.on{display:block;width:75%;animation:barPulse 1.4s ease-in-out infinite}
+@keyframes barPulse{0%,100%{background-position:0%}50%{background-position:100%}}
+
+.toast{position:fixed;top:1rem;left:50%;transform:translateX(-50%) translateY(-16px);display:flex;align-items:center;gap:.55rem;padding:.7rem 1.2rem .7rem .8rem;border-radius:4px;font-size:.8rem;font-weight:700;z-index:9999;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;white-space:nowrap;max-width:92vw;backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:rgba(24,24,24,.97);border:1.5px solid rgba(var(--em-rgb),.5);color:var(--em)}
+.toast.err{background:rgba(24,24,24,.97);border:1.5px solid rgba(var(--red-rgb),.5);color:var(--red)}
+.toast.warn{background:rgba(24,24,24,.97);border:1.5px solid rgba(var(--yel-rgb),.4);color:var(--yel)}
+.t-icon{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.toast.ok .t-icon{background:rgba(var(--em-rgb),.18)}
+.toast.err .t-icon{background:rgba(var(--red-rgb),.18)}
+.toast.warn .t-icon{background:rgba(var(--yel-rgb),.15)}
+
+.nav{height:46px;background:rgba(24,24,15,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:.6rem;padding:0 1.1rem;position:sticky;top:0;z-index:50}
+.nav-logo{font-size:.82rem;font-weight:700;color:var(--em);display:flex;align-items:center;gap:.45rem;text-decoration:none}
+.nav-gem{width:26px;height:26px;border-radius:4px;background:linear-gradient(135deg,rgba(var(--em-rgb),.15),rgba(0,100,200,.15));border:1px solid rgba(var(--em-rgb),.3);display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(var(--em-rgb),.15)}
+.nav-gem svg{width:12px;height:12px}
+.nav-r{display:flex;align-items:center;gap:.4rem;margin-left:auto}
+.nav-btn{font-size:.65rem;font-weight:600;color:var(--t3);background:none;border:1px solid var(--line);border-radius:4px;padding:.28rem .65rem;cursor:pointer;font-family:var(--font);transition:all var(--trans);white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+.nav-btn:hover{color:var(--t1);border-color:var(--line2)}
+.nav-btn.em{color:var(--em);border-color:rgba(var(--em-rgb),.3);background:rgba(var(--em-rgb),.07)}
+.nav-btn.em:hover{background:rgba(var(--em-rgb),.13)}
+
+.wrap{max-width:900px;margin:0 auto;padding:1.5rem 1rem 5rem;position:relative;z-index:1}
+
+.stats-hero{background:linear-gradient(135deg,rgba(var(--em-rgb),.06) 0%,rgba(var(--sky-rgb),.04) 100%);border:1px solid rgba(var(--em-rgb),.15);border-radius:4px;padding:1.6rem;margin-bottom:1.75rem;animation:slideUp .4s ease both}
+.stats-main{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.stats-score{text-align:center;flex-shrink:0}
+.stats-num{font-family:'DM Sans',system-ui;font-size:3.5rem;font-weight:400;color:var(--em);line-height:1;letter-spacing:-.04em}
+.stats-stars-big{display:flex;gap:2px;justify-content:center;margin:.25rem 0}
+.stats-total{font-size:.62rem;color:var(--t3);font-weight:600}
+.stats-bars{flex:1;min-width:160px}
+.bar-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem}
+.bar-lbl{font-size:.6rem;font-weight:700;color:var(--t3);width:28px;text-align:right;flex-shrink:0}
+.bar-track{flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.bar-fill.s5{background:var(--em)}
+.bar-fill.s4{background:#84cc16}
+.bar-fill.s3{background:var(--yel)}
+.bar-fill.s2{background:#fb923c}
+.bar-fill.s1{background:var(--red)}
+.bar-cnt{font-size:.58rem;color:var(--t3);width:20px;flex-shrink:0}
+.stats-tags{display:flex;gap:.4rem;flex-wrap:wrap}
+.stat-tag{display:inline-flex;align-items:center;gap:.28rem;font-size:.62rem;font-weight:600;padding:.22rem .6rem;border-radius:4px;border:1px solid var(--line);color:var(--t3);cursor:pointer;transition:all var(--trans)}
+.stat-tag:hover,.stat-tag.on{border-color:rgba(var(--em-rgb),.35);color:var(--em);background:rgba(var(--em-rgb),.08)}
+.stat-tag .cnt{font-size:.58rem;color:var(--t4)}
+.stat-tag.on .cnt{color:rgba(var(--em-rgb),.6)}
+
+.toolbar{display:flex;align-items:center;gap:.5rem;margin-bottom:1.1rem;flex-wrap:wrap}
+.tb-left{display:flex;gap:.3rem;flex-wrap:wrap;flex:1}
+.sort-btn{font-size:.63rem;font-weight:700;padding:.3rem .7rem;border-radius:4px;border:1px solid var(--line);background:var(--bg2);color:var(--t3);cursor:pointer;font-family:var(--font);transition:all var(--trans)}
+.sort-btn:hover:not(.on){color:var(--t2);border-color:var(--line2)}
+.sort-btn.on{border-color:rgba(var(--em-rgb),.35);background:rgba(var(--em-rgb),.1);color:var(--em)}
+.write-btn{font-size:.68rem;font-weight:700;padding:.4rem 1rem;border-radius:4px;border:none;background:linear-gradient(135deg,var(--em),#818cf8);color:#04110a;cursor:pointer;font-family:var(--font);transition:all var(--trans);display:flex;align-items:center;gap:.3rem;flex-shrink:0;box-shadow:0 4px 16px rgba(var(--em-rgb),.25)}
+.write-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(var(--em-rgb),.35)}
+
+.reviews-list{display:flex;flex-direction:column;gap:.75rem}
+.rv-card{background:var(--bg1);border:1px solid var(--line);border-radius:var(--rad);padding:1.1rem;transition:border-color var(--trans);animation:fadeUp .3s ease both}
+.rv-card:hover{border-color:var(--line2)}
+.rv-head{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.65rem}
+.rv-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,rgba(var(--em-rgb),.15),rgba(var(--sky-rgb),.15));border:1.5px solid rgba(var(--em-rgb),.2);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;color:var(--em);flex-shrink:0;text-transform:uppercase}
+.rv-meta{flex:1;min-width:0}
+.rv-name{font-size:.78rem;font-weight:700;color:var(--t1);margin-bottom:.15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rv-date{font-size:.6rem;color:var(--t3)}
+.rv-stars{display:flex;gap:2px;margin-bottom:.1rem}
+.star{font-size:.8rem;line-height:1}
+.rv-badge{display:inline-flex;align-items:center;gap:.2rem;font-size:.55rem;font-weight:700;padding:.12rem .45rem;border-radius:4px;margin-left:.35rem;vertical-align:middle}
+.rv-badge.verified{background:rgba(var(--em-rgb),.1);border:1px solid rgba(var(--em-rgb),.25);color:var(--em)}
+.rv-text{font-size:.76rem;color:var(--t2);line-height:1.65;margin-bottom:.65rem;word-break:break-word}
+.rv-photo{width:100%;max-width:280px;border-radius:4px;border:1px solid var(--line);cursor:zoom-in;transition:transform var(--trans);object-fit:cover;display:block;margin-bottom:.65rem;max-height:200px}
+.rv-photo:hover{transform:scale(1.01);border-color:var(--line2)}
+.rv-foot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem}
+.helpful-btn{display:inline-flex;align-items:center;gap:.3rem;font-size:.6rem;font-weight:600;color:var(--t3);background:none;border:1px solid var(--line);border-radius:4px;padding:.22rem .6rem;cursor:pointer;font-family:var(--font);transition:all var(--trans)}
+.helpful-btn:hover:not(.voted){color:var(--t2);border-color:var(--line2)}
+.helpful-btn.voted{color:var(--em);border-color:rgba(var(--em-rgb),.25);background:rgba(var(--em-rgb),.06)}
+.rv-del-btn{font-size:.58rem;color:var(--t4);background:none;border:none;cursor:pointer;padding:.2rem .4rem;border-radius:3px;font-family:var(--font);transition:all var(--trans)}
+.rv-del-btn:hover{color:var(--red);background:rgba(var(--red-rgb),.08)}
+
+.star-sel{display:flex;gap:.3rem;justify-content:center;margin:.5rem 0 1rem}
+.star-sel span{font-size:1.8rem;cursor:pointer;line-height:1;transition:transform .15s;user-select:none}
+.star-sel span:hover{transform:scale(1.25)}
+
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:flex;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(8px);animation:bgIn .2s ease}
+.modal-bg.hide{display:none}
+@keyframes bgIn{from{opacity:0}to{opacity:1}}
+.modal{width:100%;max-width:480px;background:var(--bg1);border:1px solid var(--line2);border-radius:4px 22px 0 0;padding:1.5rem 1.4rem 2.5rem;box-shadow:0 -20px 80px rgba(0,0,0,.9);animation:modalUp .3s cubic-bezier(.34,1.2,.64,1)}
+@keyframes modalUp{from{transform:translateY(100%)}to{transform:none}}
+.modal-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.12);margin:0 auto .9rem}
+.modal-title{font-size:.95rem;font-weight:700;text-align:center;margin-bottom:.3rem}
+.modal-sub{font-size:.7rem;color:var(--t3);text-align:center;margin-bottom:1.1rem}
+.f-label{font-size:.57rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);display:block;margin-bottom:.3rem}
+.f-inp{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:var(--rs);padding:.6rem .85rem;color:var(--t1);font-family:var(--font);font-size:.8rem;outline:none;transition:border-color var(--trans),box-shadow var(--trans)}
+.f-inp:focus{border-color:rgba(var(--em-rgb),.35);box-shadow:0 0 0 3px rgba(var(--em-rgb),.08)}
+.f-inp::placeholder{color:var(--t4)}
+textarea.f-inp{resize:vertical;min-height:90px;line-height:1.55}
+.mb{margin-bottom:.65rem}
+.btn-em{width:100%;font-family:var(--font);font-size:.78rem;font-weight:700;padding:.72rem;border-radius:var(--rs);cursor:pointer;transition:all var(--trans);background:#4f46e5;color:#fff;border:1px solid #4f46e5;display:flex;align-items:center;justify-content:center;gap:.4rem}
+.btn-em:hover:not(:disabled){cursor:not-allowed;transform:none;box-shadow:none}
+.btn-ghost{width:100%;font-family:var(--font);font-size:.75rem;font-weight:600;padding:.62rem;border-radius:var(--rs);border:1px solid #3f3f46;background:#27272a;color:#d4d4d8;cursor:pointer;transition:all var(--trans)}
+.btn-ghost:hover{border-color:#52525b;background:#3f3f46}
+.err-box{background:rgba(var(--red-rgb),.07);border:1px solid rgba(var(--red-rgb),.2);border-radius:var(--rs);padding:.5rem .75rem;font-size:.7rem;color:var(--red);margin-bottom:.65rem;display:none}
+.err-box.show{display:block}
+
+.photo-drop{border:2px dashed var(--line2);border-radius:var(--rs);padding:.9rem;text-align:center;cursor:pointer;transition:all var(--trans);position:relative;overflow:hidden}
+.photo-drop:hover{border-color:rgba(var(--em-rgb),.3);background:rgba(var(--em-rgb),.03)}
+.photo-drop.has{border-color:rgba(var(--em-rgb),.4);background:rgba(var(--em-rgb),.05)}
+.photo-drop input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:100px}
+.photo-pre{width:100%;max-height:140px;object-fit:contain;border-radius:4px;display:none;margin:0 auto}
+.photo-pre.show{display:block}
+.photo-hint{font-size:.65rem;color:var(--t3);display:flex;align-items:center;justify-content:center;gap:.3rem}
+.photo-hint.hide{display:none}
+
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem}
+.lightbox.on{display:flex}
+.lightbox img{max-width:100%;max-height:90vh;border-radius:4px;object-fit:contain}
+.lb-close{position:fixed;top:1.2rem;right:1.2rem;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:var(--t1);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;z-index:501;transition:background .15s}
+.lb-close:hover{background:rgba(255,255,255,.2)}
+
+.auth-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(8px)}
+.auth-modal-bg.on{display:flex}
+.auth-modal{width:100%;max-width:360px;background:var(--bg1);border:1px solid var(--line2);border-radius:4px;padding:1.6rem;box-shadow:0 0 8px 24px rgba(0,0,0,.5);animation:modalIn .25s cubic-bezier(.34,1.56,.64,1)}
+@keyframes modalIn{from{opacity:0;transform:scale(.94) translateY(12px)}to{opacity:1;transform:none}}
+.modal-tabs{display:flex;gap:.3rem;margin-bottom:1.1rem;background:var(--bg2);border-radius:4px;padding:.25rem}
+.modal-tab{flex:1;padding:.38rem;border:none;border-radius:4px;background:none;font-family:var(--font);font-size:.7rem;font-weight:600;color:var(--t3);cursor:pointer;transition:all var(--trans)}
+.modal-tab.on{background:var(--bg3);color:var(--t1)}
+
+.empty-state{text-align:center;padding:3.5rem 1rem;color:var(--t3)}
+.empty-icon{font-size:2.5rem;margin-bottom:.75rem;opacity:.4}
+.empty-title{font-size:.85rem;font-weight:700;color:var(--t2);margin-bottom:.3rem}
+.empty-sub{font-size:.7rem;line-height:1.6}
+.skeleton{background:linear-gradient(90deg,var(--bg2) 25%,var(--bg3) 50%,var(--bg2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:4px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-card{height:120px;border-radius:var(--rad);margin-bottom:.75rem}
+
+.pager{display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:1.4rem}
+.page-btn{font-size:.65rem;font-weight:700;padding:.3rem .7rem;border-radius:4px;border:1px solid var(--line);background:var(--bg2);color:var(--t3);cursor:pointer;font-family:var(--font);transition:all var(--trans)}
+.page-btn:hover:not(:disabled):not(.on){color:var(--t1);border-color:var(--line2)}
+.page-btn.on{border-color:rgba(var(--em-rgb),.35);background:rgba(var(--em-rgb),.1);color:var(--em)}
+.page-btn:disabled{opacity:.3;cursor:not-allowed}
+.page-info{font-size:.62rem;color:var(--t3);margin:0 .3rem}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .7s linear infinite;display:inline-block;line-height:1}
+
+@media(max-width:560px){
+  .stats-main{gap:.9rem}
+  .stats-num{font-size:2.8rem}
+  .wrap{padding:1.2rem .75rem 5rem}
+  .modal{border-radius:4px 18px 0 0;padding:1.3rem 1.1rem 2.5rem}
+}
+
+/* ── Global UI Refinement v7.2 ─────────────────────────────────── */
+
+/* --- Compact, refined buttons --- */
+button, .btn, .n-btn, .nav-btn, .snav-btn, .tb-btn, .tb-f,
+.act-btn, .pf-cat, .chip, .cat, .tag-btn, .filter-btn {
+  font-size: .67rem !important;
+  letter-spacing: -.01em;
+  transition: all .15s ease !important;
+}
+
+/* Primary action buttons: smaller but still prominent */
+.btn-em, .l-btn, .submit-btn, .free-claim-btn, .buy-btn, .order-btn {
+  font-size: .73rem !important;
+  padding: .5rem .95rem !important;
+  letter-spacing: -.01em;
+  border-radius: 5px !important;
+}
+
+/* Nav bar tighter */
+.nav-inner, .nav-wrap { height: 46px !important; }
+
+/* Inputs slimmer */
+.l-inp, .f-inp, .finp, .ph-inp, .pf-input,
+.cnt-search, .srv-search, .tb-search, .prod-search,
+.dr-inp, .dp-inp, .chat-inp, .msg-inp {
+  font-size: .73rem !important;
+  padding: .48rem .72rem !important;
+}
+
+/* Cards: lighter shadow, crisper */
+.sc, .card, .prod-card, .srv-card, .rv-card, .dl-card,
+.ord-card, .dep-card, .notif-item {
+  box-shadow: 0 1px 5px rgba(0,0,0,.2) !important;
+  transition: box-shadow .15s ease, transform .15s ease !important;
+}
+.sc:hover, .card:hover, .prod-card:hover, .srv-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,.3) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Toasts smaller */
+.toast { font-size: .7rem !important; padding: .55rem .85rem !important; }
+
+/* Skeleton shimmer smoother */
+.skeleton, .skel { animation-duration: 1.6s !important; }
+
+/* Scrollbars thin and subtle */
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.22); }
+
+/* Mobile overrides */
+@media (max-width: 680px) {
+  .main, .page, .main-wrap {
+    padding-left: .85rem !important;
+    padding-right: .85rem !important;
+  }
+  .btn-em, .l-btn, .submit-btn {
+    font-size: .7rem !important;
+    padding: .48rem .85rem !important;
+  }
+  .n-btn, .nav-btn, .snav-btn {
+    height: 30px !important;
+    font-size: .64rem !important;
+    padding: 0 .65rem !important;
+  }
+  /* Drawer links more compact */
+  .dr-link, .snav-dr-link {
+    padding: .55rem .7rem !important;
+    font-size: .72rem !important;
+    min-height: 36px !important;
+    border-radius: 5px !important;
+  }
+  /* Section headers tighter */
+  .sec-title, .section-title, .tab-title {
+    font-size: .65rem !important;
+    margin-bottom: .6rem !important;
+  }
+  /* Reduce gap between grid items */
+  .srv-grid, .prod-grid {
+    gap: .6rem !important;
+  }
+}
+/* ── End Global UI Refinement ───────────────────────────────────── */
+
+  /* ── Logo image fix: gem container auto-width & transparent ── */
+  .logo-gem img[data-logo-img],
+  .snav-gem img[data-logo-img],
+  .nav-gem img[data-logo-img] {
+    display: block !important;
+    visibility: visible !important;
+  }
+  .logo-gem:has(img[data-logo-img]),
+  .snav-gem:has(img[data-logo-img]),
+  .nav-gem:has(img[data-logo-img]) {
+    width: auto !important;
+    min-width: 26px;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+</style>
+
+<style>
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:var(--line3)}
+body{
+  background-color:var(--bg) !important;
+  background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px) !important;
+  background-size:40px 40px !important;
+}
+::selection{background:rgba(74,222,128,.18);color:#e5e5e5}
+
+/* ── Shared Navbar ─────────────────────────────────────────── */
+.snav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(24,24,24,.96);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--line);
+  height:46px;display:flex;align-items:center;
+  padding:0 1.2rem;gap:.6rem;
+}
+.snav-logo{
+  display:flex;align-items:center;gap:9px;
+  font-size:.9rem;font-weight:700;letter-spacing:-.02em;color:var(--t1);
+  text-decoration:none;flex-shrink:0;
+}
+.snav-gem{
+  width:26px;height:26px;border-radius:4px;
+  background:linear-gradient(135deg,#1a2e25,#0d1f18);
+  border:1px solid rgba(var(--em-rgb,99, 102, 241),.35);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 12px rgba(var(--em-rgb,99, 102, 241),.2);flex-shrink:0;
+}
+.snav-gem svg{width:13px;height:13px}
+.snav-name{color:var(--t1)}
+.snav-r{display:flex;align-items:center;gap:.4rem;margin-left:auto}
+.snav-btn{
+  font-family:var(--font,'DM Sans',system-ui);font-size:.7rem;font-weight:600;
+  padding:.28rem .75rem;border-radius:4px;
+  border:1px solid var(--line2);background:var(--bg2);
+  color:var(--t2);cursor:pointer;transition:all .18s;text-decoration:none;
+  display:inline-flex;align-items:center;gap:.3rem;height:32px;min-height:unset;
+}
+.snav-btn:hover{border-color:var(--line3);color:var(--t1)}
+.snav-btn.em{border-color:#4f46e5;color:#fff;background:#4f46e5}
+.snav-btn.em:hover{background:#6366f1;border-color:#6366f1}
+.snav-hbg{
+  display:none;width:34px;height:34px;border-radius:4px;
+  background:var(--bg2);border:1px solid var(--line2);
+  align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;min-height:unset;
+  position:relative;
+}
+.snav-hbg .bar{display:block;position:absolute;width:14px;height:1.5px;background:var(--t2);transition:all .22s;border-radius:2px;left:10px}
+.snav-hbg .bar1{top:12px}.snav-hbg .bar2{top:16.5px}.snav-hbg .bar3{top:21px}
+.snav-hbg.open .bar1{transform:rotate(45deg) translateY(4.5px)}
+.snav-hbg.open .bar2{opacity:0;transform:scaleX(0)}
+.snav-hbg.open .bar3{transform:rotate(-45deg) translateY(-4.5px)}
+@media(max-width:680px){
+  .snav-btn.hide-m{display:none}
+  .snav-hbg{display:flex}
+}
+/* Drawer */
+.snav-backdrop{
+  display:none;position:fixed;inset:0;top:0;z-index:198;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  opacity:0;transition:opacity .25s;
+}
+.snav-backdrop.open{display:block;opacity:1}
+.snav-drawer{
+  position:fixed;top:52px;right:0;bottom:0;z-index:199;
+  width:min(280px,83vw);
+  background:rgba(20,20,20,.99);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-left:1px solid var(--line);
+  flex-direction:column;padding:1rem .75rem 2rem;
+  transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);
+  display:flex;
+}
+.snav-drawer.open{transform:translateX(0)}
+.snav-dhead{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:.9rem;padding-bottom:.75rem;border-bottom:1px solid var(--line);
+}
+.snav-dtitle{font-size:.7rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em}
+.snav-dclose{
+  width:28px;height:28px;border-radius:4px;background:var(--bg2);border:1px solid var(--line2);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);
+  transition:all .15s;min-height:unset;
+}
+.snav-dclose:hover{border-color:var(--line3);color:var(--t1)}
+.snav-dclose svg{width:12px;height:12px}
+.snav-dlink{
+  padding:.65rem .85rem;border-radius:4px;background:transparent;border:1px solid transparent;
+  font-size:.78rem;font-weight:600;color:var(--t2);text-decoration:none;transition:all .15s;
+  display:flex;align-items:center;gap:.55rem;margin-bottom:.18rem;cursor:pointer;
+}
+.snav-dlink:hover{color:var(--t1);background:var(--bg2);border-color:var(--line)}
+.snav-dlink svg{width:15px;height:15px;opacity:.5;flex-shrink:0}
+.snav-dlink:hover svg{opacity:.9}
+.snav-dlink.active{color:var(--em);background:rgba(var(--em-rgb,99, 102, 241),.07);border-color:rgba(var(--em-rgb,99, 102, 241),.2)}
+.snav-dlink.active svg{opacity:1}
+.snav-dlink.wa-link{color:#25d366;background:rgba(37,211,102,.06);border-color:rgba(37,211,102,.18);margin-top:auto}
+.snav-dlink.wa-link:hover{background:rgba(37,211,102,.12)}
+.snav-dsep{height:1px;background:var(--line);margin:.4rem 0 .6rem}
+.snav-dlink.em-link{color:var(--em);background:rgba(var(--em-rgb,99, 102, 241),.07);border-color:rgba(var(--em-rgb,99, 102, 241),.2)}
+.snav-dlink.em-link:hover{background:rgba(var(--em-rgb,99, 102, 241),.12)}
+.snav-dlink.em-link svg{opacity:.8}
+
+</style>
+
+<style id="mobile-patch">
+/* ============================================================
+   MOBILE FRIENDLY PATCH v2 — DigitalHub V7
+   Targeted fixes: no overflow, proper sizing, no conflicts
+   ============================================================ */
+
+/* ── CSS variables ───────────────────────────────────────── */
+:root {
+  --btn-h: 48px;
+  --btn-h-sm: 40px;
+  --inp-h: 48px;
+  --rad-mob: 8px;
+}
+
+/* ── Prevent horizontal overflow globally ────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  max-width: 100vw;
+  }
+
+/* ── Prevent iOS font zoom on input focus ────────────────── */
+@media (max-width: 680px) {
+  /* Only apply to inputs, not to other elements */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  input[type="url"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* ── Navbar height ───────────────────────────────────────── */
+@media (max-width: 680px) {
+  /* index.html navbar */
+  .nav-inner {
+    height: 54px !important;
+    padding: 0 1rem !important;
+  }
+  /* Shared navbar (pay, produk, etc) */
+  .snav {
+    height: 54px !important;
+    padding: 0 1rem !important;
+  }
+  /* otp/cpanel style nav */
+  .nav:not(.mob-bar):not(.chat-nav) {
+    height: 54px !important;
+    padding: 0 1rem !important;
+  }
+  /* Logo sizes */
+  .logo, .snav-logo, .nav-logo { font-size: .95rem !important; }
+  .logo-gem, .snav-gem, .nav-gem {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  /* Hamburger */
+  .hbg {
+    width: 38px !important;
+    height: 38px !important;
+    min-height: unset !important;
+  }
+  /* Nav buttons — keep small, just ensure tap target */
+  .n-btn, .snav-btn, .nav-btn {
+    height: 34px !important;
+    min-height: unset !important;
+    padding: 0 .85rem !important;
+    font-size: .68rem !important;
+  }
+}
+
+/* ── Drawer ──────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .drawer {
+    width: min(290px, 86vw) !important;
+    top: 54px !important;
+    padding: .85rem .65rem 2rem !important;
+  }
+  .drawer-close {
+    width: 34px !important;
+    height: 34px !important;
+    min-height: unset !important;
+  }
+  /* Drawer links — bigger tap target */
+  .dr-link {
+    padding: .6rem .75rem !important;
+    font-size: .74rem !important;
+    border-radius: 5px !important;
+    margin-bottom: .2rem !important;
+    min-height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  .dr-link svg {
+    width: 17px !important;
+    height: 17px !important;
+    flex-shrink: 0;
+  }
+}
+
+/* ── Primary action buttons (full-width) ─────────────────── */
+@media (max-width: 680px) {
+  /* .btn is used across all pages as the main CTA */
+  .btn {
+    min-height: var(--btn-h) !important;
+    padding: .6rem .9rem !important;
+    font-size: .88rem !important;
+    border-radius: var(--rad-mob) !important;
+    width: 100%;
+  }
+  /* Pay button in produk.html bottom sheet */
+  .btn-pay {
+    min-height: var(--btn-h) !important;
+    font-size: .88rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  /* Pay button in sidebar */
+  .btn-pay-sidebar {
+    min-height: var(--btn-h) !important;
+    font-size: .88rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  /* Free claim */
+  .free-claim-btn {
+    min-height: var(--btn-h) !important;
+    font-size: .88rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  /* Mobile bottom bar buy button (produk.html) */
+  .mob-btn {
+    height: 44px !important;
+    min-height: unset !important;
+    padding: 0 1.25rem !important;
+    font-size: .82rem !important;
+    border-radius: 8px !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/* ── Small buttons — DON'T blow up in tables/rows ────────── */
+@media (max-width: 680px) {
+  /* Table action buttons — keep compact */
+  .actn-btn {
+    min-height: unset !important;
+    height: auto !important;
+    padding: .28rem .6rem !important;
+    font-size: .62rem !important;
+    white-space: nowrap;
+  }
+  /* Copy button */
+  .cp-btn {
+    width: 28px !important;
+    height: 28px !important;
+    min-height: unset !important;
+    flex-shrink: 0;
+  }
+  /* Receipt print button */
+  .receipt-btn {
+    min-height: unset !important;
+    padding: .3rem .65rem !important;
+    font-size: .65rem !important;
+  }
+  /* Download QR button */
+  .qr-dl-btn {
+    min-height: unset !important;
+  }
+  /* btn-sm stays small */
+  .btn-sm {
+    min-height: var(--btn-h-sm) !important;
+    padding: .48rem 1rem !important;
+    font-size: .76rem !important;
+    border-radius: 6px !important;
+  }
+  /* Voucher apply button */
+  .vc-apply, .vc-apply-btn {
+    min-height: 44px !important;
+    padding: 0 1rem !important;
+    font-size: .8rem !important;
+    border-radius: 6px !important;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
+/* ── Table buy button — special case ────────────────────── */
+@media (max-width: 680px) {
+  /* cnt-buy-btn lives inside a table td — use comfortable but not huge size */
+  .cnt-buy-btn, .cnt-buy {
+    min-height: 36px !important;
+    height: 36px !important;
+    padding: 0 .85rem !important;
+    font-size: .7rem !important;
+    border-radius: 6px !important;
+    white-space: nowrap;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+}
+
+/* ── Input fields ────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .f-inp, .finp, .l-inp, .ph-inp, .pf-input, .bw-input,
+  .cnt-search, .srv-search, .captcha-inp {
+    min-height: var(--inp-h) !important;
+    padding: .8rem 1rem !important;
+    border-radius: var(--rad-mob) !important;
+    font-size: 16px !important; /* prevents iOS zoom */
+    width: 100%;
+  }
+  /* Search with icon — preserve left padding for icon */
+  .cnt-search { padding-left: 2.5rem !important; }
+
+  /* Phone input inside a flex row */
+  .ph-inp, .ph-row input {
+    min-height: var(--inp-h) !important;
+    padding: .8rem .85rem !important;
+    font-size: 16px !important;
+  }
+  /* Textarea */
+  textarea.f-inp, textarea.pf-input, textarea.bw-input {
+    min-height: 80px !important;
+    padding: .75rem 1rem !important;
+  }
+  /* Select */
+  select.f-inp {
+    padding-right: 2.5rem !important;
+    background-position: right .75rem center !important;
+  }
+  /* Captcha number input — compact */
+  .captcha-inp {
+    min-height: 44px !important;
+    width: 90px !important;
+    text-align: center;
+  }
+  /* Voucher row */
+  .vc-row {
+    display: flex !important;
+    gap: .5rem !important;
+    align-items: stretch !important;
+  }
+  .vc-row input, .vc-row .bw-input {
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+}
+
+/* ── Voucher / action rows — prevent overflow ────────────── */
+@media (max-width: 680px) {
+  .ph-row {
+    display: flex !important;
+    align-items: stretch !important;
+    overflow: hidden;
+    border-radius: var(--rad-mob) !important;
+  }
+  .ph-pre {
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 .75rem !important;
+    font-size: .88rem !important;
+    flex-shrink: 0;
+  }
+}
+
+/* ── Category / filter pills ─────────────────────────────── */
+@media (max-width: 680px) {
+  .cat {
+    min-height: 38px !important;
+    padding: .5rem 1rem !important;
+    font-size: .76rem !important;
+    border-radius: 20px !important;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .cats {
+    padding-bottom: .5rem !important;
+    gap: .4rem !important;
+  }
+  /* Tab buttons */
+  .sec-tab, .tab {
+    min-height: 38px !important;
+    padding: .55rem .85rem !important;
+    font-size: .76rem !important;
+    border-radius: 6px !important;
+  }
+  /* Sort buttons */
+  .cnt-sort-btn {
+    min-height: 36px !important;
+    padding: 0 .85rem !important;
+    font-size: .72rem !important;
+    border-radius: 6px !important;
+    white-space: nowrap;
+  }
+  /* Duration labels */
+  .dur-lbl, .days-lbl {
+    min-height: 38px !important;
+    padding: .5rem .85rem !important;
+    font-size: .76rem !important;
+    border-radius: 6px !important;
+  }
+}
+
+/* ── Cards grid ──────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: .6rem !important;
+  }
+  .card-body {
+    padding: .75rem .85rem .9rem !important;
+  }
+  .card-name { font-size: .82rem !important; }
+  .card-price b { font-size: .86rem !important; }
+}
+@media (max-width: 360px) {
+  .grid { gap: .45rem !important; }
+  .card-name { font-size: .75rem !important; }
+}
+
+/* ── Order / product cards ───────────────────────────────── */
+@media (max-width: 680px) {
+  .ord-card {
+    padding: .85rem 1rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  .ord-head { padding: .75rem .9rem !important; }
+  .dep-card {
+    padding: .85rem 1rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  .acc-card {
+    padding: .85rem 1rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+}
+
+/* ── Wrap / main content areas ───────────────────────────── */
+@media (max-width: 680px) {
+  .wrap { padding-left: .9rem !important; padding-right: .9rem !important; }
+  .main { padding-left: .9rem !important; padding-right: .9rem !important; }
+  .c-body { padding: 1rem !important; }
+  .m-body { padding: 1rem !important; border-radius: var(--rad-mob) !important; }
+  .card-body.main-card-body { padding: 1rem !important; }
+  /* Track / renew centered body */
+  body[style*="align-items:center"],
+  body[style*="align-items: center"] {
+    padding-left: .9rem !important;
+    padding-right: .9rem !important;
+  }
+}
+
+/* ── Plan/variant cards (renew, produk) ──────────────────── */
+@media (max-width: 680px) {
+  .plan-card {
+    padding: .85rem 1rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  .plan-card:has(input[type="radio"]) {
+    cursor: pointer;
+  }
+  /* Variant radio pills */
+  .bw-vr {
+    padding: .7rem .85rem !important;
+    border-radius: 8px !important;
+  }
+  .bw-vr-name { font-size: .8rem !important; }
+  .bw-vr-price { font-size: .72rem !important; }
+  .bw-vr-radio {
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0;
+  }
+}
+
+/* ── Hero slider ─────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .hero-wrap { max-height: 260px !important; }
+  .slide h1 {
+    font-size: clamp(1.1rem, 5vw, 1.6rem) !important;
+    margin-bottom: .4rem !important;
+  }
+  .slide p {
+    font-size: .76rem !important;
+    margin-bottom: .85rem !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .slide-cta {
+    min-height: 40px !important;
+    padding: .55rem 1.1rem !important;
+    font-size: .78rem !important;
+    border-radius: 8px !important;
+    white-space: nowrap;
+  }
+}
+
+/* ── Tables — horizontal scroll, prevent overflow ────────── */
+@media (max-width: 680px) {
+  .tbl-wrap, .cnt-tbl-scroll {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+  }
+  .cnt-tbl th, .cnt-tbl td {
+    padding: .6rem .75rem !important;
+    font-size: .76rem !important;
+  }
+  .cnt-tbl th { font-size: .6rem !important; }
+  .tbl th, .tbl td {
+    padding: .55rem .7rem !important;
+    font-size: .76rem !important;
+    white-space: nowrap;
+  }
+}
+
+/* ── Server picker cards (otp.html) ──────────────────────── */
+@media (max-width: 680px) {
+  .srv-card {
+    padding: .75rem .55rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  .srv-img { width: 36px !important; height: 36px !important; }
+  .srv-jump {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin-top: .5rem;
+  }
+}
+
+/* ── FAQ section ─────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .faq-section { padding: 0 .9rem 2.5rem !important; }
+  .faq-list summary {
+    font-size: .86rem !important;
+    padding: .85rem 0 !important;
+  }
+  .faq-ans { font-size: .8rem !important; line-height: 1.7 !important; }
+}
+
+/* ── Chat page ───────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .chat-inp {
+    min-height: 46px !important;
+    font-size: 16px !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  .chat-send {
+    width: 46px !important;
+    height: 46px !important;
+    min-height: unset !important;
+    border-radius: var(--rad-mob) !important;
+    flex-shrink: 0;
+  }
+  .msg-bubble {
+    font-size: .82rem !important;
+    padding: .65rem .9rem !important;
+    border-radius: 14px !important;
+    max-width: 86% !important;
+  }
+}
+
+/* ── Upload / TikTok pages ───────────────────────────────── */
+@media (max-width: 680px) {
+  .drop-zone {
+    padding: 1.75rem 1rem !important;
+    border-radius: var(--rad-mob) !important;
+  }
+}
+
+/* ── Data rows (pay.html result) ─────────────────────────── */
+@media (max-width: 680px) {
+  .data-row {
+    font-size: .8rem !important;
+    padding: .5rem .6rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: .5rem !important;
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+  .d-k { flex-shrink: 0; }
+  .d-v-wrap {
+    flex: 1 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: .4rem !important;
+    overflow: hidden;
+  }
+  .d-v {
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    max-width: none !important; /* remove fixed 180px */
+  }
+}
+
+/* ── QR code section (pay.html) ─────────────────────────── */
+@media (max-width: 480px) {
+  .qr-canvas-bg {
+    max-width: 100% !important;
+    overflow: hidden;
+  }
+  .qr-canvas-bg img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+
+/* ── Cancel / back buttons ───────────────────────────────── */
+@media (max-width: 680px) {
+  .cancel-btn {
+    min-height: 44px !important;
+    font-size: .82rem !important;
+    border-radius: var(--rad-mob) !important;
+    padding: .7rem !important;
+  }
+  .back-btn {
+    min-height: unset !important;
+    font-size: .76rem !important;
+    padding: .3rem 0 !important;
+  }
+}
+
+/* ── Music player ────────────────────────────────────────── */
+@media (max-width: 680px) {
+  #musicPlayer {
+    bottom: 1.15rem !important;
+    right: .85rem !important;
+  }
+  #musicBtn {
+    width: 42px !important;
+    height: 42px !important;
+    min-height: unset !important;
+    border-radius: 8px !important;
+  }
+  #musicPanel {
+    width: 200px !important;
+    border-radius: 8px !important;
+  }
+  .mp-nav {
+    width: 34px !important;
+    height: 34px !important;
+    min-height: unset !important;
+  }
+}
+
+/* ── PWA banner ──────────────────────────────────────────── */
+@media (max-width: 680px) {
+  #pwaInstall {
+    bottom: 1.15rem !important;
+    right: .85rem !important;
+    left: .85rem !important;
+    max-width: none !important;
+    border-radius: var(--rad-mob) !important;
+  }
+  .pi-btn {
+    min-height: 36px !important;
+    padding: .45rem 1rem !important;
+    font-size: .76rem !important;
+    border-radius: 6px !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .pi-close { min-height: unset !important; }
+}
+
+/* ── Modals / confirm dialogs ────────────────────────────── */
+@media (max-width: 680px) {
+  .modal, .cfd {
+    border-radius: var(--rad-mob) !important;
+    padding: 1.4rem 1.2rem !important;
+    max-width: calc(100vw - 2rem) !important;
+    width: 100% !important;
+  }
+  .cfd-btn {
+    min-height: 44px !important;
+    font-size: .84rem !important;
+    border-radius: 8px !important;
+    padding: .75rem 1rem !important;
+    flex: 1;
+  }
+  .cfd-btns {
+    display: flex !important;
+    gap: .5rem !important;
+  }
+  .lb-close, .cfd-close {
+    width: 36px !important;
+    height: 36px !important;
+    min-height: unset !important;
+  }
+  .ad-close {
+    width: 32px !important;
+    height: 32px !important;
+    min-height: unset !important;
+  }
+}
+
+/* ── Section headings ────────────────────────────────────── */
+@media (max-width: 680px) {
+  .sec-label { font-size: .66rem !important; margin-bottom: .75rem !important; }
+  .card-head { padding: 1rem 1.15rem !important; }
+  .card-body:not(.card-thumb) { padding: 1rem 1.15rem !important; }
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  footer, .page-footer {
+    padding: 1.2rem 1rem !important;
+    font-size: .7rem !important;
+    line-height: 1.9 !important;
+    text-align: center !important;
+  }
+}
+
+/* ── Touch feedback — only on touch devices ──────────────── */
+@media (hover: none) and (pointer: coarse) {
+  .btn:active:not(:disabled),
+  .dr-link:active,
+  .cat:active,
+  .card:active,
+  .ord-card:active,
+  .plan-card:active,
+  .bw-vr:active,
+  button:active:not(:disabled) {
+    transform: scale(.97) !important;
+    transition: transform .08s !important;
+  }
+}
+
+/* ── Safe area (notch / home bar) ────────────────────────── */
+@media (max-width: 680px) {
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .mob-bar {
+    padding-bottom: calc(.6rem + env(safe-area-inset-bottom)) !important;
+  }
+  #musicPlayer {
+    bottom: calc(1.15rem + env(safe-area-inset-bottom)) !important;
+  }
+  #pwaInstall {
+    bottom: calc(1.15rem + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* ── Smooth scrolling ────────────────────────────────────── */
+@media (max-width: 680px) {
+  html { -webkit-overflow-scrolling: touch; }
+  .cats, .cnt-tbl-scroll, .tbl-wrap, .gallery-thumbs {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: none;
+  }
+}
+
+</style>
+
+<style id="mobile-fix-global">
+/* Fix over-aggressive global min-height on all <a> tags */
+/* Only apply min-height to actual interactive buttons, not all anchors */
+@media (max-width: 480px) {
+  /* Reset the blanket rule */
+  a { min-height: unset !important; }
+  /* Only apply to nav links and buttons that need it */
+  button:not(.actn-btn):not(.cp-btn):not(.qr-dl-btn):not(.mp-nav):not(.drawer-close):not(.hbg):not(.ad-close):not(.pi-close):not(.lb-close):not(.back-btn):not(.receipt-btn) {
+    min-height: 44px;
+  }
+  /* Specifically fix nav links in drawers */
+  .dr-link { min-height: 44px !important; }
+  /* Links that are styled as buttons */
+  .btn, .btn-em, .btn-ghost, .btn-pay, .n-btn, .snav-btn, .mob-btn { 
+    min-height: unset; /* let our patch control these */
+  }
+  /* Logo and breadcrumb links — no min-height */
+  .logo, .snav-logo, .nav-logo, .back-btn, .nav-breadcrumb a,
+  .page-footer a, footer a, .faq-ans a, .content-link,
+  .tick-item, .rc, .dr-link { 
+    min-height: unset !important; 
+  }
+}
+
+/* ── Music Player ─────────────────────────────────── */
+#musicPlayer{
+  position:fixed;bottom:5.3rem;right:1.15rem;z-index:300;
+  display:none;flex-direction:column;align-items:flex-end;gap:.38rem;
+}
+#musicPanel{
+  background:var(--bg2);border:1px solid var(--line2);border-radius:4px;
+  box-shadow:0 6px 28px rgba(0,0,0,.6);
+  width:196px;padding:.65rem .8rem;
+  display:none;flex-direction:column;gap:.5rem;
+}
+#musicPanel.open{display:flex;animation:mpUp .16s ease;}
+@keyframes mpUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.mp-title{
+  font-size:.62rem;color:var(--t2);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;letter-spacing:.02em;
+}
+.mp-controls{display:flex;align-items:center;justify-content:center;gap:.4rem;}
+.mp-nav{
+  width:28px;height:28px;border-radius:4px;border:1px solid var(--line2);
+  background:var(--bg3);color:var(--t3);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+  flex-shrink:0;
+}
+.mp-nav:hover{border-color:var(--line3);color:var(--t1);}
+.mp-nav svg{width:12px;height:12px;display:block;}
+.mp-vol-row{display:flex;align-items:center;gap:.45rem;}
+.mp-vol-ico{color:var(--t3);flex-shrink:0;}
+.mp-vol-ico svg{width:12px;height:12px;display:block;}
+.mp-vol-sl{
+  flex:1;-webkit-appearance:none;appearance:none;
+  height:2px;border-radius:2px;background:var(--line2);
+  cursor:pointer;outline:none;
+}
+.mp-vol-sl::-webkit-slider-thumb{
+  -webkit-appearance:none;width:11px;height:11px;border-radius:50%;
+  background:var(--em);cursor:pointer;box-shadow:0 0 4px rgba(0,0,0,.4);
+}
+.mp-vol-sl::-moz-range-thumb{
+  width:11px;height:11px;border-radius:50%;border:none;
+  background:var(--em);cursor:pointer;
+}
+/* Equalizer bars (animated when playing) */
+.mp-eq{display:none;align-items:flex-end;gap:2px;height:15px;width:15px;justify-content:center;}
+.mp-eq span{
+  width:2px;background:var(--em);border-radius:1px;
+  animation:mpEq .75s ease-in-out infinite;
+}
+.mp-eq span:nth-child(1){animation-duration:.65s;}
+.mp-eq span:nth-child(2){animation-duration:.9s;animation-delay:.13s;}
+.mp-eq span:nth-child(3){animation-duration:.6s;animation-delay:.27s;}
+.mp-eq span:nth-child(4){animation-duration:.8s;animation-delay:.06s;}
+@keyframes mpEq{0%,100%{height:2px}50%{height:14px}}
+/* Main toggle button */
+#musicBtn{
+  width:38px;height:38px;min-height:unset!important;
+  border-radius:4px;background:var(--bg2);border:1px solid var(--line2);
+  color:var(--t3);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .18s;box-shadow:0 4px 16px rgba(0,0,0,.5);
+  overflow:hidden;position:relative;
+}
+#musicBtn:hover{border-color:var(--line3);color:var(--t1);background:var(--bg3);}
+#musicBtn.playing{border-color:rgba(var(--em-rgb),.38);color:var(--em);background:rgba(var(--em-rgb),.08);}
+#musicBtn .mp-ico svg{width:15px;height:15px;display:block;}
+#musicBtn.playing .mp-ico{display:none;}
+#musicBtn.playing .mp-eq{display:flex;}
+</style>
+</head>
+<body>
+<!-- ── Shared Navbar ── -->
+<div class="snav-backdrop" id="snavBackdrop" onclick="snavClose()"></div>
+<div class="snav-drawer" id="snavDrawer">
+  <div class="snav-dhead">
+    <span class="snav-dtitle">Menu</span>
+    <button class="snav-dclose" onclick="snavClose()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <a href="/" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </a>
+  
+  <a href="/otp" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+    Beli OTP
+  </a>
+  <a href="/renew" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+    Perpanjang Panel
+  </a>
+  <a href="/track" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    Track Order
+  </a>
+  <a href="/cpanel" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    cPanel
+  </a>
+  <div class="snav-dsep"></div>
+  <a href="/reseller" class="snav-dlink" onclick="snavClose()" style="color:var(--em);border-color:rgba(var(--em-rgb,99, 102, 241),.2);background:rgba(var(--em-rgb,99, 102, 241),.06)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6l9 16 9-16-3-4z"/><path d="M3 6h18"/><path d="m12 2-3 4 3 16 3-16z"/></svg>
+    Buka Toko Reseller
+  </a>
+  <a href="/tiktok" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+    TikTok Downloader
+  </a>
+  <a href="/keuangan" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/><circle cx="16" cy="14" r="1.5"/></svg>
+    Keuangan
+  </a>
+  <a href="/ulasan" class="snav-dlink active" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h8M8 14h5"/></svg>
+    Ulasan
+  </a>
+  <a href="/chat" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><circle cx="9" cy="10" r=".5" fill="currentColor"/><circle cx="12" cy="10" r=".5" fill="currentColor"/><circle cx="15" cy="10" r=".5" fill="currentColor"/></svg>
+    Live Chat
+  </a>
+  <a href="/dukungan" class="snav-dlink" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+    Hubungi Tim
+  </a>
+  <div class="snav-dsep"></div>
+  <a href="#" id="snavWaLink" class="snav-dlink wa-link" target="_blank" rel="noopener" onclick="snavClose()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+    Hubungi CS
+  </a>
+  <a href="#" data-channel-link target="_blank" rel="noopener" class="snav-dlink" onclick="snavClose()" style="display:none;color:#25d366;border-color:rgba(37,211,102,.2);background:rgba(37,211,102,.06)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+    Channel WhatsApp
+  </a>
+</div>
+<nav class="snav">
+  <a href="/" class="snav-logo" id="snavLogo">
+    <div class="snav-gem" id="snavGem">
+      <img data-logo-img src="/media/logo.jpg" alt="Logo" style="height:26px;width:auto;max-width:60px;object-fit:contain;border-radius:4px;display:block">
+    </div>
+    <span class="snav-name" id="snavName">DigitalHub</span>
+  </a>
+    <div class="snav-r">
+    <a href="/" class="snav-btn hide-m">Beranda</a>
+    
+    <a href="/track" class="snav-btn hide-m">Track Order</a>
+    <a href="/cpanel" class="snav-btn hide-m">cPanel</a>
+    <a href="#" id="snavWaBtn" target="_blank" rel="noopener noreferrer" class="snav-btn em hide-m">Hubungi CS</a>
+    <button class="snav-hbg" id="snavHbg" onclick="snavToggle()">
+      <span class="bar bar1"></span>
+      <span class="bar bar2"></span>
+      <span class="bar bar3"></span>
+    </button>
+  </div>
+  </nav>
+<script>
+(function(){
+  function snavToggle(){
+    var d=document.getElementById('snavDrawer'),b=document.getElementById('snavBackdrop'),h=document.getElementById('snavHbg');
+    var isOpen=d.classList.contains('open');
+    if(isOpen){d.classList.remove('open');b.classList.remove('open');h.classList.remove('open');document.body.style.overflow='';}
+    else{d.classList.add('open');b.classList.add('open');h.classList.add('open');document.body.style.overflow='hidden';}
+  }
+  function snavClose(){
+    var d=document.getElementById('snavDrawer'),b=document.getElementById('snavBackdrop'),h=document.getElementById('snavHbg');
+    d.classList.remove('open');b.classList.remove('open');h.classList.remove('open');document.body.style.overflow='';
+  }
+  window.snavToggle=snavToggle;window.snavClose=snavClose;
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')snavClose();});
+  // Apply store settings to nav
+  fetch('/api/products').then(function(r){return r.json();}).then(function(j){
+    if(!j)return;
+    var name=j.store||(j.settings&&j.settings.storeName)||'';
+    if(name){
+      var el=document.getElementById('snavName');if(el)el.textContent=name;
+      document.querySelectorAll('.js-store-name,[data-store-name]').forEach(function(el){el.textContent=name;});
+    }
+    var wa=j.wa||(j.settings&&j.settings.wa)||'';
+    if(wa){
+      var wb=document.getElementById('snavWaBtn');if(wb)wb.href=wa;
+      var wl=document.getElementById('snavWaLink');if(wl)wl.href=wa;
+    }
+    var ch=j.channel||(j.settings&&(j.settings.channelWa||j.settings.channel))||'';
+    if(ch)document.querySelectorAll('[data-channel-link]').forEach(function(el){el.href=ch;el.style.display=''});
+    var pc=(j.settings&&j.settings.primaryColor)||'';
+    if(pc){
+      function hexRgb(h){h=h.replace('#','');if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];return parseInt(h.slice(0,2),16)+','+parseInt(h.slice(2,4),16)+','+parseInt(h.slice(4,6),16);}
+      document.documentElement.style.setProperty('--em',pc);
+      document.documentElement.style.setProperty('--em2',pc);
+      document.documentElement.style.setProperty('--em-rgb',hexRgb(pc));
+      document.documentElement.setAttribute('data-em',pc);
+      var _tmeta=document.querySelector('meta[name="theme-color"]');if(_tmeta)_tmeta.setAttribute('content',pc);
+    }
+    if(j.settings){applyGlobalBg(j.settings);applyMusicSettings(j.settings);}
+  }).catch(function(){});
+})();
+function applyGlobalBg(s) {
+  var old = document.getElementById('_gbg'); if (old) old.remove();
+  var oldStyle = document.getElementById('_gbg_style'); if (oldStyle) oldStyle.remove();
+  if (!s || !s.bgUrl) return;
+  var op = s.bgOpacity != null ? parseFloat(s.bgOpacity) : 0.15;
+  var el = document.createElement('div');
+  el.id = '_gbg';
+  el.setAttribute('aria-hidden','true');
+  el.style.cssText = 'position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;will-change:transform;transform:translateZ(0)';
+  if (s.bgType === 'video') {
+    var v = document.createElement('video');
+    v.src = s.bgUrl; v.autoplay = true; v.loop = true; v.muted = true; v.playsInline = true;
+    v.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:'+op+';transform:translateZ(0)';
+    el.appendChild(v);
+  } else {
+    var img = document.createElement('div');
+    img.style.cssText = 'position:absolute;inset:0;background-image:url('+JSON.stringify(s.bgUrl)+');background-size:cover;background-position:center;opacity:'+op+';transform:translateZ(0)';
+    el.appendChild(img);
+  }
+  document.body.insertBefore(el, document.body.firstChild);
+  // Override body background agar tidak menutupi _gbg
+  var st = document.createElement('style');
+  st.id = '_gbg_style';
+  st.textContent = 'html{background:var(--bg0,var(--bg,#0e0e0e))!important}body{background-color:transparent!important;background-image:none!important;}';
+  document.head.appendChild(st);
+}
+</script>
+
+<div id="topBar"></div>
+<div class="toast" id="toast"><div class="t-icon" id="tIcon"></div><span id="tMsg"></span></div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <img id="lbImg" src="" alt="">
+</div>
+
+
+
+<div class="modal-bg hide" id="writeBg">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Tulis Ulasan</div>
+    <div class="modal-sub">Bagikan pengalamanmu kepada pembeli lainnya</div>
+
+    <div class="mb" style="text-align:center">
+      <label class="f-label" style="text-align:center;display:block;margin-bottom:.5rem">Bintang Rating</label>
+      <div class="star-sel" id="starSel">
+        <span data-v="1" onclick="selectStar(1)">⭐</span>
+        <span data-v="2" onclick="selectStar(2)">⭐</span>
+        <span data-v="3" onclick="selectStar(3)">⭐</span>
+        <span data-v="4" onclick="selectStar(4)">⭐</span>
+        <span data-v="5" onclick="selectStar(5)">⭐</span>
+      </div>
+      <div id="starLabel" style="font-size:.65rem;color:var(--t3);height:1rem">Pilih bintang</div>
+    </div>
+
+    <div class="mb">
+      <label class="f-label">Nama Tampilan</label>
+      <input class="f-inp" id="revName" placeholder="Nama kamu..." maxlength="50">
+      <div style="font-size:.58rem;color:var(--t3);margin-top:.25rem">Nama jorok/kasar akan otomatis ditolak</div>
+    </div>
+
+    <div class="mb">
+      <label class="f-label">Ulasan</label>
+      <textarea class="f-inp" id="revText" placeholder="Ceritakan pengalamanmu berbelanja di sini..." maxlength="1000" rows="4"></textarea>
+      <div style="font-size:.58rem;color:var(--t3);margin-top:.2rem">Kata kasar akan otomatis disensor ⭐</div>
+    </div>
+
+    <div class="mb">
+      <label class="f-label">Foto (Opsional — tempel link gambar)</label>
+      <input type="url" id="photoUrlInput" class="f-input" placeholder="https://contoh.com/foto-produk.jpg" oninput="handlePhotoUrlInput(this)">
+      <img class="photo-pre" id="photoPre" src="" alt="" style="margin-top:.5rem">
+      <div id="photoStatus" style="font-size:.6rem;color:var(--t3);margin-top:.3rem;display:none"></div>
+    </div>
+
+    <div class="err-box" id="revErr"></div>
+
+    <button class="btn-em" id="revSubmitBtn" onclick="submitReview()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      Kirim Ulasan
+    </button>
+    <button class="btn-ghost" style="margin-top:.5rem" onclick="closeWriteModal()">Batal</button>
+  </div>
+</div>
+
+
+
+<div class="wrap">
+
+  <div class="stats-hero" id="statsHero">
+    <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--em);margin-bottom:.9rem;display:flex;align-items:center;gap:.4rem">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Rating Keseluruhan
+    </div>
+    <div class="stats-main">
+      <div class="stats-score">
+        <div class="stats-num" id="avgNum">—</div>
+        <div class="stats-stars-big" id="avgStars"></div>
+        <div class="stats-total" id="totalTxt">Memuat...</div>
+      </div>
+      <div class="stats-bars" id="statsBars">
+        <div class="bar-row"><div class="bar-lbl">5★</div><div class="bar-track"><div class="bar-fill s5" id="b5" style="width:0"></div></div><div class="bar-cnt" id="c5">0</div></div>
+        <div class="bar-row"><div class="bar-lbl">4★</div><div class="bar-track"><div class="bar-fill s4" id="b4" style="width:0"></div></div><div class="bar-cnt" id="c4">0</div></div>
+        <div class="bar-row"><div class="bar-lbl">3★</div><div class="bar-track"><div class="bar-fill s3" id="b3" style="width:0"></div></div><div class="bar-cnt" id="c3">0</div></div>
+        <div class="bar-row"><div class="bar-lbl">2★</div><div class="bar-track"><div class="bar-fill s2" id="b2" style="width:0"></div></div><div class="bar-cnt" id="c2">0</div></div>
+        <div class="bar-row"><div class="bar-lbl">1★</div><div class="bar-track"><div class="bar-fill s1" id="b1" style="width:0"></div></div><div class="bar-cnt" id="c1">0</div></div>
+      </div>
+    </div>
+    <div class="stats-tags" id="statsTags">
+      <button class="stat-tag on" data-star="0" onclick="filterByStar(0)">Semua <span class="cnt" id="tagAll">0</span></button>
+      <button class="stat-tag" data-star="5" onclick="filterByStar(5)">⭐⭐⭐⭐⭐ <span class="cnt" id="tag5">0</span></button>
+      <button class="stat-tag" data-star="4" onclick="filterByStar(4)">⭐⭐⭐⭐ <span class="cnt" id="tag4">0</span></button>
+      <button class="stat-tag" data-star="3" onclick="filterByStar(3)">⭐⭐⭐ <span class="cnt" id="tag3">0</span></button>
+      <button class="stat-tag" data-star="2" onclick="filterByStar(2)">⭐⭐ <span class="cnt" id="tag2">0</span></button>
+      <button class="stat-tag" data-star="1" onclick="filterByStar(1)">⭐ <span class="cnt" id="tag1">0</span></button>
+      <button class="stat-tag" data-photo="1" onclick="filterPhoto()">Pakai Foto <span class="cnt" id="tagPhoto">0</span></button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="tb-left">
+      <button class="sort-btn on" data-sort="newest" onclick="setSort('newest')">Terbaru</button>
+      <button class="sort-btn" data-sort="highest" onclick="setSort('highest')">Bintang ↑</button>
+      <button class="sort-btn" data-sort="lowest" onclick="setSort('lowest')">Bintang ↓</button>
+      <button class="sort-btn" data-sort="oldest" onclick="setSort('oldest')">Terlama</button>
+    </div>
+    <button class="write-btn" onclick="openWriteModal()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Tulis Ulasan
+    </button>
+  </div>
+
+  <div id="reviewsWrap">
+    <div class="skel-card skeleton"></div>
+    <div class="skel-card skeleton"></div>
+    <div class="skel-card skeleton"></div>
+  </div>
+
+  <div class="pager" id="pager" style="display:none"></div>
+</div>
+
+<script>
+
+let _token = localStorage.getItem('userApiKey') || '';
+let _username = localStorage.getItem('username') || '';
+let _curStar = 0, _curSort = 'newest', _curPage = 1, _photoOnly = false;
+let _uploading = false, _selectedStar = 0;
+let _helpedIds = new Set(JSON.parse(localStorage.getItem('helpedRevIds')||'[]'));
+let _adminToken = localStorage.getItem('adminToken') || '';
+
+let _tTimer;
+function toast(msg,type='ok',dur=3000){
+  const el=document.getElementById('toast'),ti=document.getElementById('tIcon'),tm=document.getElementById('tMsg');
+  const ico={ok:'✓',err:'✕',warn:'!',info:'i'};
+  el.className='toast '+type; ti.textContent=ico[type]||'•'; tm.textContent=msg;
+  el.classList.add('on'); clearTimeout(_tTimer);
+  if(dur>0) _tTimer=setTimeout(()=>el.classList.remove('on'),dur);
+}
+function bar(on){const b=document.getElementById('topBar');b.className=on?'on':'';if(!on)b.style.width='0'}
+
+function initAuth(){
+  if(_token && _username){
+    var _nu=document.getElementById('navUser');if(_nu)_nu.style.display='';
+    var _nun=document.getElementById('navUsername');if(_nun)_nun.textContent=_username;
+    var _nlb=document.getElementById('navLoginBtn');if(_nlb)_nlb.style.display='none';
+  } else {
+    var _nu2=document.getElementById('navUser');if(_nu2)_nu2.style.display='none';
+    var _nlb2=document.getElementById('navLoginBtn');if(_nlb2)_nlb2.style.display='';
+  }
+}
+function openAuthModal(){ location.href='/login?returnUrl='+encodeURIComponent('/ulasan?write=1'); }
+function closeAuthModal(){}
+function switchAuthTab(){}
+async function doLogin(){}
+async function doRegister(){}
+function doLogout(){
+  _token='';_username='';
+  localStorage.removeItem('userApiKey');localStorage.removeItem('userToken');localStorage.removeItem('username');
+  initAuth();toast('Berhasil logout.','ok');
+}
+
+const STAR_LABELS=['','Sangat Buruk','Buruk','Cukup','Bagus','Luar Biasa'];
+function selectStar(v){
+  _selectedStar=v;
+  const spans=document.querySelectorAll('#starSel span');
+  spans.forEach((s,i)=>{s.style.opacity=i<v?'1':'.25';s.style.filter=i<v?'':'grayscale(1)';});
+  document.getElementById('starLabel').textContent=STAR_LABELS[v]||'';
+  document.getElementById('starLabel').style.color='var(--yel)';
+}
+function renderStars(n,size='.8rem'){
+  const full=Math.floor(n),half=(n-full)>=0.5;
+  let h='';
+  for(let i=0;i<5;i++){
+    if(i<full) h+=`<span class="star" style="font-size:${size}">⭐</span>`;
+    else if(i===full&&half) h+=`<span class="star" style="font-size:${size};filter:grayscale(.5)">⭐</span>`;
+    else h+=`<span class="star" style="font-size:${size};filter:grayscale(1);opacity:.25">⭐</span>`;
+  }
+  return h;
+}
+
+function handlePhotoUrlInput(inp){
+  const url=inp.value.trim();
+  const pre=document.getElementById('photoPre');
+  const st=document.getElementById('photoStatus');
+  if(!url){ pre.classList.remove('show'); pre.src=''; st.style.display='none'; window._uploadedPhotoUrl=''; return; }
+  pre.src=url; pre.classList.add('show');
+  st.style.display=''; st.textContent='✓ Link foto diset'; st.style.color='var(--em)';
+  window._uploadedPhotoUrl=url;
+}
+
+function openWriteModal(){
+  if(!_token){location.href='/login?returnUrl='+encodeURIComponent('/ulasan?write=1');return}
+  document.getElementById('writeBg').classList.remove('hide');
+  _selectedStar=0;window._uploadedPhotoUrl='';
+  document.getElementById('revName').value=_username||'';
+  document.getElementById('revText').value='';
+  document.getElementById('revErr').classList.remove('show');
+  document.getElementById('photoPre').classList.remove('show');
+  document.getElementById('photoPre').src='';
+  document.getElementById('photoStatus').style.display='none';
+  document.getElementById('photoUrlInput').value='';
+  document.querySelectorAll('#starSel span').forEach(s=>{s.style.opacity='.25';s.style.filter='grayscale(1)';});
+  document.getElementById('starLabel').textContent='Pilih bintang';
+  document.getElementById('starLabel').style.color='var(--t3)';
+}
+function closeWriteModal(){document.getElementById('writeBg').classList.add('hide')}
+
+function _handleAuthFail(){
+  _token='';_username='';
+  localStorage.removeItem('userApiKey');localStorage.removeItem('userToken');localStorage.removeItem('username');
+  initAuth();
+  closeWriteModal();
+  toast('Sesi habis, silakan login ulang.','err',4000);
+  setTimeout(function(){ location.href='/login?returnUrl=/ulasan'; }, 1500);
+}
+
+async function submitReview(){
+  if(_uploading){toast('Tunggu foto selesai diupload','warn');return}
+  const err=document.getElementById('revErr');
+  const name=document.getElementById('revName').value.trim();
+  const text=document.getElementById('revText').value.trim();
+  const photo=window._uploadedPhotoUrl||'';
+  err.classList.remove('show');
+  if(!_selectedStar){err.textContent='Pilih rating bintang dulu.';err.classList.add('show');return}
+  if(!name||name.length<2){err.textContent='Nama minimal 2 karakter.';err.classList.add('show');return}
+  if(!text||text.length<5){err.textContent='Ulasan minimal 5 karakter.';err.classList.add('show');return}
+  const btn=document.getElementById('revSubmitBtn');
+  btn.disabled=true;btn.innerHTML='<span class="spin">⏳</span> Mengirim...';
+  try{
+    const r=await fetch('/api/reviews',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':_token},body:JSON.stringify({star:_selectedStar,displayName:name,text,photoUrl:photo})});
+    if(r.status===401){_handleAuthFail();return}
+    const j=await r.json();
+    if(!j.ok){err.textContent=j.message||'Gagal';err.classList.add('show');return}
+    toast('Ulasan berhasil dikirim! Terima kasih','ok',4000);
+    closeWriteModal();
+    loadReviews();
+  }catch(e){err.textContent='Error: '+e.message;err.classList.add('show');}
+  finally{btn.disabled=false;btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Kirim Ulasan';}
+}
+
+function filterByStar(s){
+  _curStar=s;_curPage=1;_photoOnly=false;
+  document.querySelectorAll('.stat-tag').forEach(b=>{
+    b.classList.toggle('on',parseInt(b.dataset.star||'-99')===s&&!b.dataset.photo);
+  });
+  loadReviews();
+}
+function filterPhoto(){
+  _photoOnly=!_photoOnly;_curPage=1;_curStar=0;
+  document.querySelectorAll('.stat-tag').forEach(b=>{
+    if(b.dataset.photo) b.classList.toggle('on',_photoOnly);
+    else b.classList.remove('on');
+  });
+  if(!_photoOnly){
+    document.querySelector('.stat-tag[data-star="0"]').classList.add('on');
+  }
+  loadReviews();
+}
+function setSort(s){
+  _curSort=s;_curPage=1;
+  document.querySelectorAll('.sort-btn').forEach(b=>{b.classList.toggle('on',b.dataset.sort===s);});
+  loadReviews();
+}
+
+async function markHelpful(id,btn){
+  if(_helpedIds.has(id)){toast('Sudah ditandai sebelumnya','warn');return}
+  _helpedIds.add(id);localStorage.setItem('helpedRevIds',JSON.stringify([..._helpedIds]));
+  btn.classList.add('voted');
+  try{
+    const r=await fetch('/api/reviews/'+id+'/helpful',{method:'POST'});
+    const j=await r.json();
+    if(j.ok) btn.querySelector('.hcount').textContent=j.helpful;
+  }catch(e){}
+}
+
+async function deleteReview(id){
+  if(!confirm('Hapus ulasan ini?')) return;
+  try{
+    const r=await fetch('/api/reviews/'+id,{method:'DELETE',headers:{'x-admin-token':_adminToken}});
+    const j=await r.json();
+    if(j.ok){toast('Ulasan dihapus','ok');loadReviews();}
+    else toast(j.message||'Gagal','err');
+  }catch(e){toast('Error: '+e.message,'err');}
+}
+
+async function loadReviews(){
+  const wrap=document.getElementById('reviewsWrap');
+  wrap.innerHTML='<div class="skel-card skeleton"></div><div class="skel-card skeleton"></div><div class="skel-card skeleton"></div>';
+  document.getElementById('pager').style.display='none';
+  bar(true);
+  try{
+    let url=`/api/reviews?page=${_curPage}&sort=${_curSort}&star=${_curStar}`;
+    if(_photoOnly) url+='&photo=1';
+    const r=await fetch(url);
+    const j=await r.json();
+    bar(false);
+    if(!j.ok){wrap.innerHTML='<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--red)"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="empty-title">Gagal memuat</div><div class="empty-sub">'+esc(j.message)+'</div></div>';return}
+
+    updateStats(j);
+
+    if(!j.reviews||j.reviews.length===0){
+      wrap.innerHTML=`<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--t3)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="empty-title">Belum ada ulasan</div><div class="empty-sub">Jadilah yang pertama memberikan ulasan!<br>Klik "Tulis Ulasan" di atas.</div></div>`;
+      return;
+    }
+
+    const isAdmin=!!(_adminToken&&true);
+    wrap.innerHTML=j.reviews.map((rv,idx)=>renderCard(rv,idx,isAdmin)).join('');
+
+    renderPager(j.page,j.pages,j.total);
+  }catch(e){
+    bar(false);
+    wrap.innerHTML='<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--red)"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="empty-title">Gagal memuat</div><div class="empty-sub">'+esc(e.message)+'</div></div>';
+  }
+}
+
+function renderCard(rv,idx,isAdmin){
+  const initials=(rv.displayName||'?').charAt(0).toUpperCase();
+  const colors=['--em-rgb','--sky-rgb','--pur-rgb','--yel-rgb'];
+  const col='rgba('+getComputedStyle(document.documentElement).getPropertyValue(colors[rv.username.charCodeAt(0)%colors.length])+', .15)';
+  const colB='rgba('+getComputedStyle(document.documentElement).getPropertyValue(colors[rv.username.charCodeAt(0)%colors.length])+', .3)';
+  const timeAgo=fmtTime(rv.createdAt);
+  const helped=_helpedIds.has(rv.id);
+  const stars=renderStars(rv.star);
+  const photo=rv.photoUrl?`<img class="rv-photo" src="${esc(rv.photoUrl)}" alt="Foto ulasan" onclick="openLightbox('${esc(rv.photoUrl)}')" loading="lazy">`:'';
+  const adminDel=isAdmin?`<button class="rv-del-btn" onclick="deleteReview('${esc(rv.id)}')">Hapus</button>`:'';
+  return `<div class="rv-card" style="animation-delay:${idx*0.04}s">
+    <div class="rv-head">
+      <div class="rv-avatar" style="background:${col};border-color:${colB}">${initials}</div>
+      <div class="rv-meta">
+        <div class="rv-name">${esc(rv.displayName)}<span class="rv-badge verified">✓ Verified</span></div>
+        <div class="rv-stars">${stars}</div>
+        <div class="rv-date">${timeAgo}</div>
+      </div>
+    </div>
+    ${photo}
+    <div class="rv-text">${esc(rv.text)}</div>
+    <div class="rv-foot">
+      <button class="helpful-btn${helped?' voted':''}" onclick="markHelpful('${esc(rv.id)}',this)">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+        Membantu <span class="hcount">${rv.helpful||0}</span>
+      </button>
+      ${adminDel}
+    </div>
+  </div>`;
+}
+
+function updateStats(j){
+  document.getElementById('avgNum').textContent=j.avgRating||'0.0';
+  document.getElementById('avgStars').innerHTML=renderStars(parseFloat(j.avgRating||0),'1rem');
+  document.getElementById('totalTxt').textContent=(j.totalAll||0)+' ulasan';
+  document.getElementById('tagAll').textContent=j.totalAll||0;
+  const sc=j.starCounts||{};
+  [1,2,3,4,5].forEach(s=>{
+    document.getElementById('c'+s).textContent=sc[s]||0;
+    document.getElementById('tag'+s).textContent=sc[s]||0;
+    const pct=(j.totalAll>0?((sc[s]||0)/j.totalAll*100):0).toFixed(0)+'%';
+    document.getElementById('b'+s).style.width=pct;
+  });
+  document.getElementById('tagPhoto').textContent=j.withPhoto||0;
+}
+
+function renderPager(cur,total,count){
+  const pg=document.getElementById('pager');
+  if(total<=1){pg.style.display='none';return}
+  pg.style.display='flex';
+  let h=`<button class="page-btn" onclick="gotoPage(${cur-1})" ${cur<=1?'disabled':''}>‹ Prev</button>`;
+  const from=Math.max(1,cur-2),to=Math.min(total,cur+2);
+  if(from>1) h+=`<button class="page-btn" onclick="gotoPage(1)">1</button>`;
+  if(from>2) h+=`<span class="page-info">…</span>`;
+  for(let i=from;i<=to;i++) h+=`<button class="page-btn${i===cur?' on':''}" onclick="gotoPage(${i})">${i}</button>`;
+  if(to<total-1) h+=`<span class="page-info">…</span>`;
+  if(to<total) h+=`<button class="page-btn" onclick="gotoPage(${total})">${total}</button>`;
+  h+=`<button class="page-btn" onclick="gotoPage(${cur+1})" ${cur>=total?'disabled':''}>Next ›</button>`;
+  pg.innerHTML=h;
+}
+
+function gotoPage(p){_curPage=p;loadReviews();window.scrollTo({top:0,behavior:'smooth'});}
+
+function openLightbox(url){
+  document.getElementById('lbImg').src=url;
+  document.getElementById('lightbox').classList.add('on');
+}
+function closeLightbox(){document.getElementById('lightbox').classList.remove('on');}
+
+function fmtTime(ts){
+  if(!ts) return '';
+  const diff=Date.now()-ts;
+  if(diff<60000) return 'Baru saja';
+  if(diff<3600000) return Math.floor(diff/60000)+' menit lalu';
+  if(diff<86400000) return Math.floor(diff/3600000)+' jam lalu';
+  if(diff<2592000000) return Math.floor(diff/86400000)+' hari lalu';
+  return new Date(ts).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+}
+function esc(s){
+  if(!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
+// ── KEYBOARD
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeLightbox();closeWriteModal();closeAuthModal();}
+});
+
+// ── REAL-TIME: Store SSE — settings, maintenance, reload
+(function connectStoreSSE() {
+  try {
+    var _src = new EventSource('/api/store/stream');
+    _src.onmessage = function(e) {
+      try {
+        var d = JSON.parse(e.data);
+        if (d.type === 'reconnect') { _src.close(); setTimeout(connectStoreSSE, 1500); return; }
+        if (d.type === 'settings_update' && d.settings) {
+          if (d.settings.storeName) {
+            document.querySelectorAll('.js-store-name,[data-store-name]').forEach(function(el){ el.textContent = d.settings.storeName; });
+            document.title = d.settings.storeName;
+          }
+          applyGlobalBg(d.settings); applyMusicSettings(d.settings);
+        }
+        if (d.type === 'reload') {
+          fetch('/api/products').then(function(r){return r.json();}).then(function(j){
+            if (j.settings && j.settings.storeName) document.title = j.settings.storeName;
+            if (j.settings) { applyGlobalBg(j.settings); applyMusicSettings(j.settings); }
+          }).catch(function(){});
+        }
+        if (d.type === 'maintenance' && d.on) {
+          document.body.innerHTML = '<div style="position:fixed;inset:0;background:#0a0a0f;display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif;color:#f0f0f0;font-size:.9rem;text-align:center;padding:2rem">' + esc(d.msg || 'Sedang dalam maintenance.') + '</div>';
+        }
+      } catch(ex){}
+    };
+    _src.onerror = function(){ _src.close(); setTimeout(connectStoreSSE, 5000); };
+  } catch(ex){}
+})();
+
+// ── INIT
+initAuth();
+loadReviews();
+
+// Auto-open write modal jika kembali dari login dengan ?write=1
+(function(){
+  var p = new URLSearchParams(location.search);
+  if(p.get('write')==='1' && _token){
+    // Hapus param dari URL tanpa reload
+    history.replaceState(null,'',location.pathname);
+    setTimeout(function(){ openWriteModal(); }, 600);
+  }
+})();
+</script>
+<script>(function(){var v="?v="+Date.now();document.querySelectorAll("img[data-logo-img]").forEach(function(el){if(el.src&&el.src.indexOf("/media/logo")>-1)el.src=el.src.split("?")[0]+v;});var fav=document.querySelector("link[rel=icon]");if(fav&&fav.href&&fav.href.indexOf("/media/logo")>-1)fav.href=fav.href.split("?")[0]+v;})();
+
+var _music = {
+  playlist: [],
+  idx: 0,
+  muted: false,
+  vol: 0.35,
+  ready: false,
+  panelOpen: false,
+  fadeTimer: null,
+  endBound: false,
+  gesturePending: false
+};
+
+function initMusic() {
+  try {
+    _music.muted = localStorage.getItem('musicMuted') === '1';
+    var sv = parseFloat(localStorage.getItem('musicVol'));
+    if (!isNaN(sv) && sv >= 0 && sv <= 1) _music.vol = sv;
+    var si = parseInt(localStorage.getItem('musicIdx'), 10);
+    if (!isNaN(si) && si >= 0) _music.idx = si;
+  } catch(e){}
+  var volEl = document.getElementById('mpVol');
+  if (volEl) volEl.value = Math.round(_music.vol * 100);
+}
+
+function applyMusicSettings(settings) {
+  var player = document.getElementById('musicPlayer');
+  var audio  = document.getElementById('bgMusic');
+  if (!settings || !settings.musicUrl || !settings.musicEnabled) {
+    if (player) player.style.display = 'none';
+    return;
+  }
+  // Set atribut mobile penting via JS (backup selain atribut HTML)
+  audio.playsInline = true;
+  audio.setAttribute('playsinline', '');
+  audio.setAttribute('webkit-playsinline', '');
+  var urls = settings.musicUrl.split(',')
+    .map(function(u){ return u.trim(); })
+    .filter(Boolean)
+    .map(function(u){
+      return /^https?:\/\//i.test(u) ? u : location.origin + u;
+    });
+  if (!urls.length) { if (player) player.style.display = 'none'; return; }
+
+  _music.playlist = urls;
+  _music.idx = Math.min(_music.idx, urls.length - 1);
+  _music.ready = true;
+  // Loop hanya aktif jika single track (multi-track dihandle via 'ended' event)
+  audio.loop = (urls.length === 1);
+
+  var prevBtn = document.getElementById('mpPrev');
+  var nextBtn = document.getElementById('mpNext');
+  if (prevBtn) prevBtn.style.display = urls.length > 1 ? '' : 'none';
+  if (nextBtn) nextBtn.style.display = urls.length > 1 ? '' : 'none';
+
+  if (player) player.style.display = 'flex';
+
+  _musicLoad(_music.idx, false);
+  _musicUpdateBtn();
+  _musicUpdateTitle();
+
+  if (!_music.endBound) {
+    _music.endBound = true;
+    audio.addEventListener('ended', function() {
+      if (_music.playlist.length > 1) {
+        _music.idx = (_music.idx + 1) % _music.playlist.length;
+        try { localStorage.setItem('musicIdx', _music.idx); } catch(e){}
+        _musicLoad(_music.idx, true);
+        _musicUpdateTitle();
+      } else {
+        audio.currentTime = 0;
+        if (!_music.muted) audio.play().catch(function(){});
+      }
+    });
+  }
+
+  if (!_music.muted) _musicFadeIn();
+}
+
+function _musicLoad(idx, autoPlay) {
+  var audio = document.getElementById('bgMusic');
+  var url = _music.playlist[idx];
+  // Atribut penting untuk iOS agar audio bisa diputar inline
+  audio.playsInline = true;
+  if (audio.src !== url) { audio.src = url; audio.load(); }
+  audio.volume = _music.muted ? 0 : _music.vol;
+  if (autoPlay && !_music.muted) _musicFadeIn();
+}
+
+function _musicFadeIn() {
+  var audio = document.getElementById('bgMusic');
+  if (!audio || !audio.src) return;
+  clearInterval(_music.fadeTimer);
+  audio.playsInline = true;
+  audio.setAttribute('playsinline', '');
+  // Langsung set volume target — tidak fade via setInterval karena di mobile
+  // interval callback BUKAN bagian dari user gesture, sehingga play() di dalamnya diblokir
+  audio.volume = _music.vol;
+  var p = audio.play();
+  if (p && p.catch) p.catch(function(e){
+    console.warn('[music] Autoplay blocked:', e && e.name);
+    _musicWaitForGesture();
+  });
+}
+
+// Daftarkan satu kali listener gesture (touchstart / click) untuk resume di HP
+function _musicWaitForGesture() {
+  if (_music.gesturePending) return;
+  _music.gesturePending = true;
+  function onGesture() {
+    _music.gesturePending = false;
+    document.removeEventListener('touchstart', onGesture, true);
+    document.removeEventListener('click', onGesture, true);
+    if (!_music.muted && _music.ready) {
+      var audio = document.getElementById('bgMusic');
+      if (audio && audio.paused) _musicFadeIn();
+    }
+  }
+  document.addEventListener('touchstart', onGesture, { capture: true, once: true, passive: true });
+  document.addEventListener('click', onGesture, { capture: true, once: true });
+}
+
+function _musicFadeOut(cb) {
+  var audio = document.getElementById('bgMusic');
+  if (!audio) { if (cb) cb(); return; }
+  clearInterval(_music.fadeTimer);
+  _music.fadeTimer = setInterval(function() {
+    if (audio.volume > 0.03) { audio.volume = Math.max(0, audio.volume - 0.04); }
+    else { audio.volume = 0; audio.pause(); clearInterval(_music.fadeTimer); if (cb) cb(); }
+  }, 35);
+}
+
+function toggleMusicPanel() {
+  if (!_music.ready) { toggleMusic(); return; }
+  var audio = document.getElementById('bgMusic');
+  // KUNCI MOBILE: audio.play() harus dipanggil langsung dalam gesture handler (tap/click).
+  // Kalau dipanggil lewat setTimeout atau nested function, browser mobile BLOKIR.
+  // Jadi kita play() dulu synchronous di sini, baru urus panel setelahnya.
+  if (audio && !_music.muted) {
+    // Set semua atribut mobile sebelum play
+    audio.playsInline = true;
+    audio.setAttribute('playsinline', '');
+    audio.setAttribute('webkit-playsinline', '');
+    if (audio.paused) {
+      // Pastikan src sudah ada
+      if (!audio.src && _music.playlist && _music.playlist.length) {
+        audio.src = _music.playlist[_music.idx] || _music.playlist[0];
+        audio.load();
+      }
+      audio.volume = _music.vol;
+      audio.play().catch(function(e){ console.warn('[music] play blocked:', e && e.name); });
+    }
+  }
+  _music.panelOpen = !_music.panelOpen;
+  var panel = document.getElementById('musicPanel');
+  if (!panel) return;
+  if (_music.panelOpen) panel.classList.add('open');
+  else panel.classList.remove('open');
+  _musicUpdateBtn();
+}
+
+function toggleMusic() {
+  if (!_music.ready) return;
+  _music.muted = !_music.muted;
+  try { localStorage.setItem('musicMuted', _music.muted ? '1' : '0'); } catch(e){}
+  if (_music.muted) {
+    _musicFadeOut();
+  } else {
+    // Play langsung synchronous dalam gesture untuk mobile
+    var audio = document.getElementById('bgMusic');
+    if (audio) {
+      audio.playsInline = true;
+      audio.setAttribute('playsinline', '');
+      if (!audio.src && _music.playlist && _music.playlist.length) {
+        audio.src = _music.playlist[_music.idx] || _music.playlist[0];
+        audio.load();
+      }
+      audio.volume = _music.vol;
+      audio.play().catch(function(e){ console.warn('[music] play blocked:', e && e.name); });
+    }
+  }
+  _musicUpdateBtn();
+}
+
+function musicNext() {
+  if (!_music.playlist.length) return;
+  var wasMuted = _music.muted;
+  _musicFadeOut(function() {
+    _music.idx = (_music.idx + 1) % _music.playlist.length;
+    try { localStorage.setItem('musicIdx', _music.idx); } catch(e){}
+    _musicLoad(_music.idx, false);
+    _musicUpdateTitle();
+    if (!wasMuted) _musicFadeIn();
+  });
+}
+
+function musicPrev() {
+  if (!_music.playlist.length) return;
+  var wasMuted = _music.muted;
+  _musicFadeOut(function() {
+    _music.idx = (_music.idx - 1 + _music.playlist.length) % _music.playlist.length;
+    try { localStorage.setItem('musicIdx', _music.idx); } catch(e){}
+    _musicLoad(_music.idx, false);
+    _musicUpdateTitle();
+    if (!wasMuted) _musicFadeIn();
+  });
+}
+
+function musicSetVol(val) {
+  _music.vol = val / 100;
+  try { localStorage.setItem('musicVol', String(_music.vol)); } catch(e){}
+  var audio = document.getElementById('bgMusic');
+  if (audio && !_music.muted) audio.volume = _music.vol;
+}
+
+function _musicUpdateBtn() {
+  var btn = document.getElementById('musicBtn');
+  if (!btn) return;
+  if (_music.muted) btn.classList.remove('playing'); else btn.classList.add('playing');
+  var pp = document.getElementById('mpPlayPause');
+  if (pp) {
+    if (_music.muted) {
+      pp.title = 'Play';
+      pp.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+    } else {
+      pp.title = 'Pause';
+      pp.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="4" x2="6" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/></svg>';
+    }
+  }
+}
+
+function _musicUpdateTitle() {
+  var el = document.getElementById('mpTitle');
+  if (!el || !_music.playlist.length) return;
+  var url = _music.playlist[_music.idx];
+  var raw = url.split('?')[0].split('/').pop();
+  var name = decodeURIComponent(raw).replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ') || ('Track ' + (_music.idx + 1));
+  var num = _music.playlist.length > 1 ? (_music.idx + 1) + '/' + _music.playlist.length + ' · ' : '';
+  el.textContent = '♪ ' + num + name;
+  el.title = name;
+}
+
+document.addEventListener('click', function(e) {
+  if (!_music.panelOpen) return;
+  var player = document.getElementById('musicPlayer');
+  if (player && !player.contains(e.target)) {
+    _music.panelOpen = false;
+    var panel = document.getElementById('musicPanel');
+    if (panel) panel.classList.remove('open');
+  }
+});
+</script>
+
+<div id="musicPlayer">
+  <div id="musicPanel">
+    <div class="mp-title" id="mpTitle">&#9834; Musik</div>
+    <div class="mp-controls">
+      <button class="mp-nav" id="mpPrev" title="Sebelumnya" onclick="musicPrev()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="4" x2="5" y2="20"/></svg>
+      </button>
+      <button class="mp-nav" id="mpPlayPause" title="Pause" onclick="toggleMusic()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="4" x2="6" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/></svg>
+      </button>
+      <button class="mp-nav" id="mpNext" title="Berikutnya" onclick="musicNext()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="4" x2="19" y2="20"/></svg>
+      </button>
+    </div>
+    <div class="mp-vol-row">
+      <span class="mp-vol-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span>
+      <input type="range" class="mp-vol-sl" id="mpVol" min="0" max="100" value="35" oninput="musicSetVol(this.value)">
+    </div>
+  </div>
+  <button id="musicBtn" title="Musik" onclick="toggleMusicPanel()">
+    <span class="mp-ico">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </span>
+    <span class="mp-eq"><span></span><span></span><span></span><span></span></span>
+  </button>
+</div>
+<audio id="bgMusic" loop preload="none" playsinline webkit-playsinline x-webkit-airplay="allow"></audio>
+<a href="/admin-panell" title="Admin Panel" style="position:fixed;bottom:78px;left:14px;z-index:40;width:38px;height:38px;border-radius:50%;background:rgba(33,33,33,.85);backdrop-filter:blur(6px);border:1px solid var(--line2,#3a3a3a);color:var(--em,#6366f1);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.35);text-decoration:none;font-size:15px;opacity:.75;transition:opacity .15s,transform .15s" aria-label="Admin Panel">🛡️</a>
+<nav class="dh-bottomnav" id="dhBottomNav">
+  <a href="/" data-nav="dashboard">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
+    <span>Beranda</span>
+  </a>
+  <a href="/toko" data-nav="toko">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9h18M9 21v-5h6v5"/></svg>
+    <span>Toko</span>
+  </a>
+  <a href="/ai" data-nav="ai">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3.2"/></svg>
+    <span>Asisten</span>
+  </a>
+  <a href="/ulasan" data-nav="testimoni">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 2.9 6.3L21 9l-4.6 4.5L17.5 21 12 17.8 6.5 21l1.1-7.5L3 9l6.1-.7z"/></svg>
+    <span>Ulasan</span>
+  </a>
+  <a href="/profil" data-nav="profil">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.4-3.6 4.4-5.5 7.5-5.5s6.1 1.9 7.5 5.5"/></svg>
+    <span>Akun</span>
+  </a>
+</nav>
+<style>
+.dh-bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;background:rgba(24,24,24,.94);backdrop-filter:blur(12px);border-top:1px solid #2E2E2E;padding:.35rem .3rem calc(.35rem + env(safe-area-inset-bottom))}
+.dh-bottomnav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.22rem;color:#71717a;text-decoration:none;font-size:.6rem;font-family:'DM Sans',system-ui,sans-serif;padding:.4rem .2rem;border-radius:12px;transition:color .15s,background .15s}
+.dh-bottomnav a svg{width:21px;height:21px;transition:transform .15s}
+.dh-bottomnav a.active{color:#818cf8;background:rgba(99,102,241,.1)}
+.dh-bottomnav a.active svg{transform:translateY(-1px)}
+body{padding-bottom:68px !important}
+</style>
+<script>
+(function(){
+  var path=location.pathname;
+  var map={'/':'dashboard','/toko':'toko','/ai':'ai','/ulasan':'testimoni','/profil':'profil'};
+  var active=map[path];
+  document.querySelectorAll('#dhBottomNav a').forEach(function(a){
+    if(a.dataset.nav===active) a.classList.add('active');
+  });
+})();
+</script>
+</body>
+</html>
